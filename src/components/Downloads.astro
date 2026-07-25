@@ -5,11 +5,15 @@
 // is resolved at BUILD time from the latest GitHub release (pinned fallback for
 // offline/rate-limited builds), so a rebuild tracks new releases automatically.
 //
-// Arch note: Intel-vs-Apple-Silicon can't be read reliably in Safari/Firefox
-// (only Chromium exposes userAgentData.architecture). So on an undetectable
-// Mac we default the primary to the Intel build — it runs on both, natively on
-// Intel and via Rosetta on Apple Silicon — and offer the native arm64 build
-// one tap away. The reverse default would hand Intel users a broken binary.
+// macOS ships a single universal (arm64 + x86_64) .dmg as of v0.4.0, so there
+// is nothing to detect there — one build serves both architectures natively.
+// Before v0.4.0 the release carried separate _aarch64/_x64 dmgs and this file
+// tried to choose between them; because the asset names changed and the `has()`
+// filter drops anything not in the live release, that left the matrix with NO
+// macOS row at all from v0.4.0 until this was fixed.
+//
+// Linux still needs the arch check: only x86_64 is prebuilt, so arm64 visitors
+// are routed to build-from-source rather than handed a binary that won't run.
 import Button from './Button.astro';
 import BrandIcon from './BrandIcon.astro';
 
@@ -19,7 +23,7 @@ interface Props {
 const { github } = Astro.props;
 
 const REPO = 'royalti-io/ikenga';
-const FALLBACK_TAG = 'v0.2.3';
+const FALLBACK_TAG = 'v0.6.2';
 
 let tag = FALLBACK_TAG;
 let assetNames: Set<string> = new Set();
@@ -39,20 +43,20 @@ try {
 const ver = tag.replace(/^v/, '');
 const base = `https://github.com/${REPO}/releases/download/${tag}`;
 // When we have the live asset list, only surface assets that actually exist;
-// offline (empty set) we trust the canonical v0.2.x set (all five ship).
+// offline (empty set) we trust the canonical set pinned by FALLBACK_TAG.
+// Keep FALLBACK_TAG and these names in step with what the release actually
+// publishes — a stale name here silently removes a platform from the matrix.
 const has = (name: string) => assetNames.size === 0 || assetNames.has(name);
 
 const N = {
-	macArm: `Ikenga_${ver}_aarch64.dmg`,
-	macIntel: `Ikenga_${ver}_x64.dmg`,
+	mac: `Ikenga_${ver}_universal.dmg`,
 	linuxDeb: `Ikenga_${ver}_amd64.deb`,
 	linuxApp: `Ikenga_${ver}_amd64.AppImage`,
 	windows: `Ikenga_${ver}_x64-setup.exe`,
 };
 
 const PLATFORMS = [
-	{ id: 'mac-arm', os: 'mac', arch: 'arm', icon: 'apple', label: 'macOS', sub: 'Apple Silicon', ext: '.dmg', name: N.macArm },
-	{ id: 'mac-intel', os: 'mac', arch: 'x86', icon: 'apple', label: 'macOS', sub: 'Intel', ext: '.dmg', name: N.macIntel },
+	{ id: 'mac', os: 'mac', arch: 'any', icon: 'apple', label: 'macOS', sub: 'Universal · Apple Silicon & Intel', ext: '.dmg', name: N.mac },
 	{ id: 'linux-deb', os: 'linux', arch: 'x86', icon: 'linux', label: 'Linux', sub: 'Debian / Ubuntu', ext: '.deb', name: N.linuxDeb },
 	{ id: 'linux-app', os: 'linux', arch: 'x86', icon: 'linux', label: 'Linux', sub: 'AppImage · no sudo', ext: '.AppImage', name: N.linuxApp },
 	{ id: 'windows', os: 'windows', arch: 'x86', icon: 'windows', label: 'Windows', sub: 'x64 installer', ext: '.exe', name: N.windows },
@@ -159,19 +163,10 @@ const detectData = JSON.stringify({ ver, repo: REPO, platforms: PLATFORMS });
 		});
 
 		if (os === 'mac') {
-			archThen(function (arch) {
-				if (arch === 'arm') {
-					setPrimary(byId('mac-arm'), 'Download for Mac · Apple Silicon', 'mac');
-					highlight('mac-arm');
-					note.innerHTML = 'Detected macOS · Apple Silicon. <a href="#downloads">Other builds ↓</a>';
-				} else {
-					// x86 or undetectable → Intel build (runs on both via Rosetta)
-					setPrimary(byId('mac-intel'), 'Download for Mac', 'mac');
-					highlight('mac-intel');
-					note.innerHTML =
-						'macOS — Intel build (runs on Apple Silicon via Rosetta too). On Apple Silicon? <a href="#downloads">grab the native build ↓</a>';
-				}
-			});
+			// One universal build covers Apple Silicon and Intel — nothing to probe.
+			setPrimary(byId('mac'), 'Download for Mac', 'mac');
+			highlight('mac');
+			note.innerHTML = 'Detected macOS · universal build. <a href="#downloads">Other builds ↓</a>';
 		} else if (os === 'windows') {
 			setPrimary(byId('windows'), 'Download for Windows', 'windows');
 			highlight('windows');
