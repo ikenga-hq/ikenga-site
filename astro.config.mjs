@@ -5,6 +5,9 @@ import react from '@astrojs/react';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 
+// Disable Astro's build-time telemetry. The site carries no analytics.
+process.env.ASTRO_TELEMETRY_DISABLED = '1';
+
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://ikenga.dev',
@@ -24,17 +27,6 @@ export default defineConfig({
 				},
 			],
 			customCss: ['./src/styles/global.css'],
-			head: [
-				{
-					tag: 'script',
-					attrs: {
-						defer: true,
-						src: 'https://static.cloudflareinsights.com/beacon.min.js',
-						'data-cf-beacon':
-							'{"token": "3fdcdf8ab9ba4ca68bd46410d1527108"}',
-					},
-				},
-			],
 			sidebar: [
 				{
 					label: 'Start here',
