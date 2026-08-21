@@ -20,7 +20,7 @@
 #                        deb requires dpkg + apt-get; sudo prompts are not
 #                        auto-run under `curl … | sh`, so the script prints
 #                        the apt-get command for you to paste with sudo.
-#   IKENGA_REPO          Source repo (default: royalti-io/ikenga).
+#   IKENGA_REPO          Source repo (default: ikenga-hq/ikenga).
 #   IKENGA_SILENT        Windows: set to 1 to run the NSIS installer with /S
 #                        (no UI, system-default install dir). Default: 0.
 #
@@ -30,7 +30,7 @@
 
 set -eu
 
-REPO="${IKENGA_REPO:-royalti-io/ikenga}"
+REPO="${IKENGA_REPO:-ikenga-hq/ikenga}"
 VERSION="${IKENGA_VERSION:-latest}"
 # `auto` is resolved per-OS below (Linux: deb when dpkg is present, else
 # appimage). An explicit IKENGA_FORMAT=deb|appimage overrides the auto choice.

@@ -24,7 +24,7 @@ const description =
 		title="Build a live interactive HTML file, then review it like a designer."
 		lede="Author a self-contained artifact from any Claude Code session. Render it in any browser with no build step. Open it inside the shell to grid-review variants, pin feedback, compare, and promote."
 		problem="Most tools do one half of this loop. You can ask Claude to generate a dashboard and get an HTML file. Or you have a design-review tool where you annotate screenshots. Rarely both, in the same workspace. The Artifacts workflow covers the full cycle: author with a standalone skill that works anywhere, then review inside the shell — thumbnail grid, side-by-side compare, pinned feedback routed to your agent, and one-click promote."
-		install="npx skills add royalti-io/ikenga-artifact-builder"
+		install="npx skills add ikenga-hq/ikenga-artifact-builder"
 		worksWith="No Ikenga shell required for authoring. Works with Claude Code, Codex, Cursor, and any agent that reads a .claude/skills/ directory. The shell unlocks the review half: grid, compare, pin, and promote."
 		catalogHref="/packages/"
 		docsHref="/docs/"
@@ -74,15 +74,15 @@ const description =
 					<ul class="sk-list">
 						<li>
 							<strong>Global</strong> — available across all projects:
-							<br /><code class="af-cmd">npx skills add royalti-io/ikenga-artifact-builder -g</code>
+							<br /><code class="af-cmd">npx skills add ikenga-hq/ikenga-artifact-builder -g</code>
 						</li>
 						<li>
 							<strong>Project</strong> — committed with your repo, shared with your team:
-							<br /><code class="af-cmd">npx skills add royalti-io/ikenga-artifact-builder</code>
+							<br /><code class="af-cmd">npx skills add ikenga-hq/ikenga-artifact-builder</code>
 						</li>
 						<li>
 							<strong>Targeted</strong> — if you have several agents configured:
-							<br /><code class="af-cmd">npx skills add royalti-io/ikenga-artifact-builder -g -a claude-code</code>
+							<br /><code class="af-cmd">npx skills add ikenga-hq/ikenga-artifact-builder -g -a claude-code</code>
 						</li>
 					</ul>
 					<p class="sk-body">
@@ -299,7 +299,7 @@ const description =
 				<h2 class="sk-h2">Install</h2>
 
 				<h3 class="af-h3">The skill — authoring, no shell required</h3>
-				<InstallBlock cmd="npx skills add royalti-io/ikenga-artifact-builder -g">
+				<InstallBlock cmd="npx skills add ikenga-hq/ikenga-artifact-builder -g">
 					<p class="sk-body">
 						Global install — available across all projects. Omit <code>-g</code>
 						for a project-scoped install committed with your repo. Works with
@@ -353,7 +353,7 @@ const description =
 					</tbody>
 				</table>
 				<p class="sk-body af-license">
-					Apache-2.0. <a href="https://github.com/Royalti-io/ikenga-artifact-builder/blob/main/LICENSE" rel="noopener noreferrer">Read it.</a>
+					Apache-2.0. <a href="https://github.com/ikenga-hq/ikenga-artifact-builder/blob/main/LICENSE" rel="noopener noreferrer">Read it.</a>
 				</p>
 			</div>
 		</section>

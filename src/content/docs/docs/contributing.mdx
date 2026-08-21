@@ -3,7 +3,7 @@ title: Contributing
 description: How to contribute to Ikenga — build a pkg, file a good issue, or open a pull request. Built in the open, Apache-2.0, no CLA.
 ---
 
-Ikenga is built in the open and licensed **Apache-2.0**. Issues, pull requests, and design discussion all happen on GitHub under [`Royalti-io`](https://github.com/Royalti-io). This page is the friendly overview; the canonical rules live in the org-wide [`CONTRIBUTING.md`](https://github.com/Royalti-io/.github/blob/main/CONTRIBUTING.md), which every repo inherits.
+Ikenga is built in the open and licensed **Apache-2.0**. Issues, pull requests, and design discussion all happen on GitHub under [`Royalti-io`](https://github.com/Royalti-io). This page is the friendly overview; the canonical rules live in the org-wide [`CONTRIBUTING.md`](https://github.com/ikenga-hq/.github/blob/main/CONTRIBUTING.md), which every repo inherits.
 
 :::tip[The fastest way to contribute is a package]
 You don't need to touch the platform internals to extend Ikenga — most of the surface area is **packages** (UI panels, MCP tool servers, engine adapters, skills). If you have an idea, the shortest path from zero to shipped is [Build your first pkg](/docs/build-a-pkg).
@@ -23,15 +23,15 @@ Ikenga is a multi-repo project. Change the thing where it lives:
 
 | Repo | Role | Package manager |
 |------|------|-----------------|
-| [`ikenga`](https://github.com/Royalti-io/ikenga) | Tauri 2 + Vite + React 19 desktop app + pkg kernel (the shell) | **bun** |
-| [`ikenga-contract`](https://github.com/Royalti-io/ikenga-contract) | Shared TS package: manifest schema (Zod), RPC types, Engine interface, capability scopes | **pnpm** |
-| [`ikenga-tokens`](https://github.com/Royalti-io/ikenga-tokens) | Canonical design tokens (CSS + TS) | **pnpm** |
-| [`ikenga-cli`](https://github.com/Royalti-io/ikenga-cli) | `ikenga` — disk-side pkg manager (`add \| update \| list \| dev`) | **bun** |
-| [`iyke-cli`](https://github.com/Royalti-io/iyke-cli) | `iyke` — Rust runtime controller for a running shell | **cargo** |
-| [`ikenga-pkgs`](https://github.com/Royalti-io/ikenga-pkgs) | Canonical monorepo for all pkgs (engines, MCP servers, apps, skills) | **pnpm** + Changesets |
-| [`ikenga-registry`](https://github.com/Royalti-io/ikenga-registry) | Static JSON registry of published pkgs | — |
-| [`ikenga-site`](https://github.com/Royalti-io/ikenga-site) | Marketing site + docs for ikenga.dev | **pnpm** |
-| [`ikenga-artifact-builder`](https://github.com/Royalti-io/ikenga-artifact-builder) | Claude Code skill for self-contained HTML artifacts | **pnpm** |
+| [`ikenga`](https://github.com/ikenga-hq/ikenga) | Tauri 2 + Vite + React 19 desktop app + pkg kernel (the shell) | **bun** |
+| [`ikenga-contract`](https://github.com/ikenga-hq/ikenga-contract) | Shared TS package: manifest schema (Zod), RPC types, Engine interface, capability scopes | **pnpm** |
+| [`ikenga-tokens`](https://github.com/ikenga-hq/ikenga-tokens) | Canonical design tokens (CSS + TS) | **pnpm** |
+| [`ikenga-cli`](https://github.com/ikenga-hq/ikenga-cli) | `ikenga` — disk-side pkg manager (`add \| update \| list \| dev`) | **bun** |
+| [`iyke-cli`](https://github.com/ikenga-hq/iyke-cli) | `iyke` — Rust runtime controller for a running shell | **cargo** |
+| [`ikenga-pkgs`](https://github.com/ikenga-hq/ikenga-pkgs) | Canonical monorepo for all pkgs (engines, MCP servers, apps, skills) | **pnpm** + Changesets |
+| [`ikenga-registry`](https://github.com/ikenga-hq/ikenga-registry) | Static JSON registry of published pkgs | — |
+| [`ikenga-site`](https://github.com/ikenga-hq/ikenga-site) | Marketing site + docs for ikenga.dev | **pnpm** |
+| [`ikenga-artifact-builder`](https://github.com/ikenga-hq/ikenga-artifact-builder) | Claude Code skill for self-contained HTML artifacts | **pnpm** |
 
 :::caution[Don't introduce a foreign lockfile]
 Package managers vary by repo on purpose. The shell and the `ikenga` CLI use **bun**; the shared libraries and `ikenga-pkgs` use **pnpm**; `iyke-cli` uses **cargo**. Use the one the repo already uses.
@@ -43,7 +43,7 @@ Use the templates — they exist so we can act on a report without a round-trip 
 
 - **Bug reports** — include your OS, the affected repo/version, and the smallest reproduction you can manage.
 - **Feature requests** — describe the problem before the solution.
-- **Questions & ideas** — open a [GitHub Discussion](https://github.com/orgs/Royalti-io/discussions) rather than an issue.
+- **Questions & ideas** — open a [GitHub Discussion](https://github.com/orgs/ikenga-hq/discussions) rather than an issue.
 - **Security issues** — do **not** open a public issue. See [Reporting a vulnerability](#security) below.
 
 One report per issue. If you've found three bugs, file three issues.
@@ -66,8 +66,8 @@ New here? Look for issues labelled [`good first issue`](https://github.com/searc
 
 ## Code of Conduct
 
-Participation is governed by our [Code of Conduct](https://github.com/Royalti-io/.github/blob/main/CODE_OF_CONDUCT.md) (Contributor Covenant). It applies everywhere in the project. Report concerns to **hello@royalti.io**.
+Participation is governed by our [Code of Conduct](https://github.com/ikenga-hq/.github/blob/main/CODE_OF_CONDUCT.md) (Contributor Covenant). It applies everywhere in the project. Report concerns to **hello@royalti.io**.
 
 ## Security
 
-Found a vulnerability? **Don't open a public issue.** Use [GitHub Private Vulnerability Reporting](https://github.com/Royalti-io/.github/blob/main/SECURITY.md) (the Security tab → *Report a vulnerability*) or email **hello@royalti.io**. Full policy: [SECURITY.md](https://github.com/Royalti-io/.github/blob/main/SECURITY.md).
+Found a vulnerability? **Don't open a public issue.** Use [GitHub Private Vulnerability Reporting](https://github.com/ikenga-hq/.github/blob/main/SECURITY.md) (the Security tab → *Report a vulnerability*) or email **hello@royalti.io**. Full policy: [SECURITY.md](https://github.com/ikenga-hq/.github/blob/main/SECURITY.md).

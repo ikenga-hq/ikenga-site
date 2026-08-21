@@ -97,8 +97,8 @@
     }
   ],
   "capability_nodes": [
-    { "kind": "skill", "name": "groundwork", "detail": "npx skills add royalti-io/groundwork" },
-    { "kind": "skill", "name": "ikenga-artifact-builder", "detail": "npx skills add royalti-io/ikenga-artifact-builder" },
+    { "kind": "skill", "name": "groundwork", "detail": "npx skills add ikenga-hq/groundwork" },
+    { "kind": "skill", "name": "ikenga-artifact-builder", "detail": "npx skills add ikenga-hq/ikenga-artifact-builder" },
     { "kind": "skill", "name": "@ikenga/skill-thunderbird", "version": "0.2.0", "detail": "Read/search the local Thunderbird mbox store; save reply drafts to IMAP." },
     { "kind": "command", "name": "/release-status", "detail": "workspace skill — .claude/skills/release-status" },
     { "kind": "mcp", "name": "@ikenga/mcp-iyke", "version": "0.2.1", "detail": "iyke control-bridge MCP server" },

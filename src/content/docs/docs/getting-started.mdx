@@ -6,7 +6,7 @@ description: Download, verify, and run the Ikenga shell — macOS, Linux, Window
 import { Aside } from '@astrojs/starlight/components';
 
 <Aside type="caution" title="Pre-release">
-Builds are tagged but not yet publicly released. The commands on this page go live the moment the first GitHub Release is published. Track progress at [github.com/Royalti-io/ikenga/releases](https://github.com/Royalti-io/ikenga/releases).
+Builds are tagged but not yet publicly released. The commands on this page go live the moment the first GitHub Release is published. Track progress at [github.com/ikenga-hq/ikenga/releases](https://github.com/ikenga-hq/ikenga/releases).
 {/* GATED: install one-liner not live until WP-13 */}
 </Aside>
 
@@ -35,7 +35,7 @@ The installer picks the right artifact for your chip. On Apple Silicon (arm64) i
 
 If you'd rather not pipe a script straight into your shell, you don't have to.
 
-1. Open the [latest release](https://github.com/Royalti-io/ikenga/releases/latest) and download the artifact for your platform directly — `.dmg` (macOS), `.AppImage` or `.deb` (Linux), `.exe` (Windows).
+1. Open the [latest release](https://github.com/ikenga-hq/ikenga/releases/latest) and download the artifact for your platform directly — `.dmg` (macOS), `.AppImage` or `.deb` (Linux), `.exe` (Windows).
 2. To read the installer before running it:
 
    ```sh
@@ -52,7 +52,7 @@ If you'd rather not pipe a script straight into your shell, you don't have to.
 winget install Ikenga.Shell
 ```
 
-Or download the `.exe` installer directly from the [latest release](https://github.com/Royalti-io/ikenga/releases/latest). {/* VERIFY: confirm the winget package id and that a Windows artifact ships at launch. */}
+Or download the `.exe` installer directly from the [latest release](https://github.com/ikenga-hq/ikenga/releases/latest). {/* VERIFY: confirm the winget package id and that a Windows artifact ships at launch. */}
 
 ## Environment overrides
 
@@ -63,7 +63,7 @@ The install script honours three environment variables:
 | `IKENGA_VERSION` | `latest` | Pin a specific release tag (e.g. `v0.0.4`). |
 | `IKENGA_FORMAT` | `deb` if `dpkg` present, else `appimage` | Linux installer format. `deb` is the smaller (~60 MB) system-wide install (needs sudo); `appimage` is the larger (~140 MB) no-sudo portable build. |
 | `IKENGA_INSTALL_DIR` | `~/.local/bin` | Linux portable (AppImage) install location. Ignored when `IKENGA_FORMAT=deb`. |
-| `IKENGA_REPO` | `Royalti-io/ikenga` | Source repository. |
+| `IKENGA_REPO` | `ikenga-hq/ikenga` | Source repository. |
 | `IKENGA_BUN_PATH` | _(none)_ | **Runtime override.** Absolute path to a `bun` binary the shell should use in place of its own fetched copy. See [Offline / air-gapped install](#offline--air-gapped-install) below. |
 
 Example — pin a version and install to a different directory:
