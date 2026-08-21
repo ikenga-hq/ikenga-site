@@ -40,7 +40,7 @@ You have two ways to get a starting skeleton.
 
 ### Option A — the pkg-builder skill (recommended)
 
-If you have the [`ikenga-pkg-builder`](https://github.com/Royalti-io/ikenga-pkgs) Claude Code skill installed, just ask:
+If you have the [`ikenga-pkg-builder`](https://github.com/ikenga-hq/ikenga-pkgs) Claude Code skill installed, just ask:
 
 ```
 /ikenga-pkg-builder
@@ -177,7 +177,7 @@ Iterate here until the panel does what you want.
 
 ## 5. Publish
 
-When it's ready, published pkgs live in the [`ikenga-pkgs`](https://github.com/Royalti-io/ikenga-pkgs) monorepo under `packages/<type>/<slug>/`, ship **Apache-2.0**, and release through [Changesets](https://github.com/changesets/changesets).
+When it's ready, published pkgs live in the [`ikenga-pkgs`](https://github.com/ikenga-hq/ikenga-pkgs) monorepo under `packages/<type>/<slug>/`, ship **Apache-2.0**, and release through [Changesets](https://github.com/changesets/changesets).
 
 ### Pre-publish checklist
 
@@ -194,7 +194,7 @@ When it's ready, published pkgs live in the [`ikenga-pkgs`](https://github.com/R
 4. Merge to `main`. The release workflow opens a "Version Packages" PR that bumps versions and writes changelogs.
 5. Merge "Version Packages." The workflow then publishes the pkg, creates a GitHub Release for it, and pushes a fresh entry to the **registry index** — the static catalogue the shell's package manager and the `ikenga` CLI both read.
 
-> The `@ikenga/` npm scope is owned by Royalti, Inc. Third-party authors publish under their own scope and submit to the registry index via a PR to [`ikenga-registry`](https://github.com/Royalti-io/ikenga-registry).
+> The `@ikenga/` npm scope is owned by Royalti, Inc. Third-party authors publish under their own scope and submit to the registry index via a PR to [`ikenga-registry`](https://github.com/ikenga-hq/ikenga-registry).
 
 Once it's in the registry, anyone can install it with `ikenga add <pkg>` — and you've shipped your first pkg.
 

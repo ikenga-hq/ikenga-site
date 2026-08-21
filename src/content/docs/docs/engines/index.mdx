@@ -11,7 +11,7 @@ The chat layer is **multi-engine**. Any number of engines can be installed side 
 
 Each engine adapter wraps a CLI-based AI backend — a binary that speaks a streaming protocol over stdio. Two pieces make up an engine:
 
-1. **The pkg** (in [`ikenga-pkgs/packages/engine/<id>/`](https://github.com/Royalti-io/ikenga-pkgs)) declares the contract: a stable `agentId`, a display name, a **capability matrix**, an **onboarding** block (which vault keys and auth command the engine needs), and a settings schema.
+1. **The pkg** (in [`ikenga-pkgs/packages/engine/<id>/`](https://github.com/ikenga-hq/ikenga-pkgs)) declares the contract: a stable `agentId`, a display name, a **capability matrix**, an **onboarding** block (which vault keys and auth command the engine needs), and a settings schema.
 2. **The runtime adapter** (Rust, in the shell) translates between that CLI's native protocol and the shell's internal session wire.
 
 The frontend talks to whatever engine is active through one normalized envelope shape on a single channel. Whether the underlying CLI speaks that protocol natively or the Rust adapter translates is something the UI never has to know.
