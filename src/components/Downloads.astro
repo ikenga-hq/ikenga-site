@@ -192,6 +192,53 @@ const detectData = JSON.stringify({ ver, repo: REPO, platforms: PLATFORMS });
 			primary.href = '#downloads';
 			note.innerHTML = 'Ikenga is a desktop app (macOS, Linux, Windows). Open this on your computer to install.';
 		}
+
+		// Client-side live release check: refreshes links if a newer release was published
+		// since this HTML was built, avoiding silent staleness.
+		try {
+			fetch('https://api.github.com/repos/' + data.repo + '/releases/latest', {
+				headers: { accept: 'application/vnd.github+json' }
+			})
+				.then(function (r) { return r.ok ? r.json() : null; })
+				.then(function (rel) {
+					if (!rel || !rel.tag_name || rel.tag_name === 'v' + data.ver) return;
+					var liveTag = rel.tag_name;
+					var liveVer = liveTag.replace(/^v/, '');
+					var liveBase = 'https://github.com/' + data.repo + '/releases/download/' + liveTag;
+					var liveAssets = new Set((rel.assets || []).map(function (a) { return a.name; }));
+
+					var liveN = {
+						mac: 'Ikenga_' + liveVer + '_universal.dmg',
+						linuxDeb: 'Ikenga_' + liveVer + '_amd64.deb',
+						linuxApp: 'Ikenga_' + liveVer + '_amd64.AppImage',
+						windows: 'Ikenga_' + liveVer + '_x64-setup.exe'
+					};
+
+					data.ver = liveVer;
+					data.platforms = [
+						{ id: 'mac', os: 'mac', arch: 'any', name: liveN.mac },
+						{ id: 'linux-deb', os: 'linux', arch: 'x86', name: liveN.linuxDeb },
+						{ id: 'linux-app', os: 'linux', arch: 'x86', name: liveN.linuxApp },
+						{ id: 'windows', os: 'windows', arch: 'x86', name: liveN.windows }
+					]
+						.filter(function (p) { return liveAssets.size === 0 || liveAssets.has(p.name); })
+						.map(function (p) { return Object.assign(p, { url: liveBase + '/' + p.name }); });
+
+					data.platforms.forEach(function (p) {
+						var row = document.querySelector('.dl__row[data-id="' + p.id + '"]');
+						if (row) row.href = p.url;
+					});
+
+					if (os === 'mac') setPrimary(byId('mac'), 'Download for Mac', 'mac');
+					else if (os === 'windows') setPrimary(byId('windows'), 'Download for Windows', 'windows');
+					else if (os === 'linux') {
+						archThen(function (arch) {
+							if (arch !== 'arm') setPrimary(byId('linux-deb'), 'Download for Linux · .deb', 'linux');
+						});
+					}
+				})
+				.catch(function () {});
+		} catch (e) {}
 	})();
 </script>
 
