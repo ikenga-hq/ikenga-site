@@ -12,6 +12,10 @@ process.env.ASTRO_TELEMETRY_DISABLED = '1';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://ikenga.dev',
+	// WP-06: Astro 7 defaults to compressHTML: 'jsx', which drops whitespace that
+	// contains a newline between inline nodes (e.g. a pkg name and its version
+	// badge). 'true' restores the Astro 5 collapsing rules.
+	compressHTML: true,
 	integrations: [
 		starlight({
 			// The site ships its own src/pages/404.astro (WP-18); Starlight's default

@@ -79,8 +79,10 @@ const ENGINES = ['claude', 'codex', 'gemini'] as const;
 		top: 0;
 		z-index: 40;
 		background: color-mix(in srgb, var(--site-bg) 82%, transparent);
-		backdrop-filter: blur(10px);
+		/* WP-06: prefixed declaration must come first. Vite 8 (Lightning CSS) drops an
+		   unprefixed backdrop-filter that is followed by its -webkit- twin. */
 		-webkit-backdrop-filter: blur(10px);
+		backdrop-filter: blur(10px);
 		border-bottom: 1px solid var(--site-border-soft);
 	}
 	.hnav__bar {
