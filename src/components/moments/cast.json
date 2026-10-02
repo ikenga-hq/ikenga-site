@@ -2,7 +2,7 @@
   "$schemaVersion": 1,
   "provisional": false,
   "source": {
-    "base_design": "plans/site-redesign/designs/home-hero-theatre.html",
+    "base_design": "home-hero-theatre.html",
     "base_design_rev": 2,
     "registry_snapshot": "ikenga-registry/index.json",
     "registry_snapshot_updatedAt": "2026-07-04T22:35:17.857Z",
@@ -32,9 +32,9 @@
   "board": {
     "title": "launch-week",
     "wps": [
-      { "id": "WP-01", "title": "Announcement draft", "status": "done" },
-      { "id": "WP-02", "title": "Press kit", "status": "review" },
-      { "id": "WP-03", "title": "Demo capture", "status": "queued" }
+      { "id": "W01", "title": "Announcement draft", "status": "done" },
+      { "id": "W02", "title": "Press kit", "status": "review" },
+      { "id": "W03", "title": "Demo capture", "status": "queued" }
     ]
   },
   "artifact": {

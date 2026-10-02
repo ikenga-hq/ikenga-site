@@ -18,7 +18,7 @@ export default defineConfig({
 	site: 'https://ikenga.dev',
 	integrations: [
 		starlight({
-			// The site ships its own src/pages/404.astro (WP-18); Starlight's default
+			// The site ships its own src/pages/404.astro; Starlight's default
 			// 404 route would collide (hard error in a future Astro version).
 			disable404Route: true,
 			title: 'Ikenga',
@@ -70,7 +70,7 @@ export default defineConfig({
 		react(),
 		icon(),
 		sitemap({
-			// WP-18: exclude the internal moment/graph preview harnesses — they
+			// Exclude the internal moment/graph preview harnesses — they
 			// carry their own `noindex, nofollow` meta (see moment-lab.astro,
 			// moment-lab-2.astro, graph-lab.astro) but @astrojs/sitemap doesn't
 			// read page-level robots meta, so list them here too.

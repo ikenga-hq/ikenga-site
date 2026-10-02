@@ -1,13 +1,12 @@
 ---
-// /packages — the ecosystem storefront (WP-17, plan L3).
+// /packages — the ecosystem storefront.
 //
 // Registry-driven: the "All packages" index is generated at build time from
 // the published registry (src/lib/registry.ts — live fetch + committed
 // snapshot fallback so the CF Pages build never breaks). Every depicted pkg
 // is registry-real; the six unpublished app pkgs appear only in a labelled
-// "Coming" strip with no install affordance (G-21 / DEC-1). Card system is
-// typographic-first per DEC-2 (no per-pkg art yet — the logo-forge track
-// upgrades these later).
+// "Coming" strip with no install affordance. Card system is
+// typographic-first (no per-pkg art yet; art can upgrade these later).
 import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
 import Card from '../../components/Card.astro';
@@ -47,7 +46,7 @@ const COMING_DETAIL_LINKS: Record<string, string> = {
 const engineIcon = (name: string): string | null =>
 	name.includes('claude') ? 'claude' : name.includes('antigravity') ? 'antigravity' : name.includes('codex') ? 'codex' : null;
 
-// Two co-equal on-ramps (G-21 / R5-5). Skills are portable primitives: they
+// Two co-equal on-ramps. Skills are portable primitives: they
 // run anywhere in plain Claude Code AND move across engines — install once via
 // npx, use with or without the shell. Packages install + update inside the shell.
 const SKILLS_ONRAMP = [
@@ -86,7 +85,7 @@ const desc = "Browse what's published for your Claude Code setup — mini-apps, 
 		</div>
 	</section>
 
-	<!-- Featured strip (editorial) — the two co-equal on-ramps (G-21):
+	<!-- Featured strip (editorial) — the two co-equal on-ramps:
 	     skills that work anywhere and move across engines, and packages you
 	     install in the shell. -->
 	<section class="sk-section">
@@ -157,7 +156,7 @@ const desc = "Browse what's published for your Claude Code setup — mini-apps, 
 	</section>
 
 	<!-- Coming strip — built in ikenga-pkgs, not yet published to the registry.
-	     Labelled, no install affordance, no version claim (G-21 / DEC-1). The
+	     Labelled, no install affordance, no version claim. The
 	     list self-corrects: anything the registry now publishes drops off here
 	     and shows in the catalog above instead. -->
 	{coming.length > 0 && (
@@ -273,8 +272,8 @@ const desc = "Browse what's published for your Claude Code setup — mini-apps, 
 		text-decoration: underline;
 	}
 	.pk-soon {
-		/* WP-21 a11y gate: opacity-dimming the whole card dropped the tag/body
-		   text below 4.5:1 (LH measures the composited color). De-emphasize with
+		/* Accessibility fix: opacity-dimming the whole card dropped the tag/body
+		   text below 4.5:1 (Lighthouse measures the composited color). De-emphasize with
 		   a dashed border + muted title instead — text keeps full contrast. */
 		border-style: dashed;
 	}

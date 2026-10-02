@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * contrast-check.mjs — deterministic WCAG contrast checker for the
- * light-pole tonal system (G-TONAL, plans/site-redesign WP-02).
+ * light-pole tonal system.
  *
  * No dependencies. Parses the actual CSS custom-property declarations out of
  * src/styles/theming.css (dark-pole upstream primitives) and
@@ -215,12 +215,12 @@ function report(pole, label, fg, bg, threshold, { blocking = true } = {}) {
 	console.log(`[${pole}] ${status}  ${label.padEnd(28)} ${ratio.toFixed(2)}:1  (need >= ${threshold}:1)`);
 }
 
-// Pre-existing gap (not introduced by WP-02): the dark-pole
+// Pre-existing gap (not introduced by the light-pole work): the dark-pole
 // --site-border-strong value was already shipping at 2.36:1 against
 // --site-bg (short of the 3:1 WCAG 1.4.11 target its own code comment
-// claims). WP-02 is additive-only and forbidden from touching dark-pole
+// claims). The light-pole work is additive-only and does not touch dark-pole
 // slots, so this check is downgraded to a non-blocking WARN for the dark
-// pole only — flagged here for visibility, left to a follow-up WP to fix.
+// pole only — flagged here for visibility, left to a follow-up to fix.
 const KNOWN_PRE_EXISTING_GAPS = new Set(['dark:--site-border-strong on --site-bg']);
 
 function checkPole(name, vars) {

@@ -1,7 +1,7 @@
 /**
  * moment-tasks.ts — the tasks/agenda beat, on the shared timeline engine.
  *
- * WP-14 hybrid: the agenda is a real capture (see MomentTasks.astro), so this
+ * Real-capture hybrid: the agenda is a real capture (see MomentTasks.astro), so this
  * beat drives the overlay theatre over the real pixels — a highlight ring
  * settles on the overdue card and a spark rides the real now-line — then clears
  * to the clean capture. Same WAAPI + `MomentTimeline` grammar as the other

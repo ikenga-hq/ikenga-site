@@ -1,8 +1,8 @@
 /**
  * site-kit.css — the marketing-site component + pattern layer.
  *
- * Site design system: Phase 1 (Components) + Phase 2 (Patterns).
- * Locked visual direction: D-01 "Forge, tempered" (Round 1) —
+ * Site design system: components + patterns.
+ * Visual direction: "Forge, tempered" —
  * warm Dusk Wood + IM Fell serif display + deliberate kola-amber glow,
  * with disciplined --space-* rhythm and capped measures.
  *
@@ -28,7 +28,7 @@
 .sk-section {
 	padding-block: var(--site-section-pad);
 	border-top: 1px solid var(--site-border-soft);
-	/* WP-05: paint the tonal seam. `data-tone="light"` only re-points the
+	/* Paint the tonal seam. `data-tone="light"` only re-points the
 	   --site-* custom properties on the subtree — CSS inheritance doesn't
 	   re-resolve `background`/`color` on descendants that don't declare it
 	   themselves, so without this a "light" section rendered dark (the
@@ -84,7 +84,7 @@
 .sk-display em {
 	font-style: italic;
 	color: var(--site-accent);
-	/* the D-01 glow — spent here + the primary CTA only */
+	/* the amber glow — spent here + the primary CTA only */
 	text-shadow: var(--site-glow);
 }
 .sk-h2 {
@@ -282,7 +282,7 @@
 	font-size: 0.6875rem;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
-	/* WP-21 a11y gate: --site-accent on --site-accent-soft measures 3.88:1 at
+	/* Accessibility fix: --site-accent on --site-accent-soft measures 3.88:1 at
 	   this 11px size (needs 4.5:1). Brighter tag ink, dark pole only — the
 	   light-pole override below restores the token pair (it passes there). */
 	color: hsl(42, 72%, 58%);
@@ -299,7 +299,7 @@
 }
 .sk-card__body {
 	font-size: 0.9375rem;
-	/* WP-21 a11y gate: --site-muted on the card bg measures 3.58:1 at 15px
+	/* Accessibility fix: --site-muted on the card bg measures 3.58:1 at 15px
 	   (needs 4.5:1). One step lighter, card-local; light pole restored below. */
 	color: hsl(30, 10%, 54%);
 	margin: 0;

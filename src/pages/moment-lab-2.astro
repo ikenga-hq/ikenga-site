@@ -1,12 +1,11 @@
 ---
 /**
- * moment-lab-2.astro — preview harness for the WP-06 moment pair.
+ * moment-lab-2.astro — preview harness for the tasks + install moment pair.
  *
- * NOT part of production nav / IA. Exists only so `redesign/home` can
- * preview <MomentTasks /> and <MomentInstall /> in isolation (dark pole)
- * while WP-10 decides real page placement. Mirrors `moment-lab.astro`'s
- * minimal shell (no site Header/Footer chrome). Do not link it from the nav
- * or ship it in the launch swap.
+ * NOT part of production nav / IA. Exists only so <MomentTasks /> and
+ * <MomentInstall /> can be previewed in isolation (dark pole). Mirrors
+ * `moment-lab.astro`'s minimal shell (no site Header/Footer chrome). Do not
+ * link it from the nav or ship it.
  */
 import '../styles/global.css';
 import MomentTasks from '../components/moments/MomentTasks.astro';
@@ -20,7 +19,7 @@ import MomentInstall from '../components/moments/MomentInstall.astro';
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="robots" content="noindex, nofollow" />
 		<title>Moment lab 2 · MomentTasks + MomentInstall (dark pole)</title>
-		<meta name="description" content="Internal preview harness for the WP-06 moment pair. Not production nav." />
+		<meta name="description" content="Internal preview harness for the tasks and install moments. Not production nav." />
 	</head>
 	<body class="sk-page">
 		<main id="main-content">

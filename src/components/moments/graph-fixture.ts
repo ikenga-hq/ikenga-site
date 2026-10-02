@@ -1,25 +1,24 @@
 /**
- * graph-fixture.ts — the {nodes, edges} source for MomentGraph (SPIKE-07).
+ * graph-fixture.ts — the {nodes, edges} source for MomentGraph.
  *
- * HONESTY GATE (G-19): every node here traces to the vendored `cast.json`
- * (byte-identical copy of `plans/site-redesign/designs/_fixtures/cast.json`).
- * Two slices of that fixture are both explicitly "registry-verified" per its
- * own README (`_fixtures/README.md`): `capability_nodes` (9 entries: three
+ * HONESTY RULE: every node here traces to the vendored `cast.json`.
+ * Two slices of that fixture are both explicitly "registry-verified":
+ * `capability_nodes` (9 entries: three
  * skills, a command, two mcps, two engines) and `store_rows` (8 registry
  * UI pkgs — tasks/mail/research/strategy/content/finance/outbound/sales).
  * Both are copied name-for-name from `ikenga-registry/index.json` as of the
  * cast's `verified_on` date. No node below is invented; nothing outside these
  * two arrays is used. Total = 16 nodes.
  *
- * DENSITY NOTE (WP-22 / G-CAST): the SPIKE-07 brief asked for ~14-22 nodes /
- * ~20-30 links. Against the provisional draft the registry-verified surface
- * only supported 11 nodes; the G-CAST lock sweep re-curated against the live
- * 18-pkg registry (updatedAt 2026-07-04) and the honest set now lands at 16
- * nodes / 22 edges — inside the spike target without inventing anything. Still
+ * DENSITY NOTE: the original brief asked for ~14-22 nodes / ~20-30 links.
+ * Against the provisional draft the registry-verified surface only supported
+ * 11 nodes; the cast was then re-curated against the live 18-pkg registry
+ * (updatedAt 2026-07-04) and the honest set now lands at 16 nodes / 22 edges —
+ * inside that target without inventing anything. Still
  * EXCLUDED (real, but not in cast.json — its curators left them out):
  * huashu-design / frontend-design / ikenga-pkg-builder (groundwork composes
  * them "when present"), and the hidden registry stubs (pkg-hello, engine-noop,
- * engine-cursor-agent). The honesty gate still wins over the count target.
+ * engine-cursor-agent). The honesty rule still wins over the count target.
  *
  * Edge derivation mirrors the shell's own model (graph-shared.ts): each edge
  * is tagged `declarative` (solid — stated outright in a skill/pkg/registry
@@ -146,7 +145,7 @@ const edges: GraphEdge[] = [
 	// and stale doc claims" — that scan covers EVERY registry pkg, so it reads
 	// (uses) each of the eight store UI pkgs. The four post-publish additions
 	// (content/finance/outbound/sales) inherit the exact same honest edge as
-	// the original four ("densification comes free at G-CAST", R3-b).
+	// the original four.
 	edge('/release-status', '@ikenga/pkg-tasks', 'uses', 'declarative'),
 	edge('/release-status', '@ikenga/pkg-mail', 'uses', 'declarative'),
 	edge('/release-status', '@ikenga/pkg-research', 'uses', 'declarative'),

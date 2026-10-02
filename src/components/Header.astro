@@ -1,14 +1,13 @@
 ---
 // Header — site nav. Component: header-nav (Navigation).
 //
-// D-01 rev 2 (plans/site-redesign/designs/home-hero-theatre.html) upgrades
-// the header to: sticky + blur, the fuller nav (Packages · How it works ·
+// Sticky + blur, the fuller nav (Packages · How it works ·
 // Docs · Blog), a quiet engine cluster (Claude Code / Codex —
-// shipping engines only, G-21), GitHub, and an amber Download CTA.
+// shipping engines only), GitHub, and an amber Download CTA.
 //
 // Mobile (≤760px): the design doc's `.hdr-nav, .engines { display: none; }`
-// just drops the nav with nothing to reach it by — WP-08 replaces that with
-// a real <details> disclosure (native, keyboard/AT-friendly, no JS) holding
+// just drops the nav with nothing to reach it by — so a real <details> disclosure
+// replaces it (native, keyboard/AT-friendly, no JS) holding
 // the same links + engine cluster + GitHub, so nothing is lost, just tucked.
 import BrandIcon from './BrandIcon.astro';
 
@@ -23,7 +22,7 @@ const NAV = [
 	{ href: '/docs/', label: 'Docs' },
 	{ href: '/blog/', label: 'Blog' },
 ];
-// Shipping engines only (G-21) — Antigravity joins when its engine pkg publishes.
+// Shipping engines only — Antigravity joins when its engine pkg publishes.
 const ENGINES = ['claude', 'codex'] as const;
 ---
 
@@ -70,7 +69,7 @@ const ENGINES = ['claude', 'codex'] as const;
 </header>
 
 <style>
-	/* Sticky + blur (D-01 rev 2). `color-mix` keeps the translucency tied to
+	/* Sticky + blur. `color-mix` keeps the translucency tied to
 	   the live --site-bg (works across the dark/light tonal poles) without
 	   hardcoding a hex; any browser without color-mix just gets an opaque bar
 	   (still correct, only loses the blur glass effect). */
@@ -183,7 +182,7 @@ const ENGINES = ['claude', 'codex'] as const;
 	}
 	/* Closed <details> content keeps its layout boxes in Chromium
 	   (content-visibility:hidden), so the engines pill was widening
-	   body scrollWidth to 437px at 390px viewports (WP-15 verify find).
+	   body scrollWidth to 437px at 390px viewports.
 	   Hide the panel explicitly while closed. */
 	.hnav__disclosure:not([open]) .hnav__disclosure-panel {
 		display: none;

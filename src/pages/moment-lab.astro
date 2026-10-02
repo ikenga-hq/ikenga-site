@@ -2,11 +2,11 @@
 /**
  * moment-lab.astro — preview harness for the moment islands.
  *
- * NOT part of production nav / IA. This page exists only so the
- * `redesign/moment-hero` branch can preview <MomentHero /> in isolation
- * (dark pole). It is intentionally minimal — no site Header/Footer chrome —
+ * NOT part of production nav / IA. This page exists only so <MomentHero />
+ * can be previewed in isolation (dark pole). It is intentionally minimal —
+ * no site Header/Footer chrome —
  * so the moment is the only thing on the stage. Do not link it from the nav
- * or ship it in the launch swap; the home page mounts <MomentHero /> for real.
+ * or ship it; the home page mounts <MomentHero /> for real.
  */
 import '../styles/global.css';
 import MomentHero from '../components/moments/MomentHero.astro';
@@ -25,7 +25,7 @@ import MomentGraph from '../components/moments/MomentGraph.astro';
 	<body class="sk-page">
 		<main id="main-content">
 			<MomentHero tone="dark" autoplay="viewport" />
-			<!-- SPIKE-07 — capability-graph moment island feasibility spike -->
+			<!-- Capability-graph moment island feasibility spike -->
 			<MomentGraph tone="dark" />
 		</main>
 	</body>

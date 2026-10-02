@@ -37,7 +37,7 @@
       "name": "@ikenga/pkg-browser",
       "latest": "0.1.0",
       "detail": "pkgs/browser.json",
-      "description": "Playwright verb engine behind Ikenga's /iyke/browser/* contract — replaces the Rust chromiumoxide Chrome engine (ADR-018). Managed (dedicated profile) + Attach (everyday Chrome via the official Playwright extension).",
+      "description": "Playwright verb engine behind Ikenga's /iyke/browser/* contract — replaces the Rust chromiumoxide Chrome engine. Managed (dedicated profile) + Attach (everyday Chrome via the official Playwright extension).",
       "kind": "embedded"
     },
     {
@@ -65,14 +65,14 @@
       "name": "@ikenga/pkg-engine-codex",
       "latest": "0.2.1",
       "detail": "pkgs/engine-codex.json",
-      "description": "Codex CLI engine adapter for Ikenga — install-time portability for the OpenAI `codex` CLI (ADR-012 Track C).",
+      "description": "Codex CLI engine adapter for Ikenga — install-time portability for the OpenAI `codex` CLI.",
       "kind": "engine"
     },
     {
       "name": "@ikenga/pkg-engine-cursor-agent",
       "latest": "0.1.0",
       "detail": "pkgs/engine-cursor-agent.json",
-      "description": "Cursor agent CLI engine adapter for Ikenga (scaffold-only; runtime stubbed per ADR-013 Phase 4).",
+      "description": "Cursor agent CLI engine adapter for Ikenga (scaffold-only; runtime stubbed).",
       "kind": "engine",
       "visibility": "hidden"
     },

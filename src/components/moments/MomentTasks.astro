@@ -1,10 +1,10 @@
 ---
 /**
- * MomentTasks.astro — the tasks/agenda beat (WP-06 · WP-14 hybrid).
+ * MomentTasks.astro — the tasks/agenda beat (real-capture hybrid).
  *
- * DEC-8 hybrid retrofit: the pane PIXELS are a real capture of the running
+ * Hybrid retrofit: the pane PIXELS are a real capture of the running
  * Tasks pkg's Agenda view (`/assets/shell/tasks-shell-*.{avif,webp}`, cropped
- * from the WP-11 staged-cast session — Sunday Jul 5, one overdue task pulled
+ * from the staged-cast session — Sunday Jul 5, one overdue task pulled
  * forward above two scheduled, the live "now" line). The DOM theatre survives
  * as the tone-aware copy, the framed pane, and two overlays that demonstrably
  * match the real surface: a highlight ring settles on the overdue card and a
@@ -17,7 +17,7 @@
  * `./CONTRACT.md`. The frame carries an explicit aspect-ratio → zero CLS; the
  * capture is lazy-loaded.
  *
- * Honesty (G-19/G-21): the agenda is the staged-cast's own launch-week tasks —
+ * Honesty: the agenda is the staged-cast's own launch-week tasks —
  * nothing invented. The ring/spark only draw the eye to real pixels.
  */
 import castData from './cast.json';
@@ -96,7 +96,7 @@ const TASKS_SIZES = '(min-width: 800px) 768px, 92vw';
 </section>
 
 <style>
-	/* ── Moment island: tasks/agenda beat (WP-14 hybrid) ──────────────────── */
+	/* ── Moment island: tasks/agenda beat (real-capture hybrid) ───────────── */
 	.mt {
 		--mt-ease: cubic-bezier(0.22, 0.61, 0.16, 1);
 		--moment-shell-bg: hsl(28, 22%, 2.5%);

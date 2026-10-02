@@ -1,7 +1,7 @@
 /**
  * theming.css — pin Theme A · Dusk Wood as the site's :root base.
  *
- * Site design system foundation: `theming` (plans/site-design-system/).
+ * Site design system foundation: `theming`.
  *
  * Why this file exists: `@ikenga/tokens` ships a COOL hsl(220,…) palette as
  * the bare `:root` default; the warm Dusk Wood world lives only under
@@ -9,7 +9,7 @@
  * (a page that forgets it renders cool-blue) and collides with Starlight's
  * own `data-theme` (which means light/dark MODE, not palette).
  *
- * Resolution (locked, Round-1 follow-up): make Dusk Wood the base at `:root`,
+ * Resolution (locked): make Dusk Wood the base at `:root`,
  * decoupled from `data-theme`. Same selectors as the upstream Theme A block,
  * imported AFTER `@ikenga/tokens` in global.css, so order wins. Every page —
  * landing AND Starlight docs — gets the warm world with no attribute needed.

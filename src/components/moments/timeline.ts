@@ -12,8 +12,8 @@
  *   · visibility-pause: when the tab is hidden the clock pauses and resumes
  *     exactly where it left off (no janky catch-up, no wasted timers).
  *
- * Extracted from the proving-moment hero (WP-03 / G-MOMENT) at WP-06 so the
- * tasks and install moments can share it verbatim. Behavior is unchanged —
+ * Extracted from the proving-moment hero so the tasks and install moments
+ * can share it verbatim. Behavior is unchanged —
  * this is a lift, not a rewrite. See `./CONTRACT.md` for the island contract
  * every moment (hero, tasks, install, …) implements on top of this engine.
  */

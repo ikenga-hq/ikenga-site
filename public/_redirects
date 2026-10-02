@@ -1,5 +1,5 @@
 # Cloudflare Pages native redirects — https://developers.cloudflare.com/pages/configuration/redirects/
-# WP-18 / PROP-1: the standalone /how-it-works page folded into the home page's
+# The standalone /how-it-works page folded into the home page's
 # own demonstration sequence (the moment islands + install/tasks beats ARE the
 # how-it-works). 301 (permanent) so search engines and bookmarks re-point to home.
 # Both forms listed — CF Pages matches the source path literally, no implicit
@@ -7,7 +7,7 @@
 /how-it-works / 301
 /how-it-works/ / 301
 
-# Suite retired 2026-06-15 (P5 dissolve); its docs page removed in the Phase-3
-# sweep — send old links to the storefront.
+# The suite was retired on 2026-06-15 and its docs page removed; send old links
+# to the storefront.
 /docs/pkgs/suite /packages/ 301
 /docs/pkgs/suite/ /packages/ 301

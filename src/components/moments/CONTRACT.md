@@ -1,15 +1,14 @@
 # Moment island contract
 
-_Locked at G-MOMENT (Phase 1, WP-03). The proving-moment hero
-(`MomentHero.astro` + `moment-hero.ts`) is the reference implementation;
-every Phase-2/3 moment implements this same contract._
+_The proving-moment hero (`MomentHero.astro` + `moment-hero.ts`) is the
+reference implementation; every moment implements this same contract._
 
 A **moment** is a self-contained Astro island that recreates one Ikenga app
 beat at display fidelity. It renders its DOM at **build time** from a fixtures
 slice (no runtime fetch), themes from the site tokens, animates via WAAPI +
 IntersectionObserver, and degrades to a composed static frame under
 `prefers-reduced-motion`. It is marketing theatre calibrated against real
-captures — it never fabricates a feature (honesty gates G-19 / G-21).
+captures — it never fabricates a feature (honesty rule).
 
 ## Props
 
@@ -17,7 +16,7 @@ captures — it never fabricates a feature (honesty gates G-19 / G-21).
 |------|------|---------|---------|
 | `tone` | `'dark' \| 'light'` | `'dark'` | Tone pole for the **outer copy only** (headline, sub, ghost row, foot) via `--site-*`. The shell recreation is a tone-**independent** dark app object and never flips. |
 | `autoplay` | `'viewport' \| 'immediate' \| 'manual'` | `'viewport'` | Handed to the timeline engine. `viewport` = play once when scrolled into view; `immediate` = play on mount; `manual` = only on `replay()`. |
-| `cast` | cast object | vendored `./cast.json` | The **fixtures slice**. Defaults to the byte-identical vendored copy of the plan fixture; a caller may pass a different cast to drive the same island with other content. |
+| `cast` | cast object | vendored `./cast.json` | The **fixtures slice**. Defaults to the vendored fixture; a caller may pass a different cast to drive the same island with other content. |
 
 ## Lifecycle
 
@@ -39,23 +38,23 @@ captures — it never fabricates a feature (honesty gates G-19 / G-21).
 
 ## Motion rules
 
-- **Engine baseline (DEC-4): WAAPI + IntersectionObserver only.** No CSS
+- **Engine baseline: WAAPI + IntersectionObserver only.** No CSS
   `scroll-timeline` dependency (Firefox still flag-gates `animation-timeline`
   mid-2026); it is permitted only as progressive enhancement, and this island
   uses none.
 - **Compositor-friendly properties only.** Every reveal animates `transform`
   + `opacity` (WAAPI `el.animate([...])`). The single exception is the
   rotating-agent H1 container's `width` transition — a bounded, secondary
-  headline reflow off the moment's critical path (inherited from D-01).
+  headline reflow off the moment's critical path (inherited from the home design).
 - **Durations / easing from the token ramp.** `--mh-ease:
-  cubic-bezier(0.22,0.61,0.16,1)`; reveal 300ms; the beat pacing is the locked
-  D-01 rev-2 timeline (type → +420 status → +700 board → +900 artifact → +900
+  cubic-bezier(0.22,0.61,0.16,1)`; reveal 300ms; the beat pacing is the home
+  design's locked timeline (type → +420 status → +700 board → +900 artifact → +900
   settle), staggers 160/130/150/120ms per group.
 - **60fps headroom.** Concurrently-animating nodes are bounded: max reveal
   group is 5 elements staggered 150ms over 300ms reveals (≈3 in flight at
   once), plus the blinking cursor and ≤2 rotator slots mid-swap ≈ **6 peak** —
-  well under the **24-node** ceiling. (Instrumented trace happens at founder
-  review; this states the design bound.)
+  well under the **24-node** ceiling. (An instrumented trace is a manual
+  review step; this states the design bound.)
 
 ## Reduced motion
 
@@ -77,13 +76,13 @@ frame — the command text and all pane content are in the SSG HTML.
 
 _Tested:_ verified by code path (both branches above) and confirmed the built
 CSS ships `.mh-m{opacity:1!important;transform:none!important}`; the composed
-frame captured in the browser (see WP-03 report) **is** the reduced-motion
+frame captured in the browser **is** the reduced-motion
 target frame.
 
 ## JS budget
 
 **Hard budget: ≤ 4 KB gzipped** for this island's JavaScript (comfortably
-under the plan's 30 KB island ceiling).
+under the 30 KB island ceiling).
 
 **Measured:** the built bundle (`dist/_astro/page.*.js`, the sole script on the
 page — no framework runtime) is **2242 B raw / 1028 B gzip (~1.0 KB)**. Within
@@ -99,7 +98,6 @@ shell locals are self-contained in the component and need no upstream slot.
 
 ## Fixtures provenance
 
-`cast.json` here is a byte-identical vendored copy of
-`plans/site-redesign/designs/_fixtures/cast.json` (see `README.md`). All
+`cast.json` here is the vendored staged-cast fixture (see `README.md`). All
 depicted content traces to that fixture's `source` block (base design
 `home-hero-theatre.html` rev 2, registry snapshot, verification date).

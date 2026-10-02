@@ -1,7 +1,7 @@
-# Shell hero assets (WP-26)
+# Shell hero assets
 
-Product visuals of the Ikenga shell for the launch site hero (WP-12), shell
-README (WP-09), and the OG/social card (WP-24).
+Product visuals of the Ikenga shell for the launch site hero, the shell
+README, and the OG/social card.
 
 | File | Surface | Notes |
 |------|---------|-------|
@@ -13,7 +13,7 @@ README (WP-09), and the OG/social card (WP-24).
 
 ## Provenance
 
-Rendered headlessly from the hi-fi **design prototypes** (`plans/cockpit/designs/`)
+Rendered headlessly from the hi-fi **design prototypes**
 at 1680×1050, Theme A · Dusk Wood (dark). Design files were first reconciled to
 the current shipped surfaces from source — notably `cockpit-ngwa-hifi.html` was
 corrected so **Ọba (store)** is a MANAGE *surface* (Browse · Registry · Ọba store)

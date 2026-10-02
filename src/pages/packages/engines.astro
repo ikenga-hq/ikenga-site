@@ -2,7 +2,6 @@
 // /packages/engines — Flagship page for Ikenga engine adapters.
 // Claude Code = default (built-in). Codex = pluggable adapter.
 // All require the Ikenga shell; these are NOT standalone skills.
-// Draft: plans/launch/drafts/pkg-page-engines.md
 import Layout from '../../layouts/Layout.astro';
 import FeaturePage from '../../components/FeaturePage.astro';
 import Button from '../../components/Button.astro';
@@ -254,7 +253,7 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 	.eg-caps {
 		margin-top: var(--space-5);
 		overflow-x: auto;
-		/* WP-21 390px gate: the table's min-content (~513px) was blowing out an
+		/* 390px layout fix: the table's min-content (~513px) was blowing out an
 		   ancestor track (min-width:auto) past the viewport — constrain the
 		   scroller so the table scrolls INSIDE it instead. */
 		min-width: 0;
@@ -308,7 +307,7 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 	/* Two install blocks stacked with a gap */
 	.eg-installs {
 		display: grid;
-		/* WP-21 390px gate: the default grid track (min-width:auto) sizes to the
+		/* 390px layout fix: the default grid track (min-width:auto) sizes to the
 		   nowrap install command's min-content (~392px), blowing past the wrap.
 		   minmax(0,1fr) lets the InstallBlock's own code scroller do its job. */
 		grid-template-columns: minmax(0, 1fr);
