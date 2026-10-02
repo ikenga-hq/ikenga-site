@@ -1,0 +1,1376 @@
+[
+  {
+    "id": "workspace.frame",
+    "area": "workspace",
+    "plain_name": "Project, companion and store workspace",
+    "status": "shipped",
+    "since": "0.11.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.11.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "workspace.zoom",
+    "area": "workspace",
+    "plain_name": "App-wide zoom",
+    "status": "shipped",
+    "since": "0.6.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.6.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "workspace.explorer",
+    "area": "workspace",
+    "plain_name": "Project explorer",
+    "status": "shipped",
+    "since": "0.11.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.11.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "workspace.dashboard",
+    "area": "workspace",
+    "plain_name": "Project dashboard with a daily address",
+    "status": "beta",
+    "since": "0.14.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.14.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "workspace.onboarding",
+    "area": "workspace",
+    "plain_name": "Guided first-run setup",
+    "status": "shipped",
+    "since": "0.14.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.14.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "workspace.settings",
+    "area": "workspace",
+    "plain_name": "Settings with personal and project scope",
+    "status": "shipped",
+    "since": "0.13.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.13.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "workspace.notifications",
+    "area": "workspace",
+    "plain_name": "Notification centre",
+    "status": "beta",
+    "since": "0.14.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.14.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "workspace.automations",
+    "area": "workspace",
+    "plain_name": "Automations view",
+    "status": "beta",
+    "since": "0.14.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.14.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "workspace.restore",
+    "area": "workspace",
+    "plain_name": "Backup restore wizard",
+    "status": "beta",
+    "since": "0.14.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.14.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "updates.in-app",
+    "area": "updates",
+    "plain_name": "In-app updates",
+    "status": "shipped",
+    "since": "0.2.6",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.2.6",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "updates.permission-review",
+    "area": "updates",
+    "plain_name": "Held updates that ask for new permissions",
+    "status": "shipped",
+    "since": "0.14.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.14.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "windows.pop-out",
+    "area": "windows",
+    "plain_name": "Pop-out windows",
+    "status": "shipped",
+    "since": "0.3.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.3.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "windows.second-window",
+    "area": "windows",
+    "plain_name": "Second window for panes and seats",
+    "status": "shipped",
+    "since": "0.16.1",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.16.1",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "chi.companion",
+    "area": "chi",
+    "plain_name": "Agent companion",
+    "lore_name": "Chi",
+    "status": "shipped",
+    "since": "0.11.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.11.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "chi.runtime",
+    "area": "chi",
+    "plain_name": "Agent runs and session history",
+    "status": "shipped",
+    "since": "0.7.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.7.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "chi.seats",
+    "area": "chi",
+    "plain_name": "Agent seats",
+    "status": "beta",
+    "since": "0.16.1",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.16.1",
+    "scope": "desktop",
+    "limits": [
+      "New in 0.16.1 and still settling.",
+      "Figures an engine does not report, such as cost, show as a dash.",
+      "On an engine that cannot resume after a restart (OpenRouter), a vacant seat is marked not resumable and never silently starts a new session."
+    ],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "chi.engines",
+    "area": "chi",
+    "plain_name": "Choice of coding engine",
+    "status": "shipped",
+    "since": "0.7.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.7.0",
+    "scope": "desktop",
+    "limits": [
+      "OpenRouter sessions cannot resume after a restart."
+    ],
+    "audiences": [
+      "individuals",
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "terminal.continuity",
+    "area": "terminal",
+    "plain_name": "Terminal session continuity",
+    "status": "shipped",
+    "since": "0.10.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.10.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "terminal.navigation",
+    "area": "terminal",
+    "plain_name": "Terminal search, deep links and live working directory",
+    "status": "shipped",
+    "since": "0.10.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.10.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "terminal.cost-hud",
+    "area": "terminal",
+    "plain_name": "Live cost meter",
+    "status": "shipped",
+    "since": "0.8.3",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.8.3",
+    "scope": "desktop",
+    "limits": [
+      "Only terminals that Ikenga starts are tracked; a claude started by hand in another shell is not."
+    ],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "terminal.tool-feed",
+    "area": "terminal",
+    "plain_name": "Live tool-call feed",
+    "status": "shipped",
+    "since": "0.8.3",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.8.3",
+    "scope": "desktop",
+    "limits": [
+      "Only terminals that Ikenga starts are tracked; a claude started by hand in another shell is not."
+    ],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "terminal.permission-inbox",
+    "area": "terminal",
+    "plain_name": "Permission inbox",
+    "status": "shipped",
+    "since": "0.8.3",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.8.3",
+    "scope": "desktop",
+    "limits": [
+      "Only terminals that Ikenga starts are tracked; a claude started by hand in another shell is not.",
+      "Holding a tool call until you decide is opt-in for each terminal and off by default."
+    ],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "terminal.git-ledger",
+    "area": "terminal",
+    "plain_name": "Git change ledger",
+    "status": "shipped",
+    "since": "0.8.3",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.8.3",
+    "scope": "desktop",
+    "limits": [
+      "Only terminals that Ikenga starts are tracked; a claude started by hand in another shell is not."
+    ],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.store",
+    "area": "ngwa",
+    "plain_name": "App and extension store",
+    "lore_name": "Ngwa",
+    "status": "shipped",
+    "since": "0.17.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.17.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.installed",
+    "area": "ngwa",
+    "plain_name": "Installed apps and extensions",
+    "status": "shipped",
+    "since": "0.17.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.17.0",
+    "scope": "desktop",
+    "limits": [
+      "Built-in apps cannot be removed."
+    ],
+    "audiences": [
+      "individuals",
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.install-consent",
+    "area": "ngwa",
+    "plain_name": "Permission consent at install",
+    "status": "shipped",
+    "since": "0.17.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.17.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "builders",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.git-install",
+    "area": "ngwa",
+    "plain_name": "Install from a Git URL or npx",
+    "status": "beta",
+    "since": "0.18.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.18.0",
+    "scope": "desktop",
+    "limits": [
+      "Public Git sources only; credential prompts are disabled.",
+      "Sources outside the signed catalog are unsigned, and you must acknowledge that before installing."
+    ],
+    "audiences": [
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.create",
+    "area": "ngwa",
+    "plain_name": "Create an app or extension from a template",
+    "status": "shipped",
+    "since": "0.12.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.12.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.health",
+    "area": "ngwa",
+    "plain_name": "App and extension health checks",
+    "status": "shipped",
+    "since": "0.18.3",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.18.3",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.trusted-tier",
+    "area": "ngwa",
+    "plain_name": "Trust-gated capabilities for apps and extensions",
+    "status": "shipped",
+    "since": "0.2.9",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.2.9",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "builders",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.contributions",
+    "area": "ngwa",
+    "plain_name": "App contribution points (views, panels, actions)",
+    "status": "shipped",
+    "since": "0.12.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.12.0",
+    "scope": "desktop",
+    "limits": [
+      "The old nav field in a manifest was removed in 0.13.0 and is now rejected; manifests must use views."
+    ],
+    "audiences": [
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.webview",
+    "area": "ngwa",
+    "plain_name": "Native webview apps with an origin boundary",
+    "status": "shipped",
+    "since": "0.9.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.9.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "ngwa.scopes",
+    "area": "ngwa",
+    "plain_name": "Personal and project scope for apps",
+    "status": "shipped",
+    "since": "0.17.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.17.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "vault.passphrase",
+    "area": "vault",
+    "plain_name": "Passphrase vault",
+    "status": "shipped",
+    "since": "0.13.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.13.0",
+    "scope": "desktop",
+    "limits": [
+      "On Linux the vault uses Secret Service, with a read-only keyutils fallback."
+    ],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "security.app-lock",
+    "area": "security",
+    "plain_name": "App lock",
+    "status": "beta",
+    "since": "0.16.1",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.16.1",
+    "scope": "desktop",
+    "limits": [
+      "Work already running keeps running while the app is locked; the lock screen lists it."
+    ],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "actions.custom",
+    "area": "actions",
+    "plain_name": "Custom actions and menus",
+    "status": "beta",
+    "since": "0.15.1",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.15.1",
+    "scope": "desktop",
+    "limits": [
+      "In an untrusted project, shell, iyke, skill and workflow actions are refused until you trust the project."
+    ],
+    "audiences": [
+      "individuals",
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "actions.keybindings",
+    "area": "actions",
+    "plain_name": "Rebindable keyboard shortcuts",
+    "status": "beta",
+    "since": "0.15.1",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.15.1",
+    "scope": "desktop",
+    "limits": [
+      "Keybindings in an untrusted project are held until you trust the project."
+    ],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "artifacts.grid",
+    "area": "artifacts",
+    "plain_name": "Artifact grid",
+    "status": "shipped",
+    "since": "0.0.5",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.0.5",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "artifacts.viewer",
+    "area": "artifacts",
+    "plain_name": "Artifact viewer",
+    "status": "shipped",
+    "since": "0.14.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.14.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": [
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "server.headless",
+    "area": "server",
+    "plain_name": "Headless server for one user",
+    "status": "beta",
+    "since": "0.8.1",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.8.1",
+    "scope": "single-user-server",
+    "limits": [
+      "Not part of the desktop download: you build and deploy the server yourself.",
+      "Access is by one shared token; per-device pairing is in progress.",
+      "The Devices screen shows the server's exposure read-only and is not a security boundary."
+    ],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "bridge.local-api",
+    "area": "bridge",
+    "plain_name": "Local control bridge (iyke)",
+    "status": "shipped",
+    "since": "0.2.4",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.2.4",
+    "scope": "desktop",
+    "limits": [
+      "The bridge API level has changed in several releases (3 in 0.12.0, 4 in 0.15.0, 5 in 0.16.0); treat its routes as unstable."
+    ],
+    "audiences": [
+      "builders"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "bridge.claude-ide",
+    "area": "bridge",
+    "plain_name": "Claude Code IDE connection",
+    "status": "shipped",
+    "since": "0.8.3",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.8.3",
+    "scope": "desktop",
+    "limits": [
+      "Answers only workspace folders, open file, selection and diagnostics; other IDE tools return an explicit error."
+    ],
+    "audiences": [
+      "builders",
+      "individuals"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "server.multi-user",
+    "area": "server",
+    "plain_name": "Multi-user server",
+    "status": "in-progress",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/362",
+    "scope": "multi-user-server",
+    "limits": [
+      "Members of one organisation share the server and are mutually trusted; it is not built for untrusted tenants.",
+      "Sign-in is by username and password; single sign-on is not available yet."
+    ],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "access.device-pairing",
+    "area": "access",
+    "plain_name": "Device pairing and phone-sized remote client",
+    "status": "in-progress",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/365",
+    "scope": "single-user-server",
+    "limits": [],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "access.permission-routing",
+    "area": "access",
+    "plain_name": "Approval routing across devices and people",
+    "status": "in-progress",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/366",
+    "scope": "multi-user-server",
+    "limits": [],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "access.members",
+    "area": "access",
+    "plain_name": "Members, roles and invites",
+    "status": "in-progress",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/368",
+    "scope": "multi-user-server",
+    "limits": [
+      "The spend cap is shown but not enforced."
+    ],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "access.audit-log",
+    "area": "access",
+    "plain_name": "Hash-chained audit log",
+    "status": "in-progress",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/364",
+    "scope": "multi-user-server",
+    "limits": [
+      "Export to external logging tools is not available."
+    ],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "vault.member-secrets",
+    "area": "vault",
+    "plain_name": "Per-member secrets on a server",
+    "status": "in-progress",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/363",
+    "scope": "multi-user-server",
+    "limits": [
+      "Secrets are sealed under a key the server operator holds; a lost key cannot be recreated, so back it up."
+    ],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "engines.claude-code",
+    "area": "engines",
+    "plain_name": "Claude Code engine",
+    "status": "shipped",
+    "since": "0.7.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.7.0",
+    "scope": "desktop",
+    "limits": ["Uses your own Claude Code installation and sign-in."],
+    "audiences": ["individuals", "teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "engines.codex",
+    "area": "engines",
+    "plain_name": "Codex engine",
+    "status": "beta",
+    "since": "0.7.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.7.0",
+    "scope": "desktop",
+    "limits": [
+      "Uses your own Codex command-line tool and sign-in.",
+      "Ikenga's permission cards work with Claude Code only; this engine applies its own rules."
+    ],
+    "audiences": ["individuals", "teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "engines.antigravity",
+    "area": "engines",
+    "plain_name": "Antigravity engine",
+    "status": "beta",
+    "since": "0.7.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.7.0",
+    "scope": "desktop",
+    "limits": [
+      "Uses your own Antigravity command-line tool (agy) and sign-in.",
+      "Ikenga's permission cards work with Claude Code only; this engine applies its own rules."
+    ],
+    "audiences": ["individuals", "teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "engines.openrouter",
+    "area": "engines",
+    "plain_name": "OpenRouter engine",
+    "status": "beta",
+    "since": "0.10.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.10.0",
+    "scope": "desktop",
+    "limits": [
+      "Needs your own OpenRouter API key.",
+      "A session cannot be resumed after you restart Ikenga; it says so instead of starting over.",
+      "Text only: no file or image input, and it does not run tools or MCP servers itself."
+    ],
+    "audiences": ["individuals", "teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "engines.opencode",
+    "area": "engines",
+    "plain_name": "OpenCode engine",
+    "status": "beta",
+    "since": "0.8.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.8.0",
+    "scope": "desktop",
+    "limits": [
+      "Experimental engine; behaviour may change between releases.",
+      "Each message starts a new run: it cannot resume an earlier session.",
+      "Uses your own OpenCode installation.",
+      "Ikenga's permission cards work with Claude Code only; this engine applies its own rules."
+    ],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "engines.pi",
+    "area": "engines",
+    "plain_name": "Pi engine",
+    "status": "beta",
+    "since": "0.8.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.8.0",
+    "scope": "desktop",
+    "limits": [
+      "Experimental engine; behaviour may change between releases.",
+      "Each message starts a new run: it cannot resume an earlier session.",
+      "Uses your own Pi installation.",
+      "Ikenga's permission cards work with Claude Code only; this engine applies its own rules."
+    ],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.studio",
+    "area": "apps",
+    "plain_name": "Video production app",
+    "status": "beta",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/pkg-studio/v/0.2.0",
+    "scope": "desktop",
+    "limits": [
+      "Needs FFmpeg, Chrome or Chromium, and Bun installed on your computer; the Studio setup-check skill reports what is missing.",
+      "AI image and video generation uses your own fal.ai key and stops at a per-project spend ceiling."
+    ],
+    "audiences": ["individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.meetings",
+    "area": "apps",
+    "plain_name": "Meeting recorder and notes",
+    "status": "beta",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/pkg-meetings/v/0.2.0",
+    "scope": "desktop",
+    "limits": [
+      "Works on Linux only for now: it records through PulseAudio or PipeWire, and needs FFmpeg installed.",
+      "Labels speakers You and Them only; it cannot tell individual people apart.",
+      "You get the whole transcript when it finishes; there is no live transcript yet.",
+      "An OpenAI key saved for transcription is stored unencrypted on disk; the environment variable avoids that."
+    ],
+    "audiences": ["individuals", "teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.git",
+    "area": "apps",
+    "plain_name": "Git changes, history and worktrees app",
+    "status": "beta",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/pkg-git/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Can occasionally fail to start when Ikenga is busy booting."],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.notion",
+    "area": "apps",
+    "plain_name": "Notion app",
+    "status": "shipped",
+    "since": "0.2.2",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/pkg-notion/v/0.2.2",
+    "scope": "desktop",
+    "limits": [
+      "Shows the website inside Ikenga: it uses your own account and needs a network connection."
+    ],
+    "audiences": ["individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.sentry",
+    "area": "apps",
+    "plain_name": "Sentry app",
+    "status": "shipped",
+    "since": "0.2.2",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/pkg-sentry/v/0.2.2",
+    "scope": "desktop",
+    "limits": [
+      "Shows the website inside Ikenga: it uses your own account and needs a network connection."
+    ],
+    "audiences": ["individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.spotify",
+    "area": "apps",
+    "plain_name": "Spotify app",
+    "status": "shipped",
+    "since": "0.2.2",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/pkg-spotify/v/0.2.2",
+    "scope": "desktop",
+    "limits": [
+      "Shows the website inside Ikenga: it uses your own account and needs a network connection."
+    ],
+    "audiences": ["individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.wikipedia",
+    "area": "apps",
+    "plain_name": "Wikipedia app",
+    "status": "shipped",
+    "since": "0.1.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/pkg-wikipedia/v/0.1.0",
+    "scope": "desktop",
+    "limits": ["Shows the website inside Ikenga and needs a network connection."],
+    "audiences": ["individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.tasks",
+    "area": "apps",
+    "plain_name": "Tasks app",
+    "status": "exploring",
+    "scope": "desktop",
+    "limits": [
+      "Installable today, but not yet set up for a first-time user: new tasks carry a fixed placeholder owner instead of you.",
+      "Stored on this computer only."
+    ],
+    "fresh_install_ready": false,
+    "audiences": ["individuals", "teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.sales",
+    "area": "apps",
+    "plain_name": "Sales pipeline app",
+    "status": "exploring",
+    "scope": "desktop",
+    "limits": [
+      "Installable today, but a first run shows sample deals that are not yours.",
+      "Adding a deal goes through an AI session; there is no form yet.",
+      "Stored on this computer only."
+    ],
+    "fresh_install_ready": false,
+    "audiences": ["individuals", "teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.finance",
+    "area": "apps",
+    "plain_name": "Finance app",
+    "status": "exploring",
+    "scope": "desktop",
+    "limits": [
+      "Built around one team's own bank-feed setup: with an empty database it shows sample figures.",
+      "There is no importer for your own accounts yet.",
+      "Stored on this computer only."
+    ],
+    "fresh_install_ready": false,
+    "audiences": ["teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.mail",
+    "area": "apps",
+    "plain_name": "Mail app",
+    "status": "exploring",
+    "scope": "desktop",
+    "limits": [
+      "There is no way to bring in your mail yet, so it stays empty.",
+      "Stored on this computer only."
+    ],
+    "fresh_install_ready": false,
+    "audiences": ["teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.content",
+    "area": "apps",
+    "plain_name": "Content calendar app",
+    "status": "exploring",
+    "scope": "desktop",
+    "limits": [
+      "A first run shows sample pieces and a sample calendar that are not yours.",
+      "Creating a piece goes through an AI session; there is no form yet.",
+      "Stored on this computer only."
+    ],
+    "fresh_install_ready": false,
+    "audiences": ["teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.research",
+    "area": "apps",
+    "plain_name": "Research notes app",
+    "status": "exploring",
+    "scope": "desktop",
+    "limits": [
+      "A first run shows sample reports and sources that are not yours.",
+      "Stored on this computer only."
+    ],
+    "fresh_install_ready": false,
+    "audiences": ["teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "apps.strategy",
+    "area": "apps",
+    "plain_name": "Strategy and goals app",
+    "status": "exploring",
+    "scope": "desktop",
+    "limits": [
+      "A first run shows sample goals, cycles and reviews that are not yours.",
+      "Creating goals goes through an AI session; there is no form yet.",
+      "Stored on this computer only."
+    ],
+    "fresh_install_ready": false,
+    "audiences": ["teams"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "mcp.iyke",
+    "area": "mcp",
+    "plain_name": "Ikenga control tool for MCP clients",
+    "status": "shipped",
+    "since": "0.1.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/mcp-iyke/v/0.1.0",
+    "scope": "desktop",
+    "limits": ["Works only while Ikenga is running on the same computer."],
+    "audiences": ["builders", "individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "mcp.browser",
+    "area": "mcp",
+    "plain_name": "Browser control tool for agents (MCP)",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/mcp-browser/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Works only while Ikenga is running.", "Cannot take screenshots yet."],
+    "audiences": ["builders", "individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "mcp.devin",
+    "area": "mcp",
+    "plain_name": "Devin bridge tool (MCP)",
+    "status": "beta",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/mcp-devin/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Needs the Devin command-line tool installed and signed in."],
+    "audiences": ["builders", "individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "sidecars.playwright-browser",
+    "area": "sidecars",
+    "plain_name": "Chrome automation engine",
+    "status": "beta",
+    "since": "0.1.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/pkg-browser/v/0.1.0",
+    "scope": "desktop",
+    "limits": [
+      "Needs Google Chrome and Node installed.",
+      "Setup is documented as an npm install plus an environment variable."
+    ],
+    "audiences": ["builders", "individuals"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.groundwork",
+    "area": "skills",
+    "plain_name": "Groundwork planning skill",
+    "status": "shipped",
+    "since": "0.3.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/skill-groundwork/v/0.3.0",
+    "scope": "desktop",
+    "limits": ["Written for Claude Code."],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.thunderbird",
+    "area": "skills",
+    "plain_name": "Thunderbird mail skill",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/skill-thunderbird/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Needs Thunderbird with a local mail profile on the same computer."],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.storyboard-workflow",
+    "area": "skills",
+    "plain_name": "Storyboard workflow skill",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/storyboard-workflow/v/0.2.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.studio-archetypes",
+    "area": "skills",
+    "plain_name": "Studio video archetypes (skill bundle)",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/studio-archetypes/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Works through the Studio app."],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.studio-beat-detect",
+    "area": "skills",
+    "plain_name": "Beat detection skill",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/studio-beat-detect/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Needs Python 3; the optional librosa library improves the analysis."],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.studio-breakdown",
+    "area": "skills",
+    "plain_name": "Script breakdown skill",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/studio-breakdown/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Works through the Studio app."],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.studio-doctor",
+    "area": "skills",
+    "plain_name": "Studio setup check skill",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/studio-doctor/v/0.2.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.studio-toolchain",
+    "area": "skills",
+    "plain_name": "Studio toolchain (skill bundle)",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/studio-toolchain/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Works through the Studio app."],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.video-script-structure",
+    "area": "skills",
+    "plain_name": "Video script structure skill",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/video-script-structure/v/0.2.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "skills.artifact-builder",
+    "area": "skills",
+    "plain_name": "Artifact builder skill",
+    "status": "shipped",
+    "since": "0.1.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga-artifact-builder/releases/tag/v0.1.0",
+    "scope": "desktop",
+    "limits": [],
+    "audiences": ["individuals", "builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "cli.ikenga",
+    "area": "cli",
+    "plain_name": "ikenga command-line app manager",
+    "status": "shipped",
+    "since": "0.2.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/cli/v/0.2.0",
+    "scope": "desktop",
+    "limits": ["Needs Bun installed."],
+    "audiences": ["builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "cli.iyke",
+    "area": "cli",
+    "plain_name": "iyke command-line controller",
+    "status": "shipped",
+    "since": "0.1.0",
+    "ref_public": "https://github.com/ikenga-hq/iyke-cli/releases/tag/v0.1.0",
+    "scope": "desktop",
+    "limits": [
+      "Built from source with Rust (cargo install); there are no prebuilt downloads yet.",
+      "Controls a running Ikenga window; it does nothing on its own."
+    ],
+    "audiences": ["builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "registry.signed-catalog",
+    "area": "registry",
+    "plain_name": "Signed registry of apps and extensions",
+    "status": "shipped",
+    "since": "0.1.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga-registry/releases/tag/v0.1.0",
+    "scope": "desktop",
+    "limits": ["The index lists only packages Ikenga publishes itself today."],
+    "audiences": ["builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "sdk.contract",
+    "area": "sdk",
+    "plain_name": "Extension contract library",
+    "status": "shipped",
+    "since": "0.3.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/contract/v/0.3.0",
+    "scope": "desktop",
+    "limits": ["Pre-1.0: the interface can change between releases."],
+    "audiences": ["builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "sdk.tokens",
+    "area": "sdk",
+    "plain_name": "Design tokens",
+    "status": "shipped",
+    "since": "0.1.0",
+    "ref_public": "https://www.npmjs.com/package/@ikenga/tokens/v/0.1.0",
+    "scope": "desktop",
+    "limits": ["Pre-1.0: names and values can change between releases."],
+    "audiences": ["builders"],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "access.oidc-sign-in",
+    "area": "access",
+    "plain_name": "Sign in with your identity provider",
+    "status": "next",
+    "scope": "multi-user-server",
+    "limits": [
+      "Until it arrives, a multi-user server signs people in with a username and password.",
+      "Covers OpenID Connect (OIDC) only; sign-in through LDAP or Active Directory is not planned."
+    ],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "server.browser-apps",
+    "area": "server",
+    "plain_name": "Apps in the browser",
+    "status": "next",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/issues/103",
+    "scope": "single-user-server",
+    "limits": [
+      "Not available yet: installed apps run in the desktop app only."
+    ],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "install.signed-installers",
+    "area": "install",
+    "plain_name": "Signed installers for macOS and Windows",
+    "status": "next",
+    "scope": "desktop",
+    "limits": [
+      "Current downloads are not code-signed or notarized, so macOS and Windows show a warning the first time you open Ikenga."
+    ],
+    "audiences": [
+      "individuals",
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "access.scim",
+    "area": "access",
+    "plain_name": "SCIM provisioning",
+    "status": "exploring",
+    "scope": "multi-user-server",
+    "limits": [],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "access.saml",
+    "area": "access",
+    "plain_name": "SAML sign-in",
+    "status": "exploring",
+    "scope": "multi-user-server",
+    "limits": [
+      "Would sit alongside OpenID Connect sign-in, which comes first."
+    ],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "access.siem-export",
+    "area": "access",
+    "plain_name": "Audit log export to your SIEM",
+    "status": "exploring",
+    "scope": "multi-user-server",
+    "limits": [
+      "Exporting the audit log as a file belongs to the audit log itself; this would add sending it to your security monitoring tools."
+    ],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "registry.private",
+    "area": "registry",
+    "plain_name": "Private registry",
+    "status": "exploring",
+    "scope": "multi-user-server",
+    "limits": [],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  },
+  {
+    "id": "policy.org-apps",
+    "area": "policy",
+    "plain_name": "Admin policy for apps and tools",
+    "status": "exploring",
+    "scope": "multi-user-server",
+    "limits": [],
+    "audiences": [
+      "teams"
+    ],
+    "last_verified": "2026-10-02"
+  }
+]
