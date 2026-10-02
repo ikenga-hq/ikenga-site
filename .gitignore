@@ -29,5 +29,6 @@ src/pagefind/
 # Cloudflare Pages local secrets
 .dev.vars
 
-# Lighthouse CI reports
+# Lighthouse CI working files and reports
 .lighthouseci/
+lighthouse-reports/
