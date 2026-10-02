@@ -1,7 +1,7 @@
 name: Truth staleness
 
 # Nightly check that the ikenga.dev truth layer has not gone stale, because the
-# shell now ships every 1-3 days (site/docs/Enterprise overhaul, WP-20, G-06).
+# shell now ships every 1-3 days.
 # It FAILS and OPENS (or refreshes) an issue labelled `truth-stale` when
 #
 #   1. the committed registry snapshot is more than 14 days old, or
@@ -12,11 +12,11 @@ name: Truth staleness
 #
 # Where each reading comes from (paths are env vars on the "Check" step):
 #
-#   registry snapshot   src/data/registry-snapshot.json: `asOf` (WP-05 adds it;
+#   registry snapshot   src/data/registry-snapshot.json: `asOf` (the registry loader adds it;
 #                       `fetchedAt` is read until then).
 #   truth asOf          src/data/truth-asof.json: {"asOf": "<ISO time>",
-#                       "reviewed_through": "<shell version>"}. The truth steward
-#                       (drafts/steward-agent.md, DEC-31) bumps it in every
+#                       "reviewed_through": "<shell version>"}. The automated truth
+#                       update for each shell release bumps it in every
 #                       per-release PR, including releases that need no
 #                       inventory change. That is what lets "no inventory
 #                       impact" count as reviewed. Until that file exists the
@@ -27,7 +27,7 @@ name: Truth staleness
 #                       non-draft, non-prerelease). "N releases ahead" means N
 #                       releases published after the truth asOf.
 #
-# The release-lag check starts on its own once src/data/truth/ exists (WP-11).
+# The release-lag check starts on its own once src/data/truth/ exists.
 # Until then it is reported as skipped. From then on a missing stamp AND a
 # missing features file count as a failure, not a pass.
 #
@@ -193,12 +193,12 @@ jobs:
           async function checkTruth() {
             const title = 'Truth vs shell releases';
             if (!existsSync(TRUTH_DIR)) {
-              add('warn', title, `${TRUTH_DIR}/ does not exist yet (WP-11 assembles it), so the release-lag check is skipped. It starts on its own once that directory lands.`);
+              add('warn', title, `${TRUTH_DIR}/ does not exist yet, so the release-lag check is skipped. It starts on its own once that directory lands.`);
               return;
             }
             const asOf = truthAsOf();
             if (asOf.error) {
-              add('fail', title, `Cannot tell how current the truth data is: ${asOf.error} The truth steward should write ${TRUTH_STAMP}.`);
+              add('fail', title, `Cannot tell how current the truth data is: ${asOf.error} The automated truth update should write ${TRUTH_STAMP}.`);
               return;
             }
             const releases = (await loadReleases())
@@ -255,7 +255,7 @@ jobs:
             '',
             `Limits: registry snapshot older than ${MAX_AGE_DAYS} days, or more than ${MAX_RELEASES_BEHIND} shell releases published after the truth asOf.`,
             '',
-            'The truth steward (one draft PR per release) normally prevents this. If this fired, the steward has stopped or the PRs are waiting for approval.',
+            'The automated truth update (one draft PR per release) normally prevents this. If this fired, that update has stopped or its PRs are waiting for approval.',
             '',
             `Checked ${new Date(NOW).toISOString()}${RUN_URL ? ` in ${RUN_URL}` : ''}. This issue closes itself on the first clean nightly run.`,
             '',

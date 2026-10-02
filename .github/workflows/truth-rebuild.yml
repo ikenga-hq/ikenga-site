@@ -1,8 +1,7 @@
 name: Truth rebuild
 
 # Rebuilds ikenga.dev on Cloudflare Pages so the data fetched at build time
-# (latest shell release, registry, changelog) catches up with what shipped
-# (site/docs/Enterprise overhaul, WP-20, G-06).
+# (latest shell release, registry, changelog) catches up with what shipped.
 #
 # Why this workflow exists: Pages deploys this repo through its Git connection,
 # so a `repository_dispatch` alone only reaches GitHub Actions (ci.yml builds
@@ -29,7 +28,7 @@ name: Truth rebuild
 # and is never printed; GitHub also masks it in logs.
 #
 # The Pages build itself warns and falls back to the committed last-good copy
-# when a fetch fails; it never breaks (G-06). The truth-staleness workflow
+# when a fetch fails; it never breaks. The truth-staleness workflow
 # catches a copy that has aged too far.
 
 on:
