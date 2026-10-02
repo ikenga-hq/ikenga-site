@@ -1,4 +1,4 @@
-// Shared event recording for the analytics Pages Functions (WP-02).
+// Shared event recording for the analytics Pages Functions.
 //
 // Used by:
 //   functions/api/event.ts        POST /api/event       (client beacons)
