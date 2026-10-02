@@ -1,0 +1,23 @@
+# Links that are broken in the current build and are waiting for a fix.
+# scripts/check-links.mjs reads this file; see the header of that script.
+#
+# Each line is `<page> <link as written in the page>`. A listed link is reported but does not fail
+# the check. The list can only shrink: when a listed link starts working the check fails with
+# "stale entry" until the line is deleted. To add a line you would be hiding a new bug, so fix the
+# link instead.
+#
+# Today's entries share one cause. The header's Download button points at #install, an anchor that
+# exists only on the home page, so on every other page it goes nowhere. The moment-lab preview page
+# also reuses the home page hero, whose #skills link has no target there either.
+/404 #install
+/blog/ #install
+/blog/groundwork-explorer/ #install
+/moment-lab/ #install
+/moment-lab/ #skills
+/newsletter/ #install
+/open-source/ #install
+/packages/ #install
+/packages/groundwork/ #install
+/packages/mcp-iyke/ #install
+/packages/studio/ #install
+/packages/tasks/ #install
