@@ -1,17 +1,25 @@
-// Build-time Ikenga package-registry loader for the storefront (WP-17).
+// Build-time Ikenga package-registry loader for the storefront (WP-17, WP-05).
 //
 // The catalog + per-pkg detail headers are generated from the published
 // registry index at build time. On ANY failure — fetch error, non-200,
 // empty/malformed payload, or when forced via IKENGA_REGISTRY_FALLBACK=1 —
-// we fall back to the committed snapshot (src/data/registry-snapshot.json)
-// so a Cloudflare Pages build NEVER breaks on registry downtime.
+// we fall back to the committed last-good snapshot
+// (src/data/registry-snapshot.json) so a Cloudflare Pages build NEVER breaks
+// on registry downtime. The fallback is never silent (G-06): it emits a loud
+// build-log warning naming the snapshot's `asOf`, and the /packages page
+// labels itself "from committed snapshot".
+//
+// Env knobs (build-time only):
+//   IKENGA_REGISTRY_FALLBACK=1   skip the network, use the snapshot
+//   IKENGA_REGISTRY_URL=<url>    override the index URL (e.g. to prove the
+//                                failure path with a deliberately bad URL)
 //
 // Runnable standalone (node/bun) for verification: import { loadRegistry }
 // and call it with { forceFallback } to exercise both paths.
 
 import snapshot from '../data/registry-snapshot.json';
 
-export const REGISTRY_URL = 'https://royalti-io.github.io/ikenga-registry/index.json';
+export const REGISTRY_URL = 'https://registry.ikenga.dev/index.json';
 
 export type RegistryKind = 'embedded' | 'engine' | 'skill' | (string & {});
 
@@ -42,8 +50,12 @@ export interface LoadResult {
 }
 
 interface SnapshotShape extends RegistryIndex {
-	fetchedAt?: string;
-	source?: string;
+	/** ISO stamp: when the committed copy was fetched from the live registry. */
+	asOf: string;
+	/** Always `last-good` for the committed copy (G-TRUTH `RegistrySnapshot`). */
+	origin?: 'last-good';
+	/** The index the copy was fetched from. */
+	url?: string;
 }
 
 const FALLBACK = snapshot as unknown as SnapshotShape;
@@ -52,7 +64,7 @@ function fallbackResult(error?: string): LoadResult {
 	return {
 		index: { $schemaVersion: FALLBACK.$schemaVersion, updatedAt: FALLBACK.updatedAt, pkgs: FALLBACK.pkgs },
 		source: 'snapshot',
-		fetchedAt: FALLBACK.fetchedAt ?? FALLBACK.updatedAt,
+		fetchedAt: FALLBACK.asOf,
 		...(error ? { error } : {}),
 	};
 }
@@ -61,34 +73,108 @@ function forcedFallback(): boolean {
 	return typeof process !== 'undefined' && process.env?.IKENGA_REGISTRY_FALLBACK === '1';
 }
 
-/**
- * Load the registry index at build time. Live fetch first; committed
- * snapshot on any failure. Never throws — always resolves to a LoadResult.
- */
-export async function loadRegistry(
-	opts: { forceFallback?: boolean; timeoutMs?: number } = {},
-): Promise<LoadResult> {
-	if (opts.forceFallback ?? forcedFallback()) {
-		return fallbackResult();
-	}
+function registryUrl(): string {
+	return (typeof process !== 'undefined' && process.env?.IKENGA_REGISTRY_URL) || REGISTRY_URL;
+}
 
-	const timeoutMs = opts.timeoutMs ?? 8000;
+/**
+ * Loud, single-line build-summary note for the fallback path. A silently
+ * stale catalog is the failure G-06 forbids, so this always prints — including
+ * for a forced fallback — and names the snapshot `asOf` and its age.
+ */
+function warnFallback(result: LoadResult, reason: string): void {
+	const ageDays = Math.floor((Date.now() - Date.parse(result.fetchedAt)) / 86_400_000);
+	const age = Number.isFinite(ageDays) ? `, ${ageDays} day${ageDays === 1 ? '' : 's'} old` : '';
+	const line =
+		`[registry] WARNING: live registry unavailable (${reason}) - building from the COMMITTED SNAPSHOT ` +
+		`asOf ${result.fetchedAt}${age} (${result.index.pkgs.length} pkgs). ` +
+		`The /packages catalog may be stale; fix the registry fetch or refresh src/data/registry-snapshot.json.`;
+	// Leading newline: Astro's progress line is still open when page frontmatter runs.
+	console.warn(`\n${line}`);
+	// Surface it on the GitHub Actions run summary too.
+	if (typeof process !== 'undefined' && process.env?.GITHUB_ACTIONS) {
+		console.warn(`::warning title=Registry snapshot fallback::${line}`);
+	}
+}
+
+/** One timed fetch of the index; throws on any failure. */
+async function fetchIndex(url: string, timeoutMs: number): Promise<RegistryIndex> {
 	const controller = new AbortController();
 	const timer = setTimeout(() => controller.abort(), timeoutMs);
 	try {
-		const res = await fetch(REGISTRY_URL, { signal: controller.signal });
+		const res = await fetch(url, { signal: controller.signal });
 		if (!res.ok) throw new Error(`registry responded ${res.status}`);
 		const index = (await res.json()) as RegistryIndex;
 		if (!index || !Array.isArray(index.pkgs) || index.pkgs.length === 0) {
 			throw new Error('registry index empty or malformed');
 		}
-		return { index, source: 'live', fetchedAt: new Date().toISOString() };
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		return fallbackResult(message);
+		return index;
 	} finally {
 		clearTimeout(timer);
 	}
+}
+
+// A single stalled connection (seen on a loaded Windows box: one fetch hung for
+// the full timeout while the next took 120 ms) must not demote a build to the
+// snapshot, so the live fetch gets one retry before we fall back.
+const FETCH_ATTEMPTS = 2;
+
+async function fetchRegistry(timeoutMs: number): Promise<LoadResult> {
+	const url = registryUrl();
+	let lastErr: unknown;
+	for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt++) {
+		try {
+			const index = await fetchIndex(url, timeoutMs);
+			console.log(`\n[registry] live: ${index.pkgs.length} pkgs (updatedAt ${index.updatedAt}) from ${url}`);
+			return { index, source: 'live', fetchedAt: new Date().toISOString() };
+		} catch (err) {
+			lastErr = err;
+		}
+	}
+	const base = lastErr instanceof Error ? lastErr.message : String(lastErr);
+	// undici reports network failures as a bare "fetch failed"; the useful part is the cause.
+	const code = (lastErr as { cause?: { code?: string } } | null)?.cause?.code;
+	const message = `${code ? `${base} (${code})` : base}, after ${FETCH_ATTEMPTS} attempts`;
+	const result = fallbackResult(message);
+	warnFallback(result, `${url}: ${message}`);
+	return result;
+}
+
+// One load per process (shared across every page's frontmatter), so a build
+// fetches once, warns once, and every page renders the SAME registry data. The
+// short TTL keeps `astro dev` from pinning a stale or failed result forever.
+const CACHE_KEY = Symbol.for('ikenga-site.registry.load');
+const CACHE_TTL_MS = 5 * 60_000;
+type Cached = { at: number; result: Promise<LoadResult> };
+
+/**
+ * Load the registry index at build time. Live fetch first; committed
+ * snapshot on any failure (with a loud warning). Never throws — always
+ * resolves to a LoadResult.
+ *
+ * Calls with no options share one load per process. Passing an option
+ * (tests, one-off probes) bypasses that cache.
+ */
+export async function loadRegistry(
+	opts: { forceFallback?: boolean; timeoutMs?: number } = {},
+): Promise<LoadResult> {
+	const load = (): Promise<LoadResult> => {
+		if (opts.forceFallback ?? forcedFallback()) {
+			const result = fallbackResult();
+			warnFallback(result, 'fallback forced via IKENGA_REGISTRY_FALLBACK=1 or forceFallback');
+			return Promise.resolve(result);
+		}
+		return fetchRegistry(opts.timeoutMs ?? 8000);
+	};
+
+	if (opts.forceFallback !== undefined || opts.timeoutMs !== undefined) return load();
+
+	const g = globalThis as unknown as Record<symbol, Cached | undefined>;
+	const cached = g[CACHE_KEY];
+	if (cached && Date.now() - cached.at < CACHE_TTL_MS) return cached.result;
+	const entry: Cached = { at: Date.now(), result: load() };
+	g[CACHE_KEY] = entry;
+	return entry.result;
 }
 
 // ── Selection + presentation helpers ───────────────────────────────────────
