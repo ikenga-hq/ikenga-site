@@ -1,0 +1,50 @@
+[
+  {
+    "id": "claude-code",
+    "pkg": "@ikenga/pkg-engine-claude-code",
+    "tier": "supported",
+    "version": "0.2.1"
+  },
+  {
+    "id": "codex",
+    "pkg": "@ikenga/pkg-engine-codex",
+    "tier": "beta",
+    "version": "0.2.1"
+  },
+  {
+    "id": "openrouter",
+    "pkg": "@ikenga/pkg-engine-openrouter",
+    "tier": "beta",
+    "version": "0.2.0"
+  },
+  {
+    "id": "antigravity",
+    "pkg": "@ikenga/pkg-engine-antigravity",
+    "tier": "beta",
+    "version": "0.2.2"
+  },
+  {
+    "id": "opencode",
+    "pkg": "@ikenga/pkg-engine-opencode",
+    "tier": "experimental",
+    "version": "0.1.0"
+  },
+  {
+    "id": "pi",
+    "pkg": "@ikenga/pkg-engine-pi",
+    "tier": "experimental",
+    "version": "0.1.0"
+  },
+  {
+    "id": "cursor-agent",
+    "pkg": "@ikenga/pkg-engine-cursor-agent",
+    "tier": "hidden",
+    "version": "0.1.0"
+  },
+  {
+    "id": "noop",
+    "pkg": "@ikenga/pkg-engine-noop",
+    "tier": "hidden",
+    "version": "0.1.2"
+  }
+]

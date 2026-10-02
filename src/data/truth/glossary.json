@@ -1,0 +1,278 @@
+[
+  {
+    "term": "Ikenga",
+    "plain": "desktop workspace for coding agents",
+    "lore": "personal seat of strength",
+    "definition": "The desktop app that gives Claude Code and other coding agents a home: your projects, agents, skills and tools together in one workspace on your own machine. It is open source (Apache-2.0).",
+    "avoid": ["PA Desktop"],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Obi",
+    "plain": "project home",
+    "lore": "meeting house, home",
+    "definition": "The lore name for a project's home view. Copy uses it on the story page only; everywhere else it says \"project home\" or \"dashboard\". The shipped app still says \"Obi\" on first run and on the project dashboard, so a walkthrough of those screens quotes the button as it reads.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Chi",
+    "plain": "agent companion",
+    "lore": "personal god, destiny-driver",
+    "definition": "Your agent companion: where you hand work to Claude Code or another engine, approve what it asks to do, and watch what it costs. Chi lives in the Companion panel. Agent sessions can be held in named seats, and a session with no seat is listed as unseated.",
+    "avoid": ["Chi adapter"],
+    "shell_ui_status": "pr-needed",
+    "shell_label": "Chi — your engine session"
+  },
+  {
+    "term": "Companion",
+    "plain": "the panel for Chi",
+    "definition": "The side panel for Chi. It has a dispatch bar, your seats, permission cards, a cost meter and a tool feed. It sends work to agents and shows what they ask and cost, rather than holding a conversation.",
+    "avoid": ["chat panel", "chat window"],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Seat",
+    "plain": "named agent slot",
+    "definition": "A named slot in a project for one agent session. You send work to the seat, and it keeps its name, its scratchpad and its address when the session behind it ends. Seats are free and are not a billing unit; the billing unit is the member. The word is unrelated to \"seat of strength\" in the Ikenga lore.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Session",
+    "plain": "one agent run",
+    "definition": "One conversation or run with an engine. A session can sit in a seat; a session with no seat is unseated.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Ngwa",
+    "plain": "store",
+    "lore": "equipment",
+    "definition": "The store: one place to browse, install and manage everything Ikenga can use, which is apps, tools, skills, agents, commands, hooks and engines. It includes an Installed list, a Store and a Health page.",
+    "avoid": [],
+    "shell_ui_status": "pr-needed",
+    "shell_label": "Ngwa — your equipment"
+  },
+  {
+    "term": "Ọba",
+    "plain": "signed registry service",
+    "definition": "The signed registry service behind Ngwa: the source of the apps and extensions that Ngwa offers. What it publishes is the signed Registry index, and the app refuses an index whose signature does not verify.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Registry",
+    "plain": "signed public catalogue",
+    "definition": "The public, signed index of published Ikenga apps and extensions, served from registry.ikenga.dev. Ngwa reads it, and the app refuses an index whose signature does not verify.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "App",
+    "plain": "mini-app",
+    "definition": "An installable program with its own screen inside Ikenga, such as Studio. Apps open in a pane and install from Ngwa.",
+    "avoid": [],
+    "shell_ui_status": "pr-needed",
+    "shell_label": "package"
+  },
+  {
+    "term": "Extension",
+    "plain": "add-on",
+    "definition": "Anything you install from Ngwa that adds a capability but has no screen of its own: a tool, skill, agent, command, hook or engine.",
+    "avoid": [],
+    "shell_ui_status": "pr-needed",
+    "shell_label": "package"
+  },
+  {
+    "term": "pkg",
+    "plain": "app or extension",
+    "definition": "The builder-docs word for one installable unit: a manifest plus whatever it contributes. Use it in builder docs only; user-facing copy says \"app\" or \"extension\".",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Skill",
+    "plain": "reusable instructions",
+    "definition": "A folder of instructions (a SKILL.md file) that an agent loads when it is relevant. Skills work across agent systems, and install from Ngwa or with npx skills add.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Agent",
+    "plain": "saved agent persona",
+    "definition": "A saved agent definition (a Claude Code subagent file) that you install from Ngwa and can call on. An agent is a definition; a running one is a session, often held in a seat.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Command",
+    "plain": "slash command",
+    "definition": "A single-purpose instruction you run by typing a slash, such as /init. Commands install from Ngwa.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Hook",
+    "plain": "event handler",
+    "definition": "A command that runs by itself when something happens, such as before a tool call. Hooks install from Ngwa.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Engine",
+    "plain": "agent runtime",
+    "definition": "The agent runtime that Ikenga drives. Claude Code is the supported engine, and the engines page lists the others with their maturity. An engine installs from Ngwa like any other extension.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "MCP pkg",
+    "plain": "tool",
+    "definition": "The builder-docs name for a pkg that gives agents tools through the Model Context Protocol (MCP). User-facing copy says \"tool\".",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Bundle",
+    "plain": "skill bundle",
+    "definition": "A set of skills that install together as one unit. The bundle lists its member skills.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Trusted pkg",
+    "plain": "pkg allowed elevated capabilities",
+    "definition": "Builder docs only. A pkg allowed to use elevated host capabilities (a host-proxied fetch, named secrets, scoped native calls). It is either built in, or published to the registry with a valid publisher signature. This is a security gate that any author can pass, not a paid tier. It is not the same as \"Trusted\" on the install screen, which only means you approved the pkg's permissions.",
+    "avoid": [],
+    "shell_ui_status": "pr-needed",
+    "shell_label": "Trusted"
+  },
+  {
+    "term": "Signed pkg",
+    "plain": "registry-verified pkg",
+    "definition": "A pkg listed in the signed Ikenga registry. The registry index carries a signature the app verifies, and each entry carries integrity hashes. A pkg can also carry its own publisher signature. This says nothing about the Ikenga installer itself; see signed app.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Signed app",
+    "plain": "code-signed installer",
+    "definition": "The Ikenga desktop installer carrying an operating-system code signature: Apple notarisation on macOS, Authenticode on Windows. Whether a given release has one is recorded in the release facts. The .sig files on a release are updater signatures, not code signatures. Never write \"signed\" without saying what is signed.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Project",
+    "plain": "project folder",
+    "definition": "A folder, usually a git repository, that you have added to Ikenga. Files, artifacts, sessions, seats, todos and project-scoped Ngwa items belong to the active project, and the Explorer always shows it.",
+    "avoid": ["commission a project"],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Explorer",
+    "plain": "project sidebar",
+    "definition": "The sidebar for the active project: its files, artifacts, sessions, Ngwa items, automations, todos and scratchpads in one tree.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Artifact",
+    "plain": "file an agent made",
+    "definition": "A file an agent produces, usually HTML or Markdown, that you review in a viewer pane. You can pin comments to an artifact and compare its versions.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Artifact grid",
+    "plain": "artifact browser",
+    "definition": "The surface for browsing, comparing and reviewing artifacts. It has three views: a grid, a loupe for one artifact, and a compare view for two side by side. \"Studio\" on its own always means the Studio app.",
+    "avoid": ["Studio grid"],
+    "shell_ui_status": "pr-needed",
+    "shell_label": "Artifact Studio"
+  },
+  {
+    "term": "Studio",
+    "plain": "video production app",
+    "definition": "The Studio app: an installable app for short-form video, from script and storyboard through generation to edit. The word never names the Artifact grid.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "iyke",
+    "plain": "runtime controller",
+    "lore": "diminutive of Ike (strength)",
+    "definition": "The command-line controller, written `iyke`, together with the local bridge inside the running app that it talks to. It lets a script or an agent navigate panes, switch modes and read live state. The bridge listens only on 127.0.0.1, behind a token made at each launch, and its routes are unstable.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "ikenga CLI",
+    "plain": "command-line app manager",
+    "definition": "The `ikenga` command. It lists, installs, updates and removes apps and extensions on disk, finds broken install records with `ikenga doctor`, and hot-mounts one you are building into a running app with `ikenga dev`. Write the command in code font so it is not read as the desktop app.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Member",
+    "plain": "person on a shared server",
+    "definition": "A human who has an account on an Ikenga server, with the role Owner, Operator, Reviewer or Guest. A plan that counts people counts members, meaning Owners and Operators; Reviewers and time-boxed Guests are not counted. A member is not a seat, which is an agent slot.",
+    "avoid": ["billed seat"],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Workspace",
+    "plain": "your whole Ikenga",
+    "definition": "A general word for your whole Ikenga setup: the app, your projects and your personal settings. On the Store and Secrets screens \"workspace\" also names the personal level above projects; copy calls that level \"personal\".",
+    "avoid": [],
+    "shell_ui_status": "pr-needed",
+    "shell_label": "Personal / workspace"
+  },
+  {
+    "term": "Multi-user server",
+    "plain": "shared Ikenga server",
+    "definition": "An Ikenga server that the members of one organisation share. Members are mutually trusted; it is not built for untrusted tenants.",
+    "avoid": ["T1", "T2", "T3", "T1 server"],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Share kola",
+    "plain": "review permissions, or invite",
+    "lore": "the kola-nut consecration",
+    "definition": "A lore-named step with two uses. In the Store it is the heading over the permissions an install asks for. On the Members page it is the button that invites someone to a project. Copy leads with the plain action (\"review permissions\", \"invite\") and uses the name only when quoting the screen.",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Alusi",
+    "plain": "mini-app",
+    "lore": "specialist functionary",
+    "definition": "The lore name for an installed app. It appears in the first-run welcome; everywhere else copy says \"app\".",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Ntupo",
+    "plain": "command",
+    "lore": "atomic, single-purpose form",
+    "definition": "The lore name for a command. Story page and About only; copy says \"command\".",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Ifulu",
+    "plain": "agent",
+    "lore": "fully figurative form",
+    "definition": "The lore name for an agent. Story page and About only; copy says \"agent\".",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  },
+  {
+    "term": "Ekwe",
+    "plain": "hook",
+    "lore": "wooden slit-drum announcer",
+    "definition": "The lore name for a hook. Story page and About only; copy says \"hook\".",
+    "avoid": [],
+    "shell_ui_status": "matches"
+  }
+]

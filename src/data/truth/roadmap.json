@@ -1,0 +1,116 @@
+[
+  {
+    "feature_id": "vault.passphrase",
+    "public_label": "Passphrase vault",
+    "public_note": "Keep secrets in an encrypted local vault that locks itself when idle.",
+    "notify": false
+  },
+  {
+    "feature_id": "ngwa.install-consent",
+    "public_label": "App installs with trust review",
+    "public_note": "Install apps from the registry with a permission consent screen and provenance details. An update that asks for new permissions is held for your review.",
+    "notify": false
+  },
+  {
+    "feature_id": "server.multi-user",
+    "public_label": "Multi-user server",
+    "public_note": "Run one Ikenga server for your team. Each person signs in with their own account and works in their own space on it.",
+    "notify": true
+  },
+  {
+    "feature_id": "access.members",
+    "public_label": "Members, roles and invites",
+    "public_note": "Invite people into a project, or a single artifact, with a role that limits what they can see and do.",
+    "notify": true
+  },
+  {
+    "feature_id": "access.device-pairing",
+    "public_label": "Pair your devices",
+    "public_note": "Pair a phone or another computer with a short code, give it only the access you choose, and revoke it at any time.",
+    "notify": true
+  },
+  {
+    "feature_id": "access.permission-routing",
+    "public_label": "Choose where permission requests go",
+    "public_note": "Pick which paired device receives your agent's permission requests. Requests that touch secrets go to the project owner.",
+    "notify": false
+  },
+  {
+    "feature_id": "vault.member-secrets",
+    "public_label": "Per-person secrets on a shared server",
+    "public_note": "Each person on a multi-user server keeps their own secrets, separate from everyone else's.",
+    "notify": false
+  },
+  {
+    "feature_id": "chi.seats",
+    "public_label": "Agent seats",
+    "public_note": "Give each agent session a named seat in your project, then resume it, hold it or take it over.",
+    "notify": false
+  },
+  {
+    "feature_id": "security.app-lock",
+    "public_label": "App lock",
+    "public_note": "Lock Ikenga when you step away, with a PIN or your passphrase.",
+    "notify": false
+  },
+  {
+    "feature_id": "ngwa.git-install",
+    "public_label": "Install from git or npx",
+    "public_note": "Install apps, skills and tools straight from a git URL or an npx package, pinned to a commit you reviewed.",
+    "notify": false
+  },
+  {
+    "feature_id": "access.audit-log",
+    "public_label": "Audit log",
+    "public_note": "A record of pairing, invites, role changes and permission decisions that shows if it has been altered.",
+    "notify": true
+  },
+  {
+    "feature_id": "access.oidc-sign-in",
+    "public_label": "Sign in with your identity provider",
+    "public_note": "Sign in to a multi-user server with OpenID Connect (OIDC), so people use the accounts they already have.",
+    "notify": true
+  },
+  {
+    "feature_id": "server.browser-apps",
+    "public_label": "Apps in the browser",
+    "public_note": "Use your installed apps from a browser tab when you connect to a server.",
+    "notify": false
+  },
+  {
+    "feature_id": "install.signed-installers",
+    "public_label": "Signed installers for macOS and Windows",
+    "public_note": "Notarized macOS and signed Windows installers, so your system can verify who published them.",
+    "notify": true
+  },
+  {
+    "feature_id": "access.scim",
+    "public_label": "SCIM provisioning",
+    "public_note": "Create and remove people on a multi-user server automatically from your identity provider.",
+    "notify": true
+  },
+  {
+    "feature_id": "access.saml",
+    "public_label": "SAML sign-in",
+    "public_note": "Sign in with a SAML identity provider, alongside OIDC.",
+    "notify": true
+  },
+  {
+    "feature_id": "access.siem-export",
+    "public_label": "Audit log export to your SIEM",
+    "public_note": "Send the audit log to your security monitoring tools.",
+    "notify": true
+  },
+  {
+    "feature_id": "registry.private",
+    "public_label": "Private registry",
+    "public_note": "Host your team's own apps, skills and tools privately, for your team only.",
+    "notify": true
+  },
+  {
+    "feature_id": "policy.org-apps",
+    "public_label": "Admin policy for apps and tools",
+    "public_note": "Let an admin allow or block which apps and tools people on your server can install.",
+    "notify": true
+  }
+]
