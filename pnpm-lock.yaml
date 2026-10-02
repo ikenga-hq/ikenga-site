@@ -30,8 +30,8 @@ importers:
         specifier: ^1.2.85
         version: 1.2.94
       '@ikenga/tokens':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.5.1
+        version: 0.5.1
       '@tailwindcss/vite':
         specifier: ^4.0.0
         version: 4.3.3(vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0))
@@ -567,8 +567,8 @@ packages:
   '@iconify/utils@3.1.4':
     resolution: {integrity: sha512-b1S7B1k9ohZ+iNTi2ATxbRYG9fTrJmUT0rc46bvVnNxqNRGW7dyo/vRREwyniI5IRN2RSJHDcm+s3BjWrSAjHw==}
 
-  '@ikenga/tokens@0.1.0':
-    resolution: {integrity: sha512-UDAGbL6awgfRjucSm0AdJQtgTxBCD0yx9+ANBCwykYQ8gEVxAhCXnO2K4KpCGE57dLc6QLb0CpxuLl1Os9G9Dg==}
+  '@ikenga/tokens@0.5.1':
+    resolution: {integrity: sha512-fqdWICrdT4bAGTJn97GVC8RQlVdBtPDM5Ymfr0tWS/wU6vUPJnSn1jnMChL//Pw9uzQj6WfLKz3Mg12MYTUnUA==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -3091,7 +3091,7 @@ snapshots:
       '@iconify/types': 2.0.0
       import-meta-resolve: 4.2.0
 
-  '@ikenga/tokens@0.1.0': {}
+  '@ikenga/tokens@0.5.1': {}
 
   '@img/colour@1.1.0':
     optional: true

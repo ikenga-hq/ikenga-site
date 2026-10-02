@@ -1,22 +1,37 @@
 {
   "$schemaVersion": 1,
-  "updatedAt": "2026-07-04T22:35:17.857Z",
-  "fetchedAt": "2026-07-06T07:51:12.838Z",
-  "source": "https://royalti-io.github.io/ikenga-registry/index.json — committed fallback so CF Pages builds never break on registry downtime",
+  "updatedAt": "2026-10-01T12:39:14.137Z",
+  "asOf": "2026-10-02T15:57:30.151Z",
+  "origin": "last-good",
+  "url": "https://registry.ikenga.dev/index.json",
   "pkgs": [
     {
       "name": "@ikenga/mcp-browser",
-      "latest": "0.3.0",
+      "latest": "0.3.1",
       "detail": "pkgs/mcp-browser.json",
       "description": "Model Context Protocol (MCP) server that lets agents drive native child webviews in the Ikenga desktop app — open a pane on a partner portal (Spotify-for-Artists, Bandcamp, Linkfire, etc.), snapshot it, click, fill, and wait. Bypasses iframe CSP `frame-ancestors` by using the system webview.",
       "kind": "skill"
     },
     {
-      "name": "@ikenga/mcp-iyke",
+      "name": "@ikenga/mcp-devin",
       "latest": "0.2.1",
+      "detail": "pkgs/mcp-devin.json",
+      "description": "Model Context Protocol (MCP) server that exposes the user's local Devin CLI to any Ikenga engine — single-turn runs, session listing/resume, and background task delegation.",
+      "kind": "skill"
+    },
+    {
+      "name": "@ikenga/mcp-iyke",
+      "latest": "0.3.0",
       "detail": "pkgs/mcp-iyke.json",
       "description": "Model Context Protocol (MCP) server that exposes the Ikenga desktop app's iyke control bridge — drive a running Tauri AI workspace from any MCP client (Claude, Cursor, etc.).",
       "kind": "skill"
+    },
+    {
+      "name": "@ikenga/pkg-agent-ops",
+      "latest": "0.2.3",
+      "detail": "pkgs/agent-ops.json",
+      "description": "Agent Ops — schedule observability, run history, and failure triage over ikenga.db. Multi-file iframe pkg, no build step.",
+      "kind": "embedded"
     },
     {
       "name": "@ikenga/pkg-browser",
@@ -27,10 +42,17 @@
     },
     {
       "name": "@ikenga/pkg-content",
-      "latest": "0.3.0",
+      "latest": "0.4.1",
       "detail": "pkgs/content.json",
       "description": "Content — Pipeline (kanban + list), Calendar, Published over the production content schema. Multi-file iframe pkg; deterministic CSS vendoring build.",
       "kind": "embedded"
+    },
+    {
+      "name": "@ikenga/pkg-engine-antigravity",
+      "latest": "0.2.2",
+      "detail": "pkgs/engine-antigravity.json",
+      "description": "Antigravity CLI engine adapter for Ikenga.",
+      "kind": "engine"
     },
     {
       "name": "@ikenga/pkg-engine-claude-code",
@@ -55,13 +77,6 @@
       "visibility": "hidden"
     },
     {
-      "name": "@ikenga/pkg-engine-gemini",
-      "latest": "0.2.1",
-      "detail": "pkgs/engine-gemini.json",
-      "description": "Gemini CLI engine adapter for Ikenga.",
-      "kind": "engine"
-    },
-    {
       "name": "@ikenga/pkg-engine-noop",
       "latest": "0.1.2",
       "detail": "pkgs/engine-noop.json",
@@ -70,10 +85,38 @@
       "visibility": "hidden"
     },
     {
+      "name": "@ikenga/pkg-engine-opencode",
+      "latest": "0.1.0",
+      "detail": "pkgs/engine-opencode.json",
+      "description": "OpenCode CLI engine adapter for Ikenga.",
+      "kind": "engine"
+    },
+    {
+      "name": "@ikenga/pkg-engine-openrouter",
+      "latest": "0.2.0",
+      "detail": "pkgs/engine-openrouter.json",
+      "description": "OpenRouter unified engine adapter for Ikenga.",
+      "kind": "engine"
+    },
+    {
+      "name": "@ikenga/pkg-engine-pi",
+      "latest": "0.1.0",
+      "detail": "pkgs/engine-pi.json",
+      "description": "Pi coding agent CLI engine adapter for Ikenga.",
+      "kind": "engine"
+    },
+    {
       "name": "@ikenga/pkg-finance",
-      "latest": "0.3.0",
+      "latest": "0.3.2",
       "detail": "pkgs/finance.json",
       "description": "Finance — Overview / Transactions / Receivables / Inter-Company / Reports over the production finance schema. Multi-file iframe pkg; deterministic CSS vendoring build.",
+      "kind": "embedded"
+    },
+    {
+      "name": "@ikenga/pkg-git",
+      "latest": "0.2.1",
+      "detail": "pkgs/git.json",
+      "description": "com.ikenga.git — Git mini-app pkg (Bun sidecar + MCP + UI) that tracks every Ikenga project's repo(s), reuses the user's existing git/gh auth by shelling out rather than storing credentials, and makes agent worktrees, attribution and stale-base hazards first-class.",
       "kind": "embedded"
     },
     {
@@ -86,51 +129,169 @@
     },
     {
       "name": "@ikenga/pkg-mail",
-      "latest": "0.3.0",
+      "latest": "0.3.1",
       "detail": "pkgs/mail.json",
       "description": "Mail — Inbox, Triage, All, Drafts over the production mail schema. No-build iframe pkg; deterministic CSS vendoring build.",
       "kind": "embedded"
     },
     {
+      "name": "@ikenga/pkg-meetings",
+      "latest": "0.2.1",
+      "detail": "pkgs/meetings.json",
+      "description": "Ikenga Meetings app: local recording controls, synchronized transcript player, and meeting intelligence.",
+      "kind": "app"
+    },
+    {
+      "name": "@ikenga/pkg-notion",
+      "latest": "0.2.3",
+      "detail": "pkgs/notion.json",
+      "description": "Notion webview package",
+      "kind": "embedded"
+    },
+    {
       "name": "@ikenga/pkg-outbound",
-      "latest": "0.3.0",
+      "latest": "0.3.2",
       "detail": "pkgs/outbound.json",
       "description": "Outbound — Email, Newsletter, Sequences, Social channels over the production outbound schema. No-build iframe pkg; deterministic CSS vendoring build.",
       "kind": "embedded"
     },
     {
       "name": "@ikenga/pkg-research",
-      "latest": "0.2.0",
+      "latest": "0.3.1",
       "detail": "pkgs/research.json",
       "description": "Research — Reports (list+detail), Sources (monitored register), Personas (ICP grid) over the research_notes + research_sources schema. Multi-file iframe pkg; deterministic CSS vendoring build.",
       "kind": "embedded"
     },
     {
       "name": "@ikenga/pkg-sales",
-      "latest": "0.3.0",
+      "latest": "0.4.1",
       "detail": "pkgs/sales.json",
       "description": "Sales — Pipeline, Forecast, Won over the production sales schema. Multi-file iframe pkg; deterministic CSS vendoring build.",
       "kind": "embedded"
     },
     {
+      "name": "@ikenga/pkg-sentry",
+      "latest": "0.2.3",
+      "detail": "pkgs/sentry.json",
+      "description": "Sentry webview package",
+      "kind": "embedded"
+    },
+    {
+      "name": "@ikenga/pkg-spotify",
+      "latest": "0.2.3",
+      "detail": "pkgs/spotify.json",
+      "description": "Spotify for Artists webview package",
+      "kind": "embedded"
+    },
+    {
       "name": "@ikenga/pkg-strategy",
-      "latest": "0.2.0",
+      "latest": "0.3.1",
       "detail": "pkgs/strategy.json",
       "description": "Strategy — OKR board (board + list), Cycles, Reviews over the production strategy schema. Multi-file iframe pkg; deterministic CSS vendoring build.",
       "kind": "embedded"
     },
     {
+      "name": "@ikenga/pkg-studio",
+      "latest": "0.8.0",
+      "detail": "pkgs/studio.json",
+      "description": "com.ikenga.studio app pkg — project sidecar (storyboard/render queue with fal.ai + Excalidraw renderer adapters), FFmpeg-backed exporter, prompt-package Track-B handoff, a 40-tool MCP server, and the full M-A production-desk iframe UI.",
+      "kind": "embedded"
+    },
+    {
       "name": "@ikenga/pkg-tasks",
-      "latest": "0.8.3",
+      "latest": "0.8.4",
       "detail": "pkgs/tasks.json",
       "description": "Tasks — List, Agenda, Triage over the production tasks schema. Multi-file iframe pkg; deterministic CSS vendoring build.",
       "kind": "embedded"
     },
     {
+      "name": "@ikenga/pkg-wikipedia",
+      "latest": "0.1.1",
+      "detail": "pkgs/wikipedia.json",
+      "description": "Wikipedia webview package — the native child-webview proof for Phase 1",
+      "kind": "embedded"
+    },
+    {
+      "name": "@ikenga/skill-groundwork",
+      "latest": "0.7.6",
+      "detail": "pkgs/skill-groundwork.json",
+      "description": "Reusable research → design → plan → orchestrate → act skill for Claude Code.",
+      "kind": "skill"
+    },
+    {
       "name": "@ikenga/skill-thunderbird",
-      "latest": "0.2.0",
+      "latest": "0.2.1",
       "detail": "pkgs/skill-thunderbird.json",
       "description": "Thunderbird mail skill — read/search the local Thunderbird mbox store and save reply drafts to the IMAP server.",
+      "kind": "skill"
+    },
+    {
+      "name": "@ikenga/storyboard-workflow",
+      "latest": "0.2.1",
+      "detail": "pkgs/storyboard-workflow.json",
+      "description": "Engine-agnostic 3-pass storyboard workflow. The only Studio-coupled fragment is an optional --mode personal block that stays inert elsewhere.",
+      "kind": "skill"
+    },
+    {
+      "name": "@ikenga/studio-archetypes",
+      "latest": "0.2.1",
+      "detail": "pkgs/studio-archetypes.json",
+      "description": "Studio archetype suite — the 7 video archetypes (ai-short, explainer, montage, music-video, narrative, product, tutorial) + the shared core block catalog + animation patterns. One publish unit: archetype block-ID resolution stays intra-package.",
+      "kind": "bundle",
+      "members": [
+        "animation-patterns",
+        "archetype-ai-short",
+        "archetype-explainer",
+        "archetype-montage",
+        "archetype-music-video",
+        "archetype-narrative",
+        "archetype-product",
+        "archetype-tutorial",
+        "studio-core-blocks"
+      ]
+    },
+    {
+      "name": "@ikenga/studio-beat-detect",
+      "latest": "0.2.1",
+      "detail": "pkgs/studio-beat-detect.json",
+      "description": "Portable beat-detection skill — self-contained beat_detect.py (stdlib + optional librosa/madmom). Zero Ikenga runtime calls; usable by any agent via npx skills add.",
+      "kind": "skill"
+    },
+    {
+      "name": "@ikenga/studio-breakdown",
+      "latest": "0.2.0",
+      "detail": "pkgs/studio-breakdown.json",
+      "description": "Turn a script into a populated Studio storyboard in one pass — segment into shots (cells) and extract characters/locations/props as reusable seed-locked anchors. Agent-driven via the com.ikenga.studio MCP; generates nothing (no spend) — it proposes a board for the human to approve.",
+      "kind": "skill"
+    },
+    {
+      "name": "@ikenga/studio-doctor",
+      "latest": "0.2.2",
+      "detail": "pkgs/studio-doctor.json",
+      "description": "Studio toolchain preflight — pure-shell check.sh that verifies the local render stack. Zero coupling; independently useful as a doctor/preflight skill.",
+      "kind": "skill"
+    },
+    {
+      "name": "@ikenga/studio-toolchain",
+      "latest": "0.2.1",
+      "detail": "pkgs/studio-toolchain.json",
+      "description": "Studio toolchain suite — the interview/instantiate/render/author loop (init, oneshot, watch, archetype-build, block-author, generate-narration, freeform-video) that drives the Studio MCP surface (archetype.* / block.* / render.*).",
+      "kind": "bundle",
+      "members": [
+        "freeform-video",
+        "generate-narration",
+        "studio-archetype-build",
+        "studio-block-author",
+        "studio-init",
+        "studio-oneshot",
+        "studio-watch"
+      ]
+    },
+    {
+      "name": "@ikenga/video-script-structure",
+      "latest": "0.2.1",
+      "detail": "pkgs/video-script-structure.json",
+      "description": "Pure schema/convention doc for video script structure. Engine-agnostic, zero deps — a reusable authoring convention any agent can adopt.",
       "kind": "skill"
     }
   ]
