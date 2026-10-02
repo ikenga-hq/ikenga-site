@@ -28,6 +28,21 @@ pnpm preview      # serve dist/
 pnpm check        # astro + typescript checks
 ```
 
+### Checks
+
+CI (`.github/workflows/ci.yml`) runs these on every push and pull request. Run `pnpm build` first, then:
+
+```bash
+node scripts/redirect-test.mjs                             # every public route, both slash forms (list: scripts/routes.txt)
+node scripts/check-links.mjs                               # broken links and #anchors in dist/ (--external also checks other sites)
+pnpm build 2>&1 | tee build.log
+node scripts/check-registry-fallback.mjs --log build.log   # the /packages catalog was built from live registry data
+node scripts/contrast-check.mjs                            # colour contrast of the design tokens
+pnpm dlx @lhci/cli@0.15.1 autorun                          # Lighthouse on /, /packages/ and /docs/ (needs Chrome)
+```
+
+Every script except Lighthouse takes `--self-test`, which proves the check fails on a seeded problem and passes on a good one. `node scripts/redirect-test.mjs --base https://ikenga.dev` tests a deployed site with real requests instead of the build.
+
 ## Content layout
 
 ```
