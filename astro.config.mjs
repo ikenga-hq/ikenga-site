@@ -5,7 +5,12 @@ import react from '@astrojs/react';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 
-// Disable Astro's build-time telemetry. The site carries no analytics.
+// Disable Astro's build-time telemetry (Astro's own, unrelated to visitor
+// analytics). Visitor analytics are two things, neither bundled from this repo:
+// Cloudflare Web Analytics, a cookie-free page-view beacon that Cloudflare
+// injects when it is enabled for the Pages project in the dashboard, and an
+// anonymous event counter at functions/api/event.ts (plus the countable
+// functions/download/[os].ts redirect). The Footer states exactly what is collected.
 process.env.ASTRO_TELEMETRY_DISABLED = '1';
 
 // https://astro.build/config
