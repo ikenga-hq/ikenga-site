@@ -30,5 +30,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify truth data and public-safety scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRUTH_SAFETY_PATTERNS: ${{ secrets.TRUTH_SAFETY_PATTERNS }}
+        # The glossary-term check only warns for now. Drop --content-lint=warn
+        # to make it blocking once the site rebuild has replaced the old pages.
+        run: |
+          node scripts/verify-truth.mjs --self-test
+          node scripts/verify-truth.mjs --content-lint=warn
+
       - name: Build site
         run: pnpm build
