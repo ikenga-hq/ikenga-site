@@ -36,10 +36,10 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 				<h2 class="sk-h2">The problem it removes</h2>
 				<p class="sk-body">
 					Most setups are engine-specific by accident. Your Claude Code skills are in
-					<code>~/.claude/skills/</code>. Your  config is somewhere else. Your Codex
-					prompts are somewhere else again. When you want to compare two backends on the
+					<code>~/.claude/skills/</code>. Your Codex config and prompts are somewhere
+					else. When you want to compare two backends on the
 					same task, you're reconfiguring from scratch. When Claude releases a new model,
-					you update one place; when you try you rebuild.
+					you update one place; when you try another engine, you rebuild.
 				</p>
 				<p class="sk-body">
 					Ikenga's engine layer removes that accident. Each engine is a manifest-declared
@@ -132,7 +132,7 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 				</p>
 				<p class="sk-body">
 					This is useful for comparison: start a thread with Claude Code, send the same
-					prompt to  in the next turn, see both responses in the same history. No
+					prompt to Codex in the next turn, see both responses in the same history. No
 					context copy-paste, no tab-switching.
 				</p>
 			</div>
@@ -166,7 +166,8 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 				<p class="sk-body">
 					Each engine requires its CLI binary on your <code>$PATH</code>. The shell
 					resolves the binary path from a configurable setting
-					(<code>claude_binary</code>, <code>codex_binary</code>) so non-default install locations work.
+					(<code>claude_binary</code>, <code>antigravity_binary</code>,
+					<code>codex_binary</code>) so non-default install locations work.
 				</p>
 				<div class="eg-caps">
 					<table class="eg-table">
@@ -184,6 +185,12 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 								<td><code>com.ikenga.engine-claude-code</code></td>
 								<td><code>claude login</code> / <code>ANTHROPIC_API_KEY</code></td>
 								<td><code>claude-sonnet-4-6</code></td>
+							</tr>
+							<tr>
+								<td><BrandIcon name="antigravity" /> <strong>Antigravity CLI</strong> (beta)</td>
+								<td><code>com.ikenga.engine-antigravity</code></td>
+								<td><code>agy models</code> + an API key in the vault</td>
+								<td>Set in the pkg's settings</td>
 							</tr>
 							<tr>
 								<td><BrandIcon name="codex" /> <strong>Codex CLI</strong></td>
@@ -205,8 +212,15 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 					Claude Code is the built-in engine — it is active as soon as you install the
 					Ikenga shell. No extra step.
 				</p>
-				<p class="sk-body">To add Codex CLI:</p>
+				<p class="sk-body">To add Antigravity CLI (beta) or Codex CLI:</p>
 				<div class="eg-installs">
+					<InstallBlock cmd="ikenga add @ikenga/pkg-engine-antigravity">
+						<p class="sk-install__note">
+							Requires the <strong>Ikenga shell</strong> and the
+							<code>agy</code> CLI on your <code>$PATH</code>.
+							<a href="/#install">Get the shell →</a>
+						</p>
+					</InstallBlock>
 					<InstallBlock cmd="ikenga add @ikenga/pkg-engine-codex">
 						<p class="sk-install__note">
 							Requires the <strong>Ikenga shell</strong> and the

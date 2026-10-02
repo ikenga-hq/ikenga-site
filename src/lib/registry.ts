@@ -11,7 +11,7 @@
 
 import snapshot from '../data/registry-snapshot.json';
 
-export const REGISTRY_URL = 'https://ikenga-hq.github.io/ikenga-registry/index.json';
+export const REGISTRY_URL = 'https://royalti-io.github.io/ikenga-registry/index.json';
 
 export type RegistryKind = 'embedded' | 'engine' | 'skill' | (string & {});
 

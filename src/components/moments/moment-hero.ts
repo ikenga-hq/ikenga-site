@@ -115,7 +115,7 @@ export function mountMomentHero(root: HTMLElement): MomentTimeline {
 }
 
 /**
- * Rotating-agent H1 (Claude Code → Codex → ). Independent of the
+ * Rotating-agent H1 (Claude Code → Codex). Independent of the
  * one-shot moment: an interval loop that pauses when the tab is hidden.
  * Reduced-motion pins the first slot (CSS shows only `.cur`).
  */

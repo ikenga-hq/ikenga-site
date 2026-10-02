@@ -34,7 +34,6 @@ const DETAIL_LINKS: Record<string, string> = {
 	'@ikenga/pkg-engine-claude-code': '/packages/engines',
 	'@ikenga/pkg-engine-codex': '/packages/engines',
 	'@ikenga/pkg-engine-antigravity': '/packages/engines',
-	'@ikenga/pkg-engine-gemini': '/packages/engines',
 };
 
 // "Coming" pkgs that already have a hand-authored preview page under /packages/*.
@@ -46,7 +45,7 @@ const COMING_DETAIL_LINKS: Record<string, string> = {
 
 // Per-engine brand glyph for the generated rows.
 const engineIcon = (name: string): string | null =>
-	name.includes('claude') ? 'claude' : (name.includes('gemini') || name.includes('antigravity')) ? 'gemini' : name.includes('codex') ? 'codex' : null;
+	name.includes('claude') ? 'claude' : name.includes('antigravity') ? 'antigravity' : name.includes('codex') ? 'codex' : null;
 
 // Two co-equal on-ramps (G-21 / R5-5). Skills are portable primitives: they
 // run anywhere in plain Claude Code AND move across engines — install once via
@@ -59,7 +58,7 @@ const PKG_ONRAMP = [
 	{ name: 'Studio', icons: [] as string[], line: 'The orchestration spine for AI film — script, cast, storyboard, generation, and cut on one board. Conducts fal, Higgsfield, and Flow.', href: '/packages/studio', tag: 'coming' },
 	{ name: 'Tasks', icons: [] as string[], line: 'A local-first task manager that lives inside your workspace — lists, triage, and agenda in one pane.', href: '/packages/tasks', tag: 'in shell' },
 	{ name: 'mcp-iyke', icons: ['claude'], line: 'Give any MCP client — Claude, Cursor, or your own tool — live control over the running shell.', href: '/packages/mcp-iyke', tag: 'in shell' },
-	{ name: 'Engines', icons: ['claude', 'gemini', 'codex'], line: 'Claude Code is the default.  and Codex are pluggable adapters — same setup, different engine.', href: '/packages/engines', tag: 'in shell' },
+	{ name: 'Engines', icons: ['claude', 'codex'], line: 'Claude Code is the default. Codex is a pluggable adapter — same setup, different engine.', href: '/packages/engines', tag: 'in shell' },
 ];
 
 const updated = new Date(registry.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
