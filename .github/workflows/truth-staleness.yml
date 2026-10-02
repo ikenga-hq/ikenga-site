@@ -1,0 +1,300 @@
+name: Truth staleness
+
+# Nightly check that the ikenga.dev truth layer has not gone stale, because the
+# shell now ships every 1-3 days (site/docs/Enterprise overhaul, WP-20, G-06).
+# It FAILS and OPENS (or refreshes) an issue labelled `truth-stale` when
+#
+#   1. the committed registry snapshot is more than 14 days old, or
+#   2. the latest published shell release is more than 3 releases newer than
+#      the truth `asOf`.
+#
+# Both limits are inputs on a manual run. Defaults: 14 days, 3 releases.
+#
+# Where each reading comes from (paths are env vars on the "Check" step):
+#
+#   registry snapshot   src/data/registry-snapshot.json: `asOf` (WP-05 adds it;
+#                       `fetchedAt` is read until then).
+#   truth asOf          src/data/truth-asof.json: {"asOf": "<ISO time>",
+#                       "reviewed_through": "<shell version>"}. The truth steward
+#                       (drafts/steward-agent.md, DEC-31) bumps it in every
+#                       per-release PR, including releases that need no
+#                       inventory change. That is what lets "no inventory
+#                       impact" count as reviewed. Until that file exists the
+#                       check uses the newest `last_verified` in
+#                       src/data/truth/features.json, taken as the end of that
+#                       UTC day.
+#   latest shell tag    the GitHub releases API for ikenga-hq/ikenga (published,
+#                       non-draft, non-prerelease). "N releases ahead" means N
+#                       releases published after the truth asOf.
+#
+# The release-lag check starts on its own once src/data/truth/ exists (WP-11).
+# Until then it is reported as skipped. From then on a missing stamp AND a
+# missing features file count as a failure, not a pass.
+#
+# A failed GitHub API call also fails the job, but it is not a staleness
+# finding by itself: it opens no issue and closes none. Pull requests and dry
+# runs report the same findings in the run summary but never open an issue or
+# fail.
+#
+# Resolved findings close the open issue on the next scheduled run.
+#
+# GitHub disables scheduled workflows after 60 days without repo activity. The
+# release cadence keeps this one alive.
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+    inputs:
+      max_age_days:
+        description: Fail when the registry snapshot is older than this many days
+        default: '14'
+        required: false
+        type: string
+      max_releases_behind:
+        description: Fail when this many releases or more were published after the truth asOf (strictly more than the limit fails)
+        default: '3'
+        required: false
+        type: string
+      dry_run:
+        description: Report only; do not open an issue and do not fail
+        default: false
+        required: false
+        type: boolean
+  pull_request:
+    paths:
+      - .github/workflows/truth-staleness.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Check registry snapshot and release lag
+        id: check
+        env:
+          MAX_AGE_DAYS: ${{ inputs.max_age_days || '14' }}
+          MAX_RELEASES_BEHIND: ${{ inputs.max_releases_behind || '3' }}
+          REGISTRY_SNAPSHOT: src/data/registry-snapshot.json
+          TRUTH_DIR: src/data/truth
+          TRUTH_STAMP: src/data/truth-asof.json
+          SHELL_REPO: ikenga-hq/ikenga
+          GITHUB_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          cat > "$RUNNER_TEMP/truth-staleness.mjs" <<'EOF'
+          import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+
+          const env = process.env;
+          const DAY_MS = 86_400_000;
+          const num = (value, fallback) => {
+            const n = Number(value);
+            return value !== undefined && value !== '' && Number.isFinite(n) ? n : fallback;
+          };
+          const MAX_AGE_DAYS = num(env.MAX_AGE_DAYS, 14);
+          const MAX_RELEASES_BEHIND = num(env.MAX_RELEASES_BEHIND, 3);
+          const REGISTRY_SNAPSHOT = env.REGISTRY_SNAPSHOT || 'src/data/registry-snapshot.json';
+          const TRUTH_DIR = env.TRUTH_DIR || 'src/data/truth';
+          const TRUTH_STAMP = env.TRUTH_STAMP || 'src/data/truth-asof.json';
+          const SHELL_REPO = env.SHELL_REPO || 'ikenga-hq/ikenga';
+          const NOW = env.NOW ? Date.parse(env.NOW) : Date.now();
+          const RUN_URL = env.RUN_URL || '';
+
+          const findings = []; // { status: 'fail' | 'warn' | 'ok', title, detail }
+          const add = (status, title, detail) => findings.push({ status, title, detail });
+          const readJson = (path) => JSON.parse(readFileSync(path, 'utf8').replace(/^\uFEFF/, ''));
+          const fmtDays = (ms) => (ms / DAY_MS).toFixed(1);
+
+          // ── 1. Registry snapshot age ──────────────────────────────────────
+          function checkRegistry() {
+            const title = 'Registry snapshot';
+            if (!existsSync(REGISTRY_SNAPSHOT)) {
+              add('fail', title, `${REGISTRY_SNAPSHOT} is missing. The committed last-good copy is what keeps the Pages build from breaking on a registry outage.`);
+              return;
+            }
+            const snap = readJson(REGISTRY_SNAPSHOT);
+            const field = snap.asOf ? 'asOf' : snap.fetchedAt ? 'fetchedAt' : null;
+            const at = field ? Date.parse(snap[field]) : NaN;
+            if (Number.isNaN(at)) {
+              add('fail', title, `${REGISTRY_SNAPSHOT} has no usable \`asOf\` (or \`fetchedAt\`), so its age cannot be told.`);
+              return;
+            }
+            const age = NOW - at;
+            const note = field === 'fetchedAt' ? '; the snapshot has no `asOf` yet' : '';
+            if (age > MAX_AGE_DAYS * DAY_MS) {
+              add('fail', title, `${fmtDays(age)} days old (${field} ${snap[field]}${note}). Limit is ${MAX_AGE_DAYS} days. Refresh ${REGISTRY_SNAPSHOT} from the live registry and set \`asOf\`.`);
+            } else {
+              add('ok', title, `${fmtDays(age)} days old (${field} ${snap[field]}${note}). Limit is ${MAX_AGE_DAYS} days.`);
+            }
+          }
+
+          // ── 2. Shell releases published after the truth asOf ──────────────
+          async function loadReleases() {
+            if (env.RELEASES_FILE) return readJson(env.RELEASES_FILE); // test hook
+            const url = `https://api.github.com/repos/${SHELL_REPO}/releases?per_page=100`;
+            const headers = {
+              Accept: 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+              'User-Agent': 'ikenga-site-truth-staleness',
+            };
+            if (env.GITHUB_TOKEN) headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
+            let lastError;
+            for (let attempt = 1; attempt <= 3; attempt++) {
+              try {
+                const res = await fetch(url, { headers, signal: AbortSignal.timeout(30_000) });
+                if (res.ok) return await res.json();
+                lastError = new Error(`GitHub API answered HTTP ${res.status} for ${url}`);
+              } catch (err) {
+                lastError = err;
+              }
+              if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 5_000 * attempt));
+            }
+            throw lastError;
+          }
+
+          function truthAsOf() {
+            if (existsSync(TRUTH_STAMP)) {
+              const stamp = readJson(TRUTH_STAMP);
+              const at = Date.parse(stamp.asOf);
+              if (Number.isNaN(at)) return { error: `${TRUTH_STAMP} has no usable \`asOf\`.` };
+              const through = stamp.reviewed_through ? `, reviewed through shell ${stamp.reviewed_through}` : '';
+              return { at, label: `${TRUTH_STAMP} asOf ${stamp.asOf}${through}` };
+            }
+            const featuresPath = `${TRUTH_DIR}/features.json`;
+            if (existsSync(featuresPath)) {
+              const parsed = readJson(featuresPath);
+              const rows = Array.isArray(parsed) ? parsed : parsed.features ?? [];
+              const days = rows.map((row) => row.last_verified).filter((d) => typeof d === 'string' && !Number.isNaN(Date.parse(d)));
+              if (days.length === 0) return { error: `${featuresPath} has no row with a usable \`last_verified\`.` };
+              const newest = days.sort().at(-1);
+              const endOfDay = Date.parse(`${newest.slice(0, 10)}T23:59:59Z`);
+              return { at: endOfDay, label: `newest features[].last_verified ${newest} (taken as end of that UTC day; ${TRUTH_STAMP} does not exist yet)` };
+            }
+            return { error: `neither ${TRUTH_STAMP} nor ${featuresPath} exists.` };
+          }
+
+          async function checkTruth() {
+            const title = 'Truth vs shell releases';
+            if (!existsSync(TRUTH_DIR)) {
+              add('warn', title, `${TRUTH_DIR}/ does not exist yet (WP-11 assembles it), so the release-lag check is skipped. It starts on its own once that directory lands.`);
+              return;
+            }
+            const asOf = truthAsOf();
+            if (asOf.error) {
+              add('fail', title, `Cannot tell how current the truth data is: ${asOf.error} The truth steward should write ${TRUTH_STAMP}.`);
+              return;
+            }
+            const releases = (await loadReleases())
+              .filter((r) => !r.draft && !r.prerelease && r.published_at)
+              .sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at));
+            if (releases.length === 0) {
+              add('fail', title, `No published releases found for ${SHELL_REPO}. The check cannot tell how far behind the truth data is.`);
+              return;
+            }
+            const latest = releases[0];
+            const behind = releases.filter((r) => Date.parse(r.published_at) > asOf.at).length;
+            const detail = `Latest shell release ${latest.tag_name} (published ${latest.published_at}). Truth: ${asOf.label}. ${behind} release(s) published since; limit is ${MAX_RELEASES_BEHIND}.`;
+            if (behind > MAX_RELEASES_BEHIND) {
+              add('fail', title, `${detail} Review the new releases and bump ${TRUTH_STAMP}.`);
+            } else {
+              add('ok', title, detail);
+            }
+          }
+
+          // ── run ───────────────────────────────────────────────────────────
+          let apiError = null;
+          checkRegistry();
+          try {
+            await checkTruth();
+          } catch (err) {
+            apiError = err;
+          }
+
+          const failed = findings.filter((f) => f.status === 'fail');
+          const icon = { fail: 'FAIL', warn: 'WARN', ok: 'ok' };
+          const lines = findings.map((f) => `- **${icon[f.status]}** ${f.title}: ${f.detail}`);
+          if (apiError) lines.push(`- **ERROR** Could not read the shell releases: ${apiError.message}`);
+
+          const summary = ['## Truth staleness', '', ...lines, ''].join('\n');
+          console.log(summary);
+          for (const f of findings) {
+            if (f.status === 'fail') console.log(`::error title=Truth stale: ${f.title}::${f.detail}`);
+            if (f.status === 'warn') console.log(`::warning title=${f.title}::${f.detail}`);
+          }
+          if (apiError) console.log(`::error title=Could not read shell releases::${apiError.message}`);
+
+          if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, summary + '\n');
+          const stale = failed.length > 0;
+          if (env.GITHUB_OUTPUT) appendFileSync(env.GITHUB_OUTPUT, `stale=${stale}\napi_error=${apiError !== null}\n`);
+
+          const bodyPath = `${env.RUNNER_TEMP || '.'}/truth-stale-issue.md`;
+          const body = [
+            'The nightly truth check found the ikenga.dev truth layer is out of date.',
+            '',
+            ...failed.map((f) => `- **${f.title}:** ${f.detail}`),
+            '',
+            `Limits: registry snapshot older than ${MAX_AGE_DAYS} days, or more than ${MAX_RELEASES_BEHIND} shell releases published after the truth asOf.`,
+            '',
+            'The truth steward (one draft PR per release) normally prevents this. If this fired, the steward has stopped or the PRs are waiting for approval.',
+            '',
+            `Checked ${new Date(NOW).toISOString()}${RUN_URL ? ` in ${RUN_URL}` : ''}. This issue closes itself on the first clean nightly run.`,
+            '',
+          ].join('\n');
+          writeFileSync(bodyPath, body);
+          EOF
+          node "$RUNNER_TEMP/truth-staleness.mjs"
+
+      # Pull requests and dry runs never touch issues.
+      - name: Open or refresh the staleness issue
+        if: steps.check.outputs.stale == 'true' && github.event_name != 'pull_request' && inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh label create truth-stale --color B60205 --description "ikenga.dev truth layer is out of date" 2>/dev/null || true
+          existing=$(gh issue list --label truth-stale --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file "$RUNNER_TEMP/truth-stale-issue.md"
+            echo "Refreshed issue #$existing"
+          else
+            gh issue create --title "ikenga.dev truth layer is stale ($(date -u +%Y-%m-%d))" --label truth-stale --body-file "$RUNNER_TEMP/truth-stale-issue.md"
+          fi
+
+      - name: Close the staleness issue once it is resolved
+        if: steps.check.outputs.stale == 'false' && steps.check.outputs.api_error == 'false' && github.event_name != 'pull_request' && inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          existing=$(gh issue list --label truth-stale --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "The nightly truth check is clean again ($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID). Closing."
+          fi
+
+      - name: Fail the run when the truth layer is stale
+        if: (steps.check.outputs.stale == 'true' || steps.check.outputs.api_error == 'true') && github.event_name != 'pull_request' && inputs.dry_run != true
+        env:
+          STALE: ${{ steps.check.outputs.stale }}
+        shell: bash
+        run: |
+          if [ "$STALE" = "true" ]; then
+            echo "::error title=Truth layer is stale::See the run summary and the open truth-stale issue."
+          else
+            echo "::error title=Staleness check could not finish::The GitHub releases API could not be read. See the run summary. No issue was opened or closed."
+          fi
+          exit 1
