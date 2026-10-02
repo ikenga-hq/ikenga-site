@@ -30,6 +30,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Self-test the quality gates
+        # Each gate has to fail on a seeded problem and pass on a good one. These run before the
+        # real checks, so a gate that stops working cannot pass quietly.
+        run: |
+          node scripts/redirect-test.mjs --self-test
+          node scripts/check-links.mjs --self-test
+          node scripts/check-registry-fallback.mjs --self-test
+
       - name: Verify truth data and public-safety scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,5 +48,50 @@ jobs:
           node scripts/verify-truth.mjs --self-test
           node scripts/verify-truth.mjs --content-lint=warn
 
+      - name: Check colour contrast
+        run: node scripts/contrast-check.mjs
+
       - name: Build site
-        run: pnpm build
+        id: build
+        # Keep the build output: the registry check reads it. `shell: bash` makes a failed build
+        # fail this step even though its output goes through tee.
+        shell: bash
+        run: pnpm build 2>&1 | tee "$RUNNER_TEMP/build.log"
+
+      # The checks below read the built site in dist/. Each runs even when an earlier one failed,
+      # so one run shows every red gate. They are skipped only when the build itself failed.
+      - name: Check the package catalog was built from live data
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: node scripts/check-registry-fallback.mjs --log "$RUNNER_TEMP/build.log"
+
+      - name: Check every public route (both slash forms)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: node scripts/redirect-test.mjs
+
+      - name: Check links and anchors
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: node scripts/check-links.mjs
+
+      - name: Check links to other sites (advisory)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        # Other people's servers fail for reasons we do not control, so this never fails the run.
+        # A dead link still shows up as an annotation on the run and in the step log.
+        continue-on-error: true
+        run: node scripts/check-links.mjs --external
+
+      - name: Lighthouse (accessibility and performance)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        # Both scores must reach 0.95 on /, /packages/ and /docs/ (see lighthouserc.json).
+        # Accessibility fails the run. Performance is a warning for now: today's pages score
+        # 0.76 to 0.89 on the mobile profile. When the rebuilt site passes, change `warn` to
+        # `error` for categories:performance in lighthouserc.json.
+        run: pnpm dlx @lhci/cli@0.15.1 autorun --config=./lighthouserc.json
+
+      - name: Keep the Lighthouse reports
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci
+          if-no-files-found: ignore
+          retention-days: 7
