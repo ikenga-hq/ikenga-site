@@ -1,0 +1,67 @@
+# Public routes that must keep resolving. scripts/redirect-test.mjs reads this file.
+#
+# Each line is a path. The test asks for the plain form and the slash form of the path and needs
+# both to end on a 200, going through permanent redirects (301 or 308) only.
+#
+#   /packages            a page: tested as /packages and as /packages/
+#   /install.sh file     a file with no slash form: tested once, as written
+#
+# Rules for editing this list:
+#   - Add a line when a page is published.
+#   - Keep the line when a page moves or is renamed, and add a `_redirects` rule for the old URL
+#     in both slash forms. The test then proves the old URL still lands on a live page.
+#   - Remove a line only when the URL was never public.
+
+# Home, utility and marketing pages
+/
+/404
+/newsletter
+/open-source
+/blog
+/blog/groundwork-explorer
+
+# Package pages
+/packages
+/packages/artifacts
+/packages/engines
+/packages/groundwork
+/packages/mcp-iyke
+/packages/studio
+/packages/tasks
+
+# Preview pages that are not linked from the site (they carry noindex)
+/graph-lab
+/moment-lab
+/moment-lab-2
+
+# Static files
+/install.sh file
+/demos/groundwork-explorer.html file
+/demos/groundwork-explorer-design-system.html file
+/demos/groundwork-plans-index.html file
+
+# Docs
+/docs
+/docs/getting-started
+/docs/build-a-pkg
+/docs/contributing
+/docs/mcp-iyke
+/docs/engines
+/docs/pkgs
+/docs/pkgs/mcp-browser
+/docs/pkgs/tasks
+/docs/studio
+/docs/studio/concepts
+/docs/groundwork
+/docs/groundwork/actions
+/docs/groundwork/board
+/docs/groundwork/concepts
+/docs/groundwork/explorer
+/docs/groundwork/film-workflow
+/docs/groundwork/orchestrate
+/docs/groundwork/profiles
+/docs/groundwork/state-model
+
+# Old URLs that already redirect (see public/_redirects)
+/how-it-works
+/docs/pkgs/suite
