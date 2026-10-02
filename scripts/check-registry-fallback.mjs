@@ -112,7 +112,7 @@ async function probe(url, timeoutMs = 10000) {
       if (Array.isArray(body?.pkgs) && body.pkgs.length > 0) return { url, reachable: true, detail: `${body.pkgs.length} pkgs` };
       detail = 'answered 200 but the index is empty or malformed';
     } catch (err) {
-      detail = `${err?.cause?.code ?? err?.name ?? 'error'}`;
+      detail = `${err?.cause?.code ?? err?.cause?.errors?.[0]?.code ?? err?.name ?? 'error'}`;
     }
   }
   return { url, reachable: false, detail };
@@ -236,16 +236,19 @@ async function selfTest() {
       }
     });
     await new Promise((resolveListen) => server.listen(0, '127.0.0.1', resolveListen));
+    let closedPort;
     try {
-      const base = `http://127.0.0.1:${server.address().port}`;
+      closedPort = server.address().port;
+      const base = `http://127.0.0.1:${closedPort}`;
       expect('a good index is reachable', (await probe(`${base}/index.json`, 3000)).reachable === true);
       expect('a 404 is not', (await probe(`${base}/gone.json`, 3000)).reachable === false);
       expect('an empty index is not', (await probe(`${base}/empty.json`, 3000)).reachable === false);
-      expect('a closed port is not', (await probe('http://127.0.0.1:1/index.json', 3000)).reachable === false);
     } finally {
       server.closeAllConnections?.();
-      server.close();
+      await new Promise((resolveClose) => server.close(resolveClose));
     }
+    // The port the server just used is now closed, so nothing answers on it.
+    expect('a closed port is not', (await probe(`http://127.0.0.1:${closedPort}/index.json`, 3000)).reachable === false);
 
     console.log('the real loader');
     const url = loaderUrl(ROOT);
