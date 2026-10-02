@@ -1,0 +1,87 @@
+name: Truth rebuild
+
+# Rebuilds ikenga.dev on Cloudflare Pages so the data fetched at build time
+# (latest shell release, registry, changelog) catches up with what shipped.
+#
+# Why this workflow exists: Pages deploys this repo through its Git connection,
+# so a `repository_dispatch` alone only reaches GitHub Actions (ci.yml builds
+# and discards the output). A Pages deploy hook is what starts a production
+# build, and this workflow is the thing that calls it. Triggers:
+#
+#   repository_dispatch  `release`, sent by the shell release workflow and the
+#                        ikenga-registry dispatch-site workflow.
+#   schedule             nightly backstop, so a dropped dispatch (expired
+#                        token, outage) costs at most a day.
+#   workflow_dispatch    manual rebuild.
+#
+# Founder setup, one time:
+#   1. Cloudflare dashboard -> Workers & Pages -> the ikenga.dev Pages project
+#      -> Settings -> Builds & deployments -> Deploy hooks -> Add deploy hook.
+#      Branch: main (the production branch). Copy the hook URL.
+#   2. Save the URL as the Actions secret CF_PAGES_DEPLOY_HOOK on
+#      ikenga-hq/ikenga-site (Settings -> Secrets and variables -> Actions).
+#      Treat the URL as a secret: anyone who has it can trigger builds.
+#
+# Until that secret exists every run of this workflow fails with an error that
+# says so, on purpose: a nightly job that quietly does nothing is how the truth
+# layer goes stale unnoticed. The URL is passed through the environment only
+# and is never printed; GitHub also masks it in logs.
+#
+# The Pages build itself warns and falls back to the committed last-good copy
+# when a fetch fails; it never breaks. The truth-staleness workflow
+# catches a copy that has aged too far.
+
+on:
+  repository_dispatch:
+    types: [release]
+  schedule:
+    - cron: '47 3 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+# Two dispatches close together (a shell release and a registry publish) each
+# fire the hook; Cloudflare queues the builds, so nothing needs cancelling.
+concurrency:
+  group: truth-rebuild
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger the Cloudflare Pages build
+        env:
+          HOOK_URL: ${{ secrets.CF_PAGES_DEPLOY_HOOK }}
+          EVENT_NAME: ${{ github.event_name }}
+          PAYLOAD_SOURCE: ${{ github.event.client_payload.source }}
+          PAYLOAD_TAG: ${{ github.event.client_payload.tag }}
+          PAYLOAD_REASON: ${{ github.event.client_payload.reason }}
+        shell: bash
+        run: |
+          if [ -z "${HOOK_URL:-}" ]; then
+            echo "::error title=Pages deploy hook missing::The CF_PAGES_DEPLOY_HOOK secret is not set on this repo, so ikenga.dev was not rebuilt. See the founder setup steps in the header of .github/workflows/truth-rebuild.yml."
+            exit 1
+          fi
+
+          reason="${EVENT_NAME}"
+          if [ -n "${PAYLOAD_SOURCE:-}" ]; then reason="${reason} from ${PAYLOAD_SOURCE}"; fi
+          if [ -n "${PAYLOAD_TAG:-}" ]; then reason="${reason} (${PAYLOAD_TAG})"; fi
+          if [ -n "${PAYLOAD_REASON:-}" ]; then reason="${reason} (${PAYLOAD_REASON})"; fi
+
+          if ! status=$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' -X POST "$HOOK_URL"); then
+            echo "::error title=Pages deploy hook unreachable::The request to the Cloudflare deploy hook failed before getting a response. Trigger: ${reason}."
+            exit 1
+          fi
+
+          case "$status" in
+            2??)
+              echo "Triggered a Cloudflare Pages build (HTTP ${status}). Trigger: ${reason}."
+              echo "Triggered a Cloudflare Pages build (HTTP ${status}). Trigger: ${reason}." >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            *)
+              echo "::error title=Pages deploy hook rejected::Cloudflare answered HTTP ${status}. The hook may have been deleted or regenerated; create a new one and update CF_PAGES_DEPLOY_HOOK. Trigger: ${reason}."
+              exit 1
+              ;;
+          esac
