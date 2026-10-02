@@ -95,6 +95,7 @@ jobs:
           SHELL_REPO: ikenga-hq/ikenga
           GITHUB_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPORT_ONLY: ${{ (github.event_name == 'pull_request' || inputs.dry_run == true) && 'true' || 'false' }}
         shell: bash
         run: |
           cat > "$RUNNER_TEMP/truth-staleness.mjs" <<'EOF'
@@ -114,6 +115,7 @@ jobs:
           const SHELL_REPO = env.SHELL_REPO || 'ikenga-hq/ikenga';
           const NOW = env.NOW ? Date.parse(env.NOW) : Date.now();
           const RUN_URL = env.RUN_URL || '';
+          const REPORT_ONLY = env.REPORT_ONLY === 'true';
 
           const findings = []; // { status: 'fail' | 'warn' | 'ok', title, detail }
           const add = (status, title, detail) => findings.push({ status, title, detail });
@@ -232,11 +234,14 @@ jobs:
 
           const summary = ['## Truth staleness', '', ...lines, ''].join('\n');
           console.log(summary);
+          // Report-only runs (pull requests, dry runs) annotate findings as warnings so a
+          // green check does not carry red error annotations.
+          const failLevel = REPORT_ONLY ? 'warning' : 'error';
           for (const f of findings) {
-            if (f.status === 'fail') console.log(`::error title=Truth stale: ${f.title}::${f.detail}`);
+            if (f.status === 'fail') console.log(`::${failLevel} title=Truth stale: ${f.title}::${f.detail}`);
             if (f.status === 'warn') console.log(`::warning title=${f.title}::${f.detail}`);
           }
-          if (apiError) console.log(`::error title=Could not read shell releases::${apiError.message}`);
+          if (apiError) console.log(`::${failLevel} title=Could not read shell releases::${apiError.message}`);
 
           if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, summary + '\n');
           const stale = failed.length > 0;
