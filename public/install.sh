@@ -140,18 +140,16 @@ if [ "$os" = "darwin" ]; then
 	cp -R "$app" "$dest_dir/"
 	hdiutil detach "$vol" -quiet 2>/dev/null || true
 
-	# Remove Gatekeeper quarantine on the freshly-copied app (best-effort).
-	# Ikenga is not yet code-signed, so macOS would otherwise block the first
-	# launch. Running this script is already a trust decision, but the strip is
-	# security-relevant, so it is disclosed in the output below rather than done
-	# silently. Policy: https://ikenga.dev/security (page pending; until it
-	# lands this echo is the disclosure).
-	echo "→ Clearing the macOS quarantine flag on $dest"
-	hint "  Ikenga is not yet code-signed; this skips Gatekeeper's first-launch warning for this app."
-	xattr -dr com.apple.quarantine "$dest" 2>/dev/null || true
-
+	# Ikenga is not yet code-signed, so macOS shows a Gatekeeper prompt the
+	# first time the app is opened. This script does not change that; it only
+	# tells the user how to proceed.
 	echo
 	say "Ikenga is installed."
+	echo
+	echo "Ikenga is not yet code-signed, so macOS will show a Gatekeeper prompt the first time you open it."
+	hint "  To open it anyway: right-click Ikenga in Applications and choose Open,"
+	hint "  or go to System Settings > Privacy & Security and click Open Anyway."
+	echo
 	echo "Launch with: open -a Ikenga"
 fi
 
