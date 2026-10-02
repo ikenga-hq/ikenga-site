@@ -1,7 +1,7 @@
 /**
  * tokens-site.css — site-tier semantic layer for ikenga.dev.
  *
- * Part of the site design system (see ../../../plans/site-design-system/).
+ * Part of the site design system.
  * This is the ONE place the marketing site names its brand intent. Every
  * site component should consume `--site-*` here, never reach for an upstream
  * token directly. The upstream primitives live in `@ikenga/tokens`
@@ -9,7 +9,7 @@
  * the brand can be retuned in one place and the site is decoupled from any
  * single upstream slot.
  *
- * Locked visual direction: D-01 "Forge, tempered" (Round 1).
+ * Visual direction: "Forge, tempered".
  * Canonical world: Theme A · Dusk Wood, dark. Pages MUST set
  * `data-theme="A" data-mode="dark"` on <html> (see the `theming` foundation
  * part) — `--achievement` only exists under `[data-theme]`, so without the
@@ -26,7 +26,7 @@
 	--site-danger: var(--danger);
 	--site-success: var(--systemic);
 
-	/* The D-01 amber glow — spent deliberately on the hero headline +
+	/* The amber glow — spent deliberately on the hero headline +
 	   primary CTA only, never on every element. Honor reduced-motion at use.
 	   Value matches the locked board (spread + alpha give the signature heat). */
 	--site-glow: 0 0 28px -4px hsl(42 78% 54% / 0.55);
@@ -64,11 +64,11 @@
 	/* Display swaps to Redaction in ONE place when acquired; IM Fell English
 	   is the interim stand-in (loaded by the page that uses it). */
 	--site-font-display: 'IM Fell English', 'IM Fell English Fallback', Georgia, 'Times New Roman', serif;
-	--site-font-body: 'Plus Jakarta Sans', 'Plus Jakarta Sans Fallback', system-ui, sans-serif; /* PJS + metric-matched fallback (WP-21 CLS) */
+	--site-font-body: 'Plus Jakarta Sans', 'Plus Jakarta Sans Fallback', system-ui, sans-serif; /* PJS + metric-matched fallback (CLS fix) */
 	--site-font-mono: var(--font-mono);
 
 	/* Site rhythm — section padding derived from the --space-* ramp so every
-	   page breathes on one scale (the discipline half of D-01). */
+	   page breathes on one scale (the discipline half of the direction). */
 	--site-section-pad: clamp(3rem, 7vw, 5.5rem);
 	--site-measure-display: 18ch;
 	--site-measure-lede: 46ch;
@@ -76,10 +76,10 @@
 }
 
 /**
- * ── Light pole (G-TONAL) ───────────────────────────────────────────────────
+ * ── Light pole ─────────────────────────────────────────────────────────────
  *
- * The warm-parchment "light pole" of the tonal system (plans/site-redesign
- * WP-02). Section-level scoping via `data-tone="light"` on a wrapper element
+ * The warm-parchment "light pole" of the tonal system.
+ * Section-level scoping via `data-tone="light"` on a wrapper element
  * — deliberately NOT the page-level `data-mode`/`data-theme` attributes,
  * which stay pinned to Dusk Wood dark for the whole document (see the file
  * banner above). A section that opts into `data-tone="light"` re-points
@@ -126,7 +126,7 @@
 	--site-danger: hsl(8, 68%, 42%);
 	--site-success: hsl(170, 36%, 32%);
 
-	/* The D-01 amber glow reads as a lit ember against near-black; on
+	/* The amber glow reads as a lit ember against near-black; on
 	   parchment the same glow just looks like a smudge, so the light pole
 	   turns it off rather than re-tuning it. */
 	--site-glow: none;

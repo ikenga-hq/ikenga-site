@@ -3,9 +3,9 @@
  * MomentGraph, derived from the same registry-verified cast slice as the
  * radial graph (./graph-fixture.ts → ./cast.json).
  *
- * HONESTY GATE (G-19 / G-21):
+ * HONESTY RULE:
  *   · Store rows are the SAME 16 registry-published capabilities as the graph
- *     nodes (G-CAST lock sweep, WP-22) — no new entries are invented here.
+ *     nodes — no new entries are invented here.
  *   · Scope columns are real: the cast's workspace scope, its project, and the
  *     personal `user` scope (cast.workspace / cast.project).
  *   · The per-scope PRESENCE encoding is a *staged demo* — it illustrates how
@@ -37,7 +37,7 @@ export const STORE_SCOPES: StoreScope[] = [
 /**
  * Staged per-scope presence, keyed by the registry NAME (label). The entries
  * are real; only the presence pattern is staged (see the honesty note above).
- * Mirrors the WP-12 board so the shipped section matches the reviewed design.
+ * Mirrors the reviewed board design so the shipped section matches it.
  */
 const STAGED: Record<string, { status: StoreStatus; cells: [Presence, Presence, Presence] }> = {
 	groundwork: { status: 'enabled', cells: ['enabled', 'local', 'enabled'] },

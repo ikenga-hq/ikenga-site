@@ -1,9 +1,9 @@
 ---
 // 404 — not-found. Own minimal head (not the shared Layout.astro) because a
 // not-found page needs `noindex` in <head>, which Layout has no prop for
-// (out of WP-18's scope fence). Otherwise identical chrome to every other
+// (so it can't reuse that layout). Otherwise identical chrome to every other
 // page: same global.css import, same Header/Footer, pinned to the dark pole
-// (Dusk Wood) per Layout's convention. D-01 register: Fraunces display line,
+// (Dusk Wood) per Layout's convention. Register: Fraunces display line,
 // quiet — no CTA clutter, just the three honest ways back in.
 import '../styles/global.css';
 import Header from '../components/Header.astro';

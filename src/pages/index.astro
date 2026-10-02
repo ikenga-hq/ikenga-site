@@ -10,17 +10,14 @@ import InstallSection from '../components/sections/InstallSection.astro';
 import ObiSection from '../components/sections/ObiSection.astro';
 import castData from '../components/moments/cast.json';
 
-// Home shell & narrative assembly (plans/site-redesign, Phase 2, WP-10 —
-// assembles the WP-05 scaffold with the WP-06/07/08/09 fan-out). Inverted
-// narrative locked at D-01 (theatre hero, hard tonal seam): moment →
+// Home shell & narrative assembly. Inverted
+// narrative (theatre hero, hard tonal seam): moment →
 // watch-it-work → everything-connects → packages-teaser (light) → install
 // (light) → Obi (dark) → subscribe (light).
 //
-// Copy accounting vs the prior index.astro (full text in git history, this
-// branch's parent commit): every G-21 claim that doesn't survive verbatim
-// below is either re-flowed (new location noted inline) or moved into one
-// of the section components above — see each WP's report for its
-// accounting.
+// Copy accounting vs the prior index.astro (full text in git history):
+// every claim that doesn't survive verbatim below is either re-flowed (new
+// location noted inline) or moved into one of the section components above.
 const GITHUB = 'https://github.com/ikenga-hq/ikenga';
 const storeRows = castData.store_rows;
 ---
@@ -38,7 +35,7 @@ const storeRows = castData.store_rows;
 			content="The open-source, local-first desktop home for Claude Code and Codex. Skills like groundwork and artifact-builder are portable primitives that run anywhere and move across engines, alongside the packages you install and manage."
 		/>
 		<link rel="canonical" href="https://ikenga.dev/" />
-		<!-- Open Graph / Twitter (WP-24 owns the canonical set; mirrored here) -->
+		<!-- Open Graph / Twitter (mirrors the site's canonical social card set) -->
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="https://ikenga.dev/" />
 		<meta property="og:title" content="Ikenga — give Claude Code a home" />
@@ -54,17 +51,17 @@ const storeRows = castData.store_rows;
 		<Header github={GITHUB} />
 
 		<main id="main-content">
-			<!-- ═══════════════ 1. HERO (dark) — D-01 theatre ═══════════════
+			<!-- ═══════════════ 1. HERO (dark) — theatre ═══════════════
 			     MomentHero renders its own <section>: eyebrow-less rotating-
 			     agent H1, sub line, ghost links (#install / #skills), the
 			     shell-recreation stage, and the honest "staged demo" caption —
-			     exactly as the island provides (G-MOMENT locked). Nothing added
+			     exactly as the island provides. Nothing added
 			     here; the outer copy consumes --site-* so it reads dark by
 			     default at the page level. -->
 			<MomentHero autoplay="viewport" />
 
 			<!-- ═══════════════ 2. WATCH IT WORK (dark) ═══════════════
-			     MomentTasks + MomentInstall (WP-06) — the tasks/agenda beat
+			     MomentTasks + MomentInstall — the tasks/agenda beat
 			     and the Ọba install beat, both on the shared timeline engine
 			     (moments/timeline.ts). Each island renders its own <h2>, so
 			     the section-level intro stays an eyebrow (no second h2) to
@@ -78,14 +75,14 @@ const storeRows = castData.store_rows;
 			<!-- ═══════════════ 3. EVERYTHING CONNECTS (dark) ═══════════════
 			     MomentGraph renders its own heading ("Everything connects."),
 			     lede, and the capability-graph stage as a self-contained
-			     section (WP-07 production pass over SPIKE-07). -->
+			     section. -->
 			<MomentGraph tone="dark" />
 
 			<!-- ═══════════════ 4. PACKAGES TEASER (light — hard tonal seam) ═══════════════
 			     Typographic cards straight off the cast's store_rows fixture
 			     (name / version / one-liner) — re-flows the old page's
 			     "Everything is a package" beat as a teaser strip; no art yet
-			     (storefront art is a Phase-3 track). -->
+			     (storefront art comes later). -->
 			<section class="sk-section" data-tone="light">
 				<div class="sk-wrap">
 					<h2 class="sk-h2">Everything is a <em>package.</em></h2>
@@ -119,7 +116,7 @@ const storeRows = castData.store_rows;
 			<ObiSection />
 
 			<!-- ═══════════════ 7. SUBSCRIBE (light) — lifted verbatim ═══════════════
-			     Live production code (WP-29): the form markup, the honeypot,
+			     Live production code: the form markup, the honeypot,
 			     and the /api/subscribe wiring below are unchanged from the
 			     prior index.astro — do not rewrite the logic. -->
 			<section class="sk-section" data-tone="light">
@@ -161,7 +158,7 @@ const storeRows = castData.store_rows;
 		<Footer github={GITHUB} />
 
 		<script>
-			// Subscribe form (WP-29) — posts to the Listmonk Pages Function.
+			// Subscribe form — posts to the Listmonk Pages Function.
 			const form = document.getElementById('subscribe-form') as HTMLFormElement | null;
 			const emailEl = document.getElementById('subscribe-email') as HTMLInputElement | null;
 			const btn = document.getElementById('subscribe-btn') as HTMLButtonElement | null;
@@ -313,7 +310,7 @@ const storeRows = castData.store_rows;
 				border: 1px solid transparent;
 				background: var(--site-accent);
 				/* light-on-amber (was dark hsl(28,30%,8%)): 2.83:1 on the parchment-pole
-				   accent — flipped to pass 4.5:1 (WP-15 a11y gate). */
+				   accent — flipped to pass 4.5:1 (accessibility fix). */
 				color: hsl(36, 40%, 96%);
 				font: inherit;
 				font-weight: 600;

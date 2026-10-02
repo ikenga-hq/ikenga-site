@@ -1,7 +1,7 @@
 /**
  * moment-hero.ts — the proving-moment hero's beat, on the shared timeline engine.
  *
- * WP-14 hybrid: the shell content is a real capture (see MomentHero.astro), so
+ * Real-capture hybrid: the shell content is a real capture (see MomentHero.astro), so
  * this beat no longer types a command or reveals recreated panes. It drives the
  * overlay theatre over the real pixels — three pane scrims power on in sequence
  * (tasks → terminal → artifact), a light sweep passes once, and a highlight ring
@@ -128,7 +128,7 @@ function mountAgentRotator(root: HTMLElement, reduce: boolean): void {
 	rot.style.display = 'inline-flex';
 	if (reduce) return;
 
-	// Reflow discipline (founder call — supersedes the WP-21 fixed-width pin).
+	// Reflow discipline (supersedes an earlier fixed-width pin).
 	// The pin reserved the WIDEST slot ("Claude Code") and centred names inside
 	// it, so short engines ("Codex") sat in dead space and "a home." never
 	// tucked against the word. The mockups instead breathe: the rotator sizes to

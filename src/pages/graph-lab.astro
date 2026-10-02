@@ -1,13 +1,12 @@
 ---
 /**
- * graph-lab.astro — preview harness for <MomentGraph /> (WP-07).
+ * graph-lab.astro — preview harness for <MomentGraph />.
  *
  * NOT part of production nav / IA. Mirrors moment-lab.astro's role but is
  * dedicated to the capability-graph island so both tone poles can be
  * verified side by side without touching moment-lab.astro (which is
  * MomentHero's own harness) or index.astro (which mounts the dark-pole
- * production instance for real). Do not link this from the nav or ship it
- * in the launch swap.
+ * production instance for real). Do not link this from the nav or ship it.
  */
 import '../styles/global.css';
 import MomentGraph from '../components/moments/MomentGraph.astro';
@@ -31,7 +30,7 @@ import MomentGraph from '../components/moments/MomentGraph.astro';
 			<MomentGraph tone="dark" />
 
 			<!-- Light pole — the `tone` prop sets [data-tone="light"] on the
-			     island's own root section (WP-02 convention); the stage inside
+			     island's own root section (site convention); the stage inside
 			     stays the fixed dark object per CONTRACT.md regardless. -->
 			<MomentGraph tone="light" />
 		</main>

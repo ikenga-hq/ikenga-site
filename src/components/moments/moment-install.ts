@@ -1,7 +1,7 @@
 /**
  * moment-install.ts — the Ọba install beat, on the shared timeline engine.
  *
- * WP-14 hybrid: the store is a real capture (see MomentInstall.astro), so this
+ * Real-capture hybrid: the store is a real capture (see MomentInstall.astro), so this
  * beat drives the overlay theatre over the real pixels — a light sweep passes,
  * a ring settles on the selected `groundwork` row, then the real Install button
  * pulses ("one click") — then clears to the clean capture. Same WAAPI +

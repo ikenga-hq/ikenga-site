@@ -249,10 +249,10 @@ export function groupByKind(index: RegistryIndex): GroupedCategory[] {
 
 // ── "Coming" strip: built in ikenga-pkgs, not yet in the registry ───────────
 //
-// Honest per G-21/DEC-1: these six app pkgs exist in ikenga-pkgs but are NOT
+// Honest by construction: these six app pkgs exist in ikenga-pkgs but are NOT
 // published to the registry, so they appear ONLY as a labelled "coming" strip
 // with NO install affordance and NO version claim. Domain one-liners only —
-// zero fabricated metrics, zero music-vertical flavor (G-19).
+// zero fabricated metrics, zero music-vertical flavor.
 
 export interface ComingPkg {
 	name: string;
@@ -272,7 +272,7 @@ export const COMING_PKGS: ComingPkg[] = [
  * Self-correcting "coming" strip: drop any pkg that the registry now
  * publishes (it appears in the catalog grid instead). As the atelier-parity
  * publishes land, each app pkg moves coming → catalog with zero code change,
- * and is never double-listed. G-21 honesty by construction.
+ * and is never double-listed. Honest by construction.
  */
 export function comingPkgs(index: RegistryIndex): ComingPkg[] {
 	const published = new Set((index.pkgs ?? []).map((p) => p.name));

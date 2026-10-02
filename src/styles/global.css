@@ -5,7 +5,7 @@
    (body), JetBrains Mono (code). Must precede other @imports per CSS spec. */
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-/* WP-21 CLS fix: metric-matched fallback for the display face. The hero H1's
+/* CLS fix: metric-matched fallback for the display face. The hero H1's
    <em> was the page's one real layout shift (0.062 of 0.064 CLS) — Georgia
    italic renders ~16% wider than IM Fell English italic, so the swap reflowed
    the line. size-adjust values measured empirically (playwright, 100px
@@ -43,10 +43,10 @@
 
 /* Site-tier semantic layer — the brand's `--site-*` aliases over the tokens
    above. The ONE place site components read brand intent from. See the
-   site design system: plans/site-design-system/ (foundation: site-tokens). */
+   site design system (foundation: site-tokens). */
 @import './tokens-site.css';
 
-/* Component + pattern kit (.sk-*) — Phase 1 + 2 of the site design system. */
+/* Component + pattern kit (.sk-*) of the site design system. */
 @import './site-kit.css' layer(components);
 
 /* Re-map Starlight accents onto the Ikenga ember/kola palette. Dark values
@@ -57,7 +57,7 @@
 	--sl-color-accent-high: hsl(14, 80%, 78%);
 }
 
-/* WP-19 tonal-alignment fix: every other Starlight chrome var (bg/text/
+/* Tonal-alignment fix: every other Starlight chrome var (bg/text/
    hairline, mapped in theming.css) already re-resolves per mode via var()
    indirection through --bg-base/--fg/etc.; this accent block was the one
    holdout still hardcoded to the dark-pole numbers, so the docs light

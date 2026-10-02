@@ -1,5 +1,5 @@
 /**
- * moment-graph.ts — "Everything connects" v2 (WP-13), client half only.
+ * moment-graph.ts — "Everything connects" v2, client half only.
  *
  * The radial layout, every info card, the matrix and the flow all render at
  * BUILD TIME in MomentGraph.astro — nothing here imports d3, and the complete
@@ -18,9 +18,9 @@
  *      set by the component's parse-time inline script so the pinned track's
  *      height is reserved before first paint (zero layout shift).
  *   4. ambient intro — a one-shot edge draw-in, IO- and reduced-motion-gated.
- *      DEC-4 note: the draw-in animates `strokeDashoffset` (not transform/
- *      opacity) — a recorded, accepted deviation carried over from the shipped
- *      WP-07 island: one-shot, 13 edges, reduced-motion-gated, sub-second.
+ *      Note: the draw-in animates `strokeDashoffset` (not transform/
+ *      opacity) — a recorded, accepted deviation carried over from the original
+ *      island: one-shot, 13 edges, reduced-motion-gated, sub-second.
  *
  * Under prefers-reduced-motion the script installs trace + info-board select
  * (interaction, not motion) but registers ZERO animations and never sets

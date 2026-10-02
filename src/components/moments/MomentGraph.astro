@@ -1,9 +1,9 @@
 ---
 /**
- * MomentGraph.astro — "Everything connects" v2 (WP-13, supersedes WP-07's
- * section scope over the shipped SPIKE-07 island).
+ * MomentGraph.astro — "Everything connects" v2 (section scope over the
+ * shipped graph island).
  *
- * A pinned scrollytelling sequence (DEC-10 / DEC-11), four beats over one
+ * A pinned scrollytelling sequence, four beats over one
  * sticky stage:
  *   1. Radial capability graph (the shipped island — ports the shell Ngwa
  *      analyzer's Bundle mode: radial edge-bundling + kind-band arcs).
@@ -14,7 +14,7 @@
  *   3. Store map (ports StoreMatrix): kind rows × scope columns, presence dots.
  *   4. Flow view (ports ngwa-flow): groundwork's procedural step-sequence.
  *
- * SSG-FIRST (island contract ./CONTRACT.md, hardened by DEC-4):
+ * SSG-FIRST (island contract ./CONTRACT.md):
  *   · The radial layout (d3-hierarchy `cluster` + d3-shape `lineRadial`/
  *     `curveBundle`) and every info card / matrix cell / flow step render as
  *     complete static markup at `astro build` time — ZERO client JS is needed
@@ -30,16 +30,16 @@
  *     beat swaps — no CSS scroll-timeline).
  *
  * A11Y: every node is keyboard-focusable (tabindex/role/aria-label, unchanged
- * from WP-07); focusing or hovering a node traces the radial AND drives the
+ * from the original island); focusing or hovering a node traces the radial AND drives the
  * info board, whose selection is announced via a visually-hidden aria-live
  * region. Each beat/slide carries its own caption + label; the matrix is a real
  * <table> with a caption.
  *
- * HONESTY (G-19 / G-21): every node, store row, scope column and flow step
+ * HONESTY: every node, store row, scope column and flow step
  * traces to the registry-verified cast (./graph-fixture.ts + ./graph-slides.ts
  * → ./cast.json). Presence encodings are labelled "staged demo".
  *
- * TONE (CONTRACT.md, locked at G-MOMENT): the dark app object is
+ * TONE (CONTRACT.md): the dark app object is
  * tone-INDEPENDENT and never flips; only the outer copy (captions / foot) is
  * tone-aware via `--site-*`. Section ships on the dark pole.
  */
@@ -464,7 +464,7 @@ const wsCrumb = `${STORE_SCOPES[0]?.label ?? 'workspace'} · ${STORE_SCOPES[1]?.
 </section>
 
 <script is:inline>
-	/* Parse-time layout upgrade (WP-13 verify fix): set data-anim="js" BEFORE
+	/* Parse-time layout upgrade: set data-anim="js" BEFORE
 	   the section first paints, so the 400vh pinned track is reserved from the
 	   start and the DOMContentLoaded module never causes a layout jump. Runs
 	   per instance; no-JS and reduced-motion readers never get the pin. */
@@ -483,7 +483,7 @@ const wsCrumb = `${STORE_SCOPES[0]?.label ?? 'workspace'} · ${STORE_SCOPES[1]?.
 </script>
 
 <style>
-	/* ── "Everything connects" v2 (WP-13) ────────────────────────────────────
+	/* ── "Everything connects" v2 ──────────────────────────────────────────
 	   The dark app OBJECT internals are tone-INDEPENDENT `--moment-*` tokens
 	   (CONTRACT.md); the outer copy is tone-aware via `--site-*`. `--nk-*`
 	   (kind hues) and `--st-*` (store presence) mirror the shell's own tokens —
@@ -501,8 +501,8 @@ const wsCrumb = `${STORE_SCOPES[0]?.label ?? 'workspace'} · ${STORE_SCOPES[1]?.
 		--moment-border-strong: hsl(28, 14%, 30%);
 		--moment-fg: hsl(36, 28%, 90%);
 		--moment-muted: hsl(32, 11%, 56%);
-		/* 53% (was 44%): 4.5:1+ on the darkest app-object panels — WP-15 a11y gate
-		   (LH flagged 19 micro-labels at 3.83–4.14 with the 44% value). */
+		/* 53% (was 44%): 4.5:1+ on the darkest app-object panels — accessibility
+		   fix (Lighthouse flagged 19 micro-labels at 3.83–4.14 with the 44% value). */
 		--moment-faint: hsl(28, 10%, 53%);
 		--moment-node-label: hsl(32, 11%, 62%);
 		--moment-node-label-hot: hsl(36, 28%, 92%);

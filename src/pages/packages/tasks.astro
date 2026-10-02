@@ -1,7 +1,6 @@
 ---
 // /packages/tasks — flagship page for @ikenga/pkg-tasks.
-// Draft source: plans/launch/drafts/pkg-page-tasks.md
-// Registry-fed header (version verified from the registry at build time, WP-17).
+// Registry-fed header (version verified from the registry at build time).
 // List beat carries the real shell capture (public/assets/shell/tasks-shell-1286.webp).
 import Layout from '../../layouts/Layout.astro';
 import FeaturePage from '../../components/FeaturePage.astro';
@@ -26,7 +25,7 @@ const ver = pkgVersion(registry, '@ikenga/pkg-tasks', '0.8.2');
 		docsHref="/docs/"
 		catalogHref="/packages/"
 	>
-		<!-- Beat 1: List view — real shell capture (WP-11 export) -->
+		<!-- Beat 1: List view — real shell capture -->
 		<section class="sk-section">
 			<div class="sk-wrap">
 				<h2 class="sk-h2">The List view — see everything at once</h2>
@@ -218,7 +217,7 @@ ikenga add ~/my-tasks</pre>
 	}
 	.sk-list a {
 		color: var(--site-accent);
-		/* WP-21 a11y gate (link-in-text-block): accent vs surrounding text is
+		/* Accessibility fix (link-in-text-block): accent vs surrounding text is
 		   1.55:1 — links need a non-color distinguisher, so underline at rest. */
 		text-decoration: underline;
 		text-underline-offset: 3px;

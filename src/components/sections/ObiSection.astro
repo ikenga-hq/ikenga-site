@@ -1,5 +1,5 @@
 ---
-// ObiSection — WP-09 fill: the closing dark "Welcome to your Obi" beat that
+// ObiSection — the closing dark "Welcome to your Obi" beat that
 // earns the download (company-proof story, closing CTA pair, Obi gloss).
 //
 // Sourcing — every factual claim below is traceable to one of two files:
@@ -9,7 +9,7 @@
 //    was removed in the honesty hotfix; do not reintroduce a figure without a
 //    source.
 //
-// 2. The G-21 spine line, the Obi gloss, the CTA pair, and the proof line
+// 2. The spine line, the Obi gloss, the CTA pair, and the proof line
 //    are verbatim from the CURRENT production closing section
 //    (`git show main:src/pages/index.astro`):
 //      - "We built it to run our own company. Now it's yours."
@@ -17,11 +17,11 @@
 //      - "Apache-2.0. No account required. Read every line."
 //      - Button pair: Download Ikenga (primary) / Star on GitHub (ghost).
 //
-// Glow discipline (D-01): the kola-amber glow is spent on the hero <em> and
+// Glow discipline: the kola-amber glow is spent on the hero <em> and
 // the primary CTA hover only (see `.sk-display em` in site-kit.css). This
 // section's <h2> carries no <em>, so it spends none.
 //
-// CTA target: #install (WP-08's InstallSection id), matching the hero's own
+// CTA target: #install (the InstallSection id), matching the hero's own
 // ghost-row "Download ↓" link — not the old page's #downloads anchor, which
 // this redesign doesn't use.
 import Button from '../Button.astro';
@@ -45,8 +45,8 @@ const { github = 'https://github.com/ikenga-hq/ikenga' } = Astro.props;
 		</p>
 		<p class="sk-lede">We built it to run our own company. Now it's yours.</p>
 		<!-- The "workspace becomes you" claims, verbatim from the prior production
-		     page's Beat 2 (git show main:src/pages/index.astro) — re-homed here by
-		     the WP-10 follow-up so the copy accounting closes (WP-05 flag). -->
+		     page's Beat 2 (git show main:src/pages/index.astro) — re-homed here so
+		     the copy accounting closes. -->
 		<ul class="sk-list obi-list">
 			<li>Your config lives on your machine — readable as files, versioned in git.</li>
 			<li>Every agent, skill, and command you install is yours to inspect and change.</li>
