@@ -1,11 +1,11 @@
-// Build-time Ikenga package-registry loader for the storefront (WP-17, WP-05).
+// Build-time Ikenga package-registry loader for the storefront.
 //
 // The catalog + per-pkg detail headers are generated from the published
 // registry index at build time. On ANY failure — fetch error, non-200,
 // empty/malformed payload, or when forced via IKENGA_REGISTRY_FALLBACK=1 —
 // we fall back to the committed last-good snapshot
 // (src/data/registry-snapshot.json) so a Cloudflare Pages build NEVER breaks
-// on registry downtime. The fallback is never silent (G-06): it emits a loud
+// on registry downtime. The fallback is never silent: it emits a loud
 // build-log warning naming the snapshot's `asOf`, and the /packages page
 // labels itself "from committed snapshot".
 //
@@ -52,7 +52,7 @@ export interface LoadResult {
 interface SnapshotShape extends RegistryIndex {
 	/** ISO stamp: when the committed copy was fetched from the live registry. */
 	asOf: string;
-	/** Always `last-good` for the committed copy (G-TRUTH `RegistrySnapshot`). */
+	/** Always `last-good` for the committed copy (the shared `RegistrySnapshot` shape). */
 	origin?: 'last-good';
 	/** The index the copy was fetched from. */
 	url?: string;
@@ -79,7 +79,7 @@ function registryUrl(): string {
 
 /**
  * Loud, single-line build-summary note for the fallback path. A silently
- * stale catalog is the failure G-06 forbids, so this always prints — including
+ * stale catalog is a real failure, so this always prints — including
  * for a forced fallback — and names the snapshot `asOf` and its age.
  */
 function warnFallback(result: LoadResult, reason: string): void {

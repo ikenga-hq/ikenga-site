@@ -95,7 +95,7 @@
       "name": "@ikenga/pkg-engine-openrouter",
       "latest": "0.2.0",
       "detail": "pkgs/engine-openrouter.json",
-      "description": "OpenRouter unified engine adapter for Ikenga (Plan 24, WP-20).",
+      "description": "OpenRouter unified engine adapter for Ikenga.",
       "kind": "engine"
     },
     {
