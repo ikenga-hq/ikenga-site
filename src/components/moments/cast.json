@@ -104,8 +104,7 @@
     { "kind": "mcp", "name": "@ikenga/mcp-iyke", "version": "0.2.1", "detail": "iyke control-bridge MCP server" },
     { "kind": "mcp", "name": "@ikenga/mcp-browser", "version": "0.3.0", "detail": "Drives native child webviews — open a partner portal in a pane, snapshot, click, fill." },
     { "kind": "engine", "name": "@ikenga/pkg-engine-claude-code", "version": "0.2.1" },
-    { "kind": "engine", "name": "@ikenga/pkg-engine-codex", "version": "0.2.1" },
-    { "kind": "engine", "name": "@ikenga/pkg-engine-gemini", "version": "0.2.1" }
+    { "kind": "engine", "name": "@ikenga/pkg-engine-codex", "version": "0.2.1" }
   ],
-  "engines_rotation": ["Claude Code", "Codex", "Gemini CLI"]
+  "engines_rotation": ["Claude Code", "Codex"]
 }

@@ -2,7 +2,7 @@
   "$schemaVersion": 1,
   "updatedAt": "2026-07-04T22:35:17.857Z",
   "fetchedAt": "2026-07-06T07:51:12.838Z",
-  "source": "https://royalti-io.github.io/ikenga-registry/index.json — committed fallback so CF Pages builds never break on registry downtime",
+  "source": "https://ikenga-hq.github.io/ikenga-registry/index.json — committed fallback so CF Pages builds never break on registry downtime",
   "pkgs": [
     {
       "name": "@ikenga/mcp-browser",
@@ -53,13 +53,6 @@
       "description": "Cursor agent CLI engine adapter for Ikenga (scaffold-only; runtime stubbed per ADR-013 Phase 4).",
       "kind": "engine",
       "visibility": "hidden"
-    },
-    {
-      "name": "@ikenga/pkg-engine-gemini",
-      "latest": "0.2.1",
-      "detail": "pkgs/engine-gemini.json",
-      "description": "Gemini CLI engine adapter for Ikenga.",
-      "kind": "engine"
     },
     {
       "name": "@ikenga/pkg-engine-noop",

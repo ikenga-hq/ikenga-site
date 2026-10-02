@@ -7,8 +7,6 @@
 #
 # Usage (Windows under Git Bash / MSYS / Cygwin):
 #   curl -fsSL https://ikenga.dev/install.sh | sh
-# Or use winget:
-#   winget install Ikenga.Shell
 #
 # Environment overrides:
 #   IKENGA_VERSION       Pin a release tag (default: latest published).
@@ -141,6 +139,8 @@ if [ "$os" = "darwin" ]; then
 	hdiutil detach "$vol" -quiet 2>/dev/null || true
 
 	# Remove Gatekeeper quarantine on the freshly-copied app (best-effort).
+	# See https://ikenga.dev/security for the security policy.
+	echo "→ Clearing macOS quarantine flag (best-effort)"
 	xattr -dr com.apple.quarantine "$dest" 2>/dev/null || true
 
 	echo

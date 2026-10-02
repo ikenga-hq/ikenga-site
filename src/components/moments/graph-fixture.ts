@@ -160,7 +160,7 @@ const edges: GraphEdge[] = [
 	// engine a session is pinned to.
 	edge('@ikenga/mcp-iyke', '@ikenga/pkg-engine-claude-code', 'gates', 'declarative'),
 	edge('@ikenga/mcp-iyke', '@ikenga/pkg-engine-codex', 'gates', 'declarative'),
-	edge('@ikenga/mcp-iyke', '@ikenga/pkg-engine-gemini', 'gates', 'declarative'),
+	edge('@ikenga/mcp-iyke', '@ikenga/', 'gates', 'declarative'),
 
 	// ── heuristic — plausible, inferred (not cited per-pkg anywhere) ──
 	// the iyke control bridge's DOM/click/query surface can reach any
