@@ -30,6 +30,29 @@ const { cmd, center = false, id } = Astro.props;
 </style>
 
 <script>
+	// Count a copy of the install.sh one-liner (and only that; the skill and pkg
+	// commands that share this component are not counted). Sends an event name and
+	// the page path to /api/event, which stores nothing else. See functions/api/event.ts.
+	const trackInstallCopy = (text: string) => {
+		if (!text.includes('install.sh')) return;
+		try {
+			const body = JSON.stringify({ name: 'install_copy', path: location.pathname });
+			const queued =
+				typeof navigator.sendBeacon === 'function' &&
+				navigator.sendBeacon('/api/event', new Blob([body], { type: 'application/json' }));
+			if (!queued) {
+				void fetch('/api/event', {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body,
+					keepalive: true,
+				}).catch(() => {});
+			}
+		} catch {
+			/* analytics must never break the copy button */
+		}
+	};
+
 	// Copy the install command. Scoped by class so multiple blocks work.
 	for (const block of document.querySelectorAll<HTMLElement>('.sk-install')) {
 		const btn = block.querySelector<HTMLButtonElement>('.sk-install__copy');
@@ -38,6 +61,7 @@ const { cmd, center = false, id } = Astro.props;
 			const text = code?.textContent?.trim() ?? '';
 			try {
 				await navigator.clipboard.writeText(text);
+				trackInstallCopy(text);
 				const prev = btn.textContent;
 				btn.textContent = 'Copied';
 				btn.dataset.state = 'ok';
