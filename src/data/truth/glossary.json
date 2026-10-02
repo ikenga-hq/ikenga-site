@@ -56,8 +56,8 @@
   },
   {
     "term": "Ọba",
-    "plain": "signed registry service",
-    "definition": "The signed registry service behind Ngwa: the source of the apps and extensions that Ngwa offers. What it publishes is the signed Registry index, and the app refuses an index whose signature does not verify.",
+    "plain": "store backend",
+    "definition": "The backend of Ngwa. It installs apps and extensions, records where each one came from and what it depends on, and takes catalogue entries from the signed Ikenga registry.",
     "avoid": [],
     "shell_ui_status": "matches"
   },

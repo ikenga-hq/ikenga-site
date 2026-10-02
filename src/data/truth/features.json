@@ -1271,7 +1271,7 @@
     "scope": "multi-user-server",
     "limits": [
       "Until it arrives, a multi-user server signs people in with a username and password.",
-      "Covers OpenID Connect (OIDC) only; sign-in through LDAP or Active Directory is not planned."
+      "Covers OpenID Connect (OIDC) only. Most directories, including Active Directory through Microsoft Entra ID, connect through OIDC."
     ],
     "audiences": [
       "teams"
