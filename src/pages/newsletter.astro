@@ -1,16 +1,10 @@
 ---
 // /newsletter — "Building in the Loop." Founder-written, biweekly.
-// WP-01 of plans/2026-07-02-community-content-engine/. WP-02 flips the
-// Discord block visible by swapping DISCORD_INVITE.
 import Layout from '../layouts/Layout.astro';
-
-const SUBSCRIBE_URL = 'https://buildingintheloop.substack.com/subscribe';
-const DISCORD_INVITE = '{{DISCORD_INVITE}}'; // TODO(WP-02): replace with the Discord invite link to flip this visible
-const DISCORD_LIVE = Boolean(DISCORD_INVITE) && !DISCORD_INVITE.startsWith('{{');
 
 const title = 'Building in the Loop — Ikenga’s newsletter for Claude Code builders';
 const description =
-	'Biweekly letters from a founder running a real, in-production Claude Code system — 28 agents, 101 skills, 68 commands. Real workflows, real costs, build-in-public.';
+	'Biweekly letters from a founder running a real, in-production Claude Code system. Real workflows, real costs, build-in-public.';
 ---
 
 <Layout title={title} description={description} canonical="https://ikenga.dev/newsletter">
@@ -21,13 +15,12 @@ const description =
 			<p class="sk-eyebrow">Building in the Loop · Biweekly · Founder-written</p>
 			<h1 class="sk-display">Building in the <em>Loop.</em></h1>
 			<p class="sk-lede">
-				I run a real, in-production Claude Code system every day — 28 agents, 101 skills, 68
-				commands, doing actual work across a live company. This is the letter where I show how it's
+				I run a real, in-production Claude Code system every day, doing actual work across a live company. This is the letter where I show how it's
 				built: the workflows that hold up, the ones that broke, and what it actually costs to run
 				agents like this in production. Build-in-public, no gloss.
 			</p>
 
-			<form class="nl-form" action={SUBSCRIBE_URL} method="get" target="_blank">
+			<form class="nl-form" id="nl-subscribe-form">
 				<label class="sk-sr-only" for="nl-email">Email address</label>
 				<input
 					id="nl-email"
@@ -38,9 +31,12 @@ const description =
 					required
 					autocomplete="email"
 				/>
+				<!-- honeypot: hidden from humans, catches bots -->
+				<input class="nl-form__hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
 				<button type="submit" class="sk-btn sk-btn--primary nl-form__submit">Subscribe</button>
 			</form>
 			<p class="nl-form__note">No spam. Unsubscribe anytime.</p>
+			<p class="nl-form__msg" id="nl-msg" role="status" aria-live="polite"></p>
 		</div>
 	</section>
 
@@ -66,20 +62,52 @@ const description =
 		</div>
 	</section>
 
-	<!-- Discord (hidden until WP-02 sets DISCORD_INVITE) -->
-	{DISCORD_LIVE && (
-		<section class="sk-section">
-			<div class="sk-wrap">
-				<h2 class="sk-h2">Talk shop between issues</h2>
-				<p class="sk-body">
-					Want to compare notes with other agent builders between issues?
-					<a href={DISCORD_INVITE}>Join the Discord</a>.
-				</p>
-			</div>
-		</section>
-	)}
+	<!-- TODO(founder): Discord invite -->
 
 </Layout>
+
+<script>
+	// Subscribe — posts to the on-site Resend Pages Function (/api/subscribe),
+	// same contract as the homepage form.
+	const form = document.getElementById('nl-subscribe-form') as HTMLFormElement | null;
+	const msg = document.getElementById('nl-msg');
+	form?.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		const button = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+		const emailEl = form.elements.namedItem('email') as HTMLInputElement | null;
+		if (!button || !emailEl || !msg) return;
+		const email = emailEl.value.trim();
+		const company = (form.elements.namedItem('company') as HTMLInputElement)?.value ?? '';
+
+		button.disabled = true;
+		const original = button.textContent;
+		button.textContent = 'Subscribing…';
+		msg.textContent = '';
+		delete msg.dataset.state;
+		try {
+			const res = await fetch('/api/subscribe', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ email, company }),
+			});
+			const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+			if (res.ok && data.ok) {
+				form.reset();
+				msg.textContent = "You're on the list. Welcome.";
+				msg.dataset.state = 'ok';
+			} else {
+				msg.textContent = data.error ?? 'Could not subscribe right now. Please try again.';
+				msg.dataset.state = 'error';
+			}
+		} catch {
+			msg.textContent = 'Network error. Please try again.';
+			msg.dataset.state = 'error';
+		} finally {
+			button.disabled = false;
+			button.textContent = original;
+		}
+	});
+</script>
 
 <style>
 	.sk-sr-only {
@@ -122,6 +150,24 @@ const description =
 	}
 	.nl-form__submit {
 		flex: none;
+	}
+	.nl-form__hp {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		opacity: 0;
+	}
+	.nl-form__msg {
+		min-height: 1.25rem;
+		font-size: 0.875rem;
+		margin: 0;
+	}
+	.nl-form__msg[data-state='ok'] {
+		color: var(--site-accent);
+	}
+	.nl-form__msg[data-state='error'] {
+		color: #e5484d;
 	}
 	.nl-form__note {
 		font-size: 0.8125rem;

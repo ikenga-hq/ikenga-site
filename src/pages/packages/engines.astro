@@ -1,6 +1,6 @@
 ---
 // /packages/engines — Flagship page for Ikenga engine adapters.
-// Claude Code = default (built-in). Gemini + Codex = pluggable adapters.
+// Claude Code = default (built-in). Codex = pluggable adapter.
 // All require the Ikenga shell; these are NOT standalone skills.
 // Draft: plans/launch/drafts/pkg-page-engines.md
 import Layout from '../../layouts/Layout.astro';
@@ -17,14 +17,14 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 
 <Layout
 	title="Engines — Claude Code, wired in · Ikenga"
-	description="Claude Code is the default engine, fully wired. Gemini CLI and Codex CLI are pluggable adapters — install either alongside it, same setup, same shell. Your skills and MCP servers fan out to each without duplication."
+	description="Claude Code is the default engine, fully wired. Codex CLI is a pluggable adapter — install it alongside, same setup, same shell. Your skills and MCP servers fan out to each without duplication."
 	canonical="https://ikenga.dev/packages/engines"
 >
 	<FeaturePage
 		eyebrow={`Engine pkgs · claude-code v${ver} · Apache-2.0`}
 		title={`Claude Code, wired in`}
-		lede="Claude Code is the default engine, fully wired. Gemini CLI and Codex CLI are pluggable adapters — install either alongside it, swap with a click."
-		problem="An engine is the AI backend that drives your workspace. Ikenga leads with Claude Code: it wraps the claude CLI you already have, parses its streaming output, and wires it into the shell's session layer — persistence, resume, and the cockpit's config surface all work out of the box. Gemini CLI and Codex CLI follow the same manifest-and-adapter pattern. One workspace, your choice of backend."
+		lede="Claude Code is the default engine, fully wired. Codex CLI is a pluggable adapter — install it alongside, swap with a click."
+		problem="An engine is the AI backend that drives your workspace. Ikenga leads with Claude Code: it wraps the claude CLI you already have, parses its streaming output, and wires it into the shell's session layer — persistence, resume, and the cockpit's config surface all work out of the box. Codex CLI follows the same manifest-and-adapter pattern. One workspace, your choice of backend."
 		worksWith="Requires the Ikenga shell. Claude Code is active as soon as you install the shell — no extra step."
 		docsHref="/docs/engines"
 		catalogHref="/packages"
@@ -36,10 +36,10 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 				<h2 class="sk-h2">The problem it removes</h2>
 				<p class="sk-body">
 					Most setups are engine-specific by accident. Your Claude Code skills are in
-					<code>~/.claude/skills/</code>. Your Gemini config is somewhere else. Your Codex
-					prompts are somewhere else again. When you want to compare two backends on the
+					<code>~/.claude/skills/</code>. Your Codex config and prompts are somewhere
+					else. When you want to compare two backends on the
 					same task, you're reconfiguring from scratch. When Claude releases a new model,
-					you update one place; when you try Gemini, you rebuild.
+					you update one place; when you try another engine, you rebuild.
 				</p>
 				<p class="sk-body">
 					Ikenga's engine layer removes that accident. Each engine is a manifest-declared
@@ -96,28 +96,23 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 			</div>
 		</section>
 
-		<!-- Beat 3: Gemini and Codex as pluggable adapters — copy-only (no screenshot) -->
+		<!-- Beat 3: Codex as pluggable adapter — copy-only (no screenshot) -->
 		<section class="sk-section">
 			<div class="sk-wrap">
-				<h2 class="sk-h2">Gemini and Codex as pluggable adapters</h2>
+				<h2 class="sk-h2">Codex as a pluggable adapter</h2>
 				<p class="sk-body">
-					Gemini CLI (<code>com.ikenga.engine-gemini</code>) and Codex CLI
-					(<code>com.ikenga.engine-codex</code>) follow the same manifest-and-adapter
-					pattern. Both are separately installable engine pkgs — add them from the
+					Codex CLI (<code>com.ikenga.engine-codex</code>) is a separately installable engine pkg — add it from the
 					shell's package manager or directly via the <code>ikenga</code> CLI. Install
-					one or both alongside Claude Code; remove either without touching anything
-					else.
+					it alongside Claude Code; remove it without touching anything else.
 				</p>
 				<p class="sk-body">
-					The Gemini adapter uses an ACP passthrough: it spawns <code>gemini</code> and
-					proxies its JSON-RPC 2.0 NDJSON protocol bidirectionally. The Codex adapter
-					uses a custom stream adapter: it parses <code>codex exec --json</code> output
-					into the shell's normalized envelopes. Either way the frontend sees the same
+					The Codex adapter uses a custom stream adapter: it parses <code>codex exec --json</code> output
+					into the shell's normalized envelopes. The frontend sees the same
 					wire — one session shape, one chat UI, regardless of which engine is active.
 				</p>
 				<p class="sk-body">
-					Each adapter's manifest declares an <strong>onboarding block</strong>: which
-					vault keys it needs (<code>GEMINI_API_KEY</code>, <code>OPENAI_API_KEY</code>),
+					The adapter's manifest declares an <strong>onboarding block</strong>: which
+					vault keys it needs (<code>OPENAI_API_KEY</code>),
 					the auth command to copy, and a docs link. The first-run wizard surfaces this
 					before you can start a thread, so auth never breaks silently.
 				</p>
@@ -137,7 +132,7 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 				</p>
 				<p class="sk-body">
 					This is useful for comparison: start a thread with Claude Code, send the same
-					prompt to Gemini in the next turn, see both responses in the same history. No
+					prompt to Codex in the next turn, see both responses in the same history. No
 					context copy-paste, no tab-switching.
 				</p>
 			</div>
@@ -171,7 +166,7 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 				<p class="sk-body">
 					Each engine requires its CLI binary on your <code>$PATH</code>. The shell
 					resolves the binary path from a configurable setting
-					(<code>claude_binary</code>, <code>gemini_binary</code>,
+					(<code>claude_binary</code>, <code>antigravity_binary</code>,
 					<code>codex_binary</code>) so non-default install locations work.
 				</p>
 				<div class="eg-caps">
@@ -192,10 +187,10 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 								<td><code>claude-sonnet-4-6</code></td>
 							</tr>
 							<tr>
-								<td><BrandIcon name="gemini" /> <strong>Antigravity CLI</strong></td>
+								<td><BrandIcon name="antigravity" /> <strong>Antigravity CLI</strong> (beta)</td>
 								<td><code>com.ikenga.engine-antigravity</code></td>
-								<td><code>agy models</code> / <code>GEMINI_API_KEY</code></td>
-								<td><code>gemini-3.5-flash-medium</code></td>
+								<td><code>agy models</code> + an API key in the vault</td>
+								<td>Set in the pkg's settings</td>
 							</tr>
 							<tr>
 								<td><BrandIcon name="codex" /> <strong>Codex CLI</strong></td>
@@ -217,7 +212,7 @@ const ver = pkgVersion(registry, '@ikenga/pkg-engine-claude-code', '0.2.1');
 					Claude Code is the built-in engine — it is active as soon as you install the
 					Ikenga shell. No extra step.
 				</p>
-				<p class="sk-body">To add Antigravity CLI or Codex CLI:</p>
+				<p class="sk-body">To add Antigravity CLI (beta) or Codex CLI:</p>
 				<div class="eg-installs">
 					<InstallBlock cmd="ikenga add @ikenga/pkg-engine-antigravity">
 						<p class="sk-install__note">

@@ -54,7 +54,6 @@ An engine pkg declares an `engine` block in its manifest:
 | Engine | Status | Auth | Resume |
 | --- | --- | --- | --- |
 | **Claude Code** | **Default — fully wired.** The shell spawns your local `claude` CLI and translates its streaming output. | `claude login` or `ANTHROPIC_API_KEY` | `claude --resume <id>` |
-| **Gemini** | Pluggable adapter. Spawns `gemini` and proxies its protocol bidirectionally. | `gemini auth` or `GEMINI_API_KEY` | `gemini --resume` / `--session-id` |
 | **Codex** | Pluggable adapter. Stream-parses `codex exec --json` into the shell's normalized envelopes. | `codex login` or `OPENAI_API_KEY` | `codex resume` |
 | **noop** | Reference adapter. Returns canned responses — useful for tests and demos and as the minimum viable engine manifest. | — | — |
 

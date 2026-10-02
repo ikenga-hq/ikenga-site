@@ -5,17 +5,17 @@
  * (byte-identical copy of `plans/site-redesign/designs/_fixtures/cast.json`).
  * Two slices of that fixture are both explicitly "registry-verified" per its
  * own README (`_fixtures/README.md`): `capability_nodes` (9 entries: three
- * skills, a command, two mcps, three engines) and `store_rows` (8 registry
+ * skills, a command, two mcps, two engines) and `store_rows` (8 registry
  * UI pkgs — tasks/mail/research/strategy/content/finance/outbound/sales).
  * Both are copied name-for-name from `ikenga-registry/index.json` as of the
  * cast's `verified_on` date. No node below is invented; nothing outside these
- * two arrays is used. Total = 17 nodes.
+ * two arrays is used. Total = 16 nodes.
  *
  * DENSITY NOTE (WP-22 / G-CAST): the SPIKE-07 brief asked for ~14-22 nodes /
  * ~20-30 links. Against the provisional draft the registry-verified surface
  * only supported 11 nodes; the G-CAST lock sweep re-curated against the live
- * 18-pkg registry (updatedAt 2026-07-04) and the honest set now lands at 17
- * nodes / 23 edges — inside the spike target without inventing anything. Still
+ * 18-pkg registry (updatedAt 2026-07-04) and the honest set now lands at 16
+ * nodes / 22 edges — inside the spike target without inventing anything. Still
  * EXCLUDED (real, but not in cast.json — its curators left them out):
  * huashu-design / frontend-design / ikenga-pkg-builder (groundwork composes
  * them "when present"), and the hidden registry stubs (pkg-hello, engine-noop,
@@ -100,7 +100,7 @@ const nodes: GraphNode[] = [
 			id: slug(n.name),
 			label: n.name,
 			kind: n.kind as GraphKind,
-			// the 3 engine entries carry no `detail`, only `version` — cast.json
+			// the 2 engine entries carry no `detail`, only `version` — cast.json
 			// as authored, not a gap introduced here.
 			detail: n.detail ?? (version ? `v${version}` : ''),
 			version,
@@ -160,7 +160,6 @@ const edges: GraphEdge[] = [
 	// engine a session is pinned to.
 	edge('@ikenga/mcp-iyke', '@ikenga/pkg-engine-claude-code', 'gates', 'declarative'),
 	edge('@ikenga/mcp-iyke', '@ikenga/pkg-engine-codex', 'gates', 'declarative'),
-	edge('@ikenga/mcp-iyke', '@ikenga/pkg-engine-gemini', 'gates', 'declarative'),
 
 	// ── heuristic — plausible, inferred (not cited per-pkg anywhere) ──
 	// the iyke control bridge's DOM/click/query surface can reach any

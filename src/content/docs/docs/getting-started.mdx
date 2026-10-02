@@ -18,14 +18,12 @@ curl -fsSL https://ikenga.dev/install.sh | sh
 
 The script detects your OS and architecture, downloads the matching artifact from the latest GitHub Release, and installs it:
 
-- **macOS** — mounts the signed `.dmg` and copies `Ikenga.app` into `/Applications`, clearing the Gatekeeper quarantine flag on the copy.
-- **Linux** — defaults to the system-wide `.deb` (**~60 MB**) when `dpkg` is present, printing the single `sudo apt-get install` line to paste; otherwise it installs the no-sudo AppImage (**~140 MB**) to `~/.local/bin/ikenga` and makes it executable. Force either with `IKENGA_FORMAT=deb` or `IKENGA_FORMAT=appimage`. Both download from GitHub's release CDN, which can run slowly — **give the transfer a minute or two before assuming it stalled.**
+- **macOS** — mounts the universal `.dmg` (**~40 MB**) and copies `Ikenga.app` into `/Applications`. Ikenga is not yet code-signed, so the script clears the Gatekeeper quarantine flag on the copy and prints a line saying so.
+- **Linux** — defaults to the system-wide `.deb` (**~22 MB**) when `dpkg` is present, printing the single `sudo apt-get install` line to paste; otherwise it installs the no-sudo AppImage (**~110 MB**) to `~/.local/bin/ikenga` and makes it executable. Force either with `IKENGA_FORMAT=deb` or `IKENGA_FORMAT=appimage`. Both download from GitHub's release CDN, which can run slowly — **give the transfer a minute or two before assuming it stalled.**
 
 ### macOS — Apple Silicon and Intel
 
-{/* VERIFY: confirm the published macOS build targets before launch — shell/CLAUDE.md documents an aarch64-apple-darwin build path (bunx tauri build --target aarch64-apple-darwin), but the existing getting-started stub claims the current matrix is x86_64-only. Reconcile which is true at WP-13 and state it plainly here. */}
-
-The installer picks the right artifact for your chip. On Apple Silicon (arm64) it installs the native build where one exists; otherwise it points you at the issue tracker rather than installing the wrong binary.
+Releases ship a single universal `.dmg` that runs natively on both Apple Silicon (arm64) and Intel (x86_64), so the install script downloads the same file on either chip. Like the other installers it is not yet code-signed, so if you open the `.dmg` yourself instead of using the script, macOS shows a first-run Gatekeeper warning that you approve once.
 
 ### Linux — arm64
 
@@ -48,11 +46,7 @@ If you'd rather not pipe a script straight into your shell, you don't have to.
 
 ## Windows
 
-```powershell
-winget install Ikenga.Shell
-```
-
-Or download the `.exe` installer directly from the [latest release](https://github.com/ikenga-hq/ikenga/releases/latest). {/* VERIFY: confirm the winget package id and that a Windows artifact ships at launch. */}
+Download the `.exe` installer directly from the [latest release](https://github.com/ikenga-hq/ikenga/releases/latest). The installer is not yet code-signed, so Windows shows a first-run warning.
 
 ## Environment overrides
 
@@ -61,7 +55,7 @@ The install script honours three environment variables:
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `IKENGA_VERSION` | `latest` | Pin a specific release tag (e.g. `v0.0.4`). |
-| `IKENGA_FORMAT` | `deb` if `dpkg` present, else `appimage` | Linux installer format. `deb` is the smaller (~60 MB) system-wide install (needs sudo); `appimage` is the larger (~140 MB) no-sudo portable build. |
+| `IKENGA_FORMAT` | `deb` if `dpkg` present, else `appimage` | Linux installer format. `deb` is the smaller (~22 MB) system-wide install (needs sudo); `appimage` is the larger (~110 MB) no-sudo portable build. |
 | `IKENGA_INSTALL_DIR` | `~/.local/bin` | Linux portable (AppImage) install location. Ignored when `IKENGA_FORMAT=deb`. |
 | `IKENGA_REPO` | `ikenga-hq/ikenga` | Source repository. |
 | `IKENGA_BUN_PATH` | _(none)_ | **Runtime override.** Absolute path to a `bun` binary the shell should use in place of its own fetched copy. See [Offline / air-gapped install](#offline--air-gapped-install) below. |
@@ -128,7 +122,7 @@ Open the shell's log viewer (**Ctrl+Shift+L** / **⌘⇧L**) and filter for `run
 
 Open Ikenga. The first run is **consecration** — the short ritual that brings a new workspace to life. You'll:
 
-1. **Set up your engine (your Chi).** Ikenga is engine-optional — the shell boots and runs without one — but you'll want at least one to chat. Claude Code is fully wired; Codex and Gemini are pluggable adapters. Each engine needs its CLI on your `$PATH` and its own auth (for example, `claude login` for Claude Code). The onboarding wizard tells you exactly which key or command each engine wants. {/* VERIFY: confirm the exact onboarding step copy/order at launch. */}
+1. **Set up your engine (your Chi).** Ikenga is engine-optional — the shell boots and runs without one — but you'll want at least one to chat. Claude Code is fully wired; Codex is a pluggable adapter. Each engine needs its CLI on your `$PATH` and its own auth (for example, `claude login` for Claude Code). The onboarding wizard tells you exactly which key or command each engine wants. {/* VERIFY: confirm the exact onboarding step copy/order at launch. */}
 2. **Land in your Obi** — the home view, with the split panes (terminal · chat · file viewer) side by side.
 3. **Commission a project** when you're ready to start real work.
 

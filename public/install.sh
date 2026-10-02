@@ -7,16 +7,14 @@
 #
 # Usage (Windows under Git Bash / MSYS / Cygwin):
 #   curl -fsSL https://ikenga.dev/install.sh | sh
-# Or use winget:
-#   winget install Ikenga.Shell
 #
 # Environment overrides:
 #   IKENGA_VERSION       Pin a release tag (default: latest published).
 #   IKENGA_INSTALL_DIR   Linux portable install dir (default: $HOME/.local/bin).
 #                        Ignored when IKENGA_FORMAT=deb (system install).
 #   IKENGA_FORMAT        Linux installer format: deb or appimage. Default is
-#                        deb when dpkg is present (a ~60 MB system install) and
-#                        appimage otherwise (a ~140 MB no-sudo portable build).
+#                        deb when dpkg is present (a ~22 MB system install) and
+#                        appimage otherwise (a ~110 MB no-sudo portable build).
 #                        deb requires dpkg + apt-get; sudo prompts are not
 #                        auto-run under `curl … | sh`, so the script prints
 #                        the apt-get command for you to paste with sudo.
@@ -104,18 +102,20 @@ download() {
 
 # ─── platform install ──────────────────────────────────────────────────────
 if [ "$os" = "darwin" ]; then
-	if [ "$arch" = "arm64" ]; then
-		asset="Ikenga_${ver}_aarch64.dmg"
-	else
-		asset="Ikenga_${ver}_x64.dmg"
-	fi
+	# Releases ship ONE universal (arm64 + x86_64) DMG — there are no per-arch
+	# DMGs — so $arch does not change the asset name on macOS.
+	asset="Ikenga_${ver}_universal.dmg"
 	url="https://github.com/$REPO/releases/download/$tag/$asset"
 	echo "→ Downloading $asset"
+	hint "  ~40 MB over GitHub's CDN."
 	download "$url" "$tmp/$asset"
 
 	echo "→ Mounting"
 	mount_out="$(hdiutil attach "$tmp/$asset" -nobrowse -readonly -mountrandom "$tmp" 2>&1)"
-	vol="$(printf '%s\n' "$mount_out" | awk '/\/Volumes\// || /'"$tmp"'/ {for(i=1;i<=NF;i++) if($i ~ /^\//) print $i}' | tail -1)"
+	# $tmp is passed with -v (not spliced into the awk program): it contains
+	# slashes (e.g. /var/folders/…/T/…), which break an /…/ regex literal and
+	# made awk exit with a syntax error here, so no mount point was ever found.
+	vol="$(printf '%s\n' "$mount_out" | awk -v t="$tmp" 'index($0, "/Volumes/") || index($0, t) {for(i=1;i<=NF;i++) if($i ~ /^\//) print $i}' | tail -1)"
 	[ -d "$vol" ] || fail "Could not determine mount point for $asset"
 
 	app="$(find "$vol" -maxdepth 2 -name '*.app' -print -quit)"
@@ -141,6 +141,13 @@ if [ "$os" = "darwin" ]; then
 	hdiutil detach "$vol" -quiet 2>/dev/null || true
 
 	# Remove Gatekeeper quarantine on the freshly-copied app (best-effort).
+	# Ikenga is not yet code-signed, so macOS would otherwise block the first
+	# launch. Running this script is already a trust decision, but the strip is
+	# security-relevant, so it is disclosed in the output below rather than done
+	# silently. Policy: https://ikenga.dev/security (page pending; until it
+	# lands this echo is the disclosure).
+	echo "→ Clearing the macOS quarantine flag on $dest"
+	hint "  Ikenga is not yet code-signed; this skips Gatekeeper's first-launch warning for this app."
 	xattr -dr com.apple.quarantine "$dest" 2>/dev/null || true
 
 	echo
@@ -157,8 +164,8 @@ if [ "$os" = "linux" ]; then
 		exit 1
 	fi
 	# Resolve the `auto` default: prefer the smaller .deb when dpkg is present
-	# (a ~60 MB system install) over the ~140 MB no-sudo AppImage. The AppImage
-	# is ~3× larger and reads as a "hang" on a slow connection, so it's the
+	# (a ~22 MB system install) over the ~110 MB no-sudo AppImage. The AppImage
+	# is ~5× larger and reads as a "hang" on a slow connection, so it's the
 	# fallback, not the default. An explicit IKENGA_FORMAT wins either way.
 	if [ "$FORMAT" = "auto" ]; then
 		if command -v dpkg >/dev/null 2>&1; then
@@ -177,9 +184,9 @@ if [ "$os" = "linux" ]; then
 			bin="$dir/ikenga"
 
 			echo "→ Downloading $asset"
-			hint "  ~140 MB over GitHub's CDN — this can take a few minutes; it isn't stuck."
+			hint "  ~110 MB over GitHub's CDN — this can take a few minutes; it isn't stuck."
 			if command -v dpkg >/dev/null 2>&1; then
-				hint "  (Smaller system install available: IKENGA_FORMAT=deb — ~60 MB.)"
+				hint "  (Smaller system install available: IKENGA_FORMAT=deb — ~22 MB.)"
 			fi
 			mkdir -p "$dir"
 			download "$url" "$bin"
@@ -219,8 +226,8 @@ if [ "$os" = "linux" ]; then
 			out="/tmp/$asset"
 
 			echo "→ Downloading $asset"
-			hint "  ~60 MB over GitHub's CDN, then one sudo paste to install."
-			hint "  (Prefer a no-sudo portable build? Re-run with IKENGA_FORMAT=appimage — ~140 MB.)"
+			hint "  ~22 MB over GitHub's CDN, then one sudo paste to install."
+			hint "  (Prefer a no-sudo portable build? Re-run with IKENGA_FORMAT=appimage — ~110 MB.)"
 			download "$url" "$out"
 
 			echo

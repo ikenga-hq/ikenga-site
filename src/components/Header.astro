@@ -3,7 +3,7 @@
 //
 // D-01 rev 2 (plans/site-redesign/designs/home-hero-theatre.html) upgrades
 // the header to: sticky + blur, the fuller nav (Packages · How it works ·
-// Docs · Blog), a quiet engine cluster (Claude Code / Codex / Gemini CLI —
+// Docs · Blog), a quiet engine cluster (Claude Code / Codex —
 // shipping engines only, G-21), GitHub, and an amber Download CTA.
 //
 // Mobile (≤760px): the design doc's `.hdr-nav, .engines { display: none; }`
@@ -24,7 +24,7 @@ const NAV = [
 	{ href: '/blog/', label: 'Blog' },
 ];
 // Shipping engines only (G-21) — Antigravity joins when its engine pkg publishes.
-const ENGINES = ['claude', 'codex', 'gemini'] as const;
+const ENGINES = ['claude', 'codex'] as const;
 ---
 
 <a class="sk-skip" href="#main-content">Skip to main content</a>
@@ -41,9 +41,9 @@ const ENGINES = ['claude', 'codex', 'gemini'] as const;
 
 		<span class="hnav__sp"></span>
 
-		<span class="hnav__engines" title="Engine-swappable: Claude Code, Codex, Gemini CLI">
+		<span class="hnav__engines" title="Engine-swappable: Claude Code, Codex">
 			{ENGINES.map((name) => <BrandIcon name={name} size="15px" />)}
-			<em>3 engines</em>
+			<em>2 engines</em>
 		</span>
 
 		<a class="hnav__gh" href={github} rel="noopener" aria-label="GitHub">
@@ -59,9 +59,9 @@ const ENGINES = ['claude', 'codex', 'gemini'] as const;
 			<nav class="hnav__disclosure-panel" aria-label="Primary (mobile)">
 				{NAV.map((item) => <a href={item.href}>{item.label}</a>)}
 				<hr class="hnav__disclosure-rule" />
-				<span class="hnav__engines hnav__engines--panel" title="Engine-swappable: Claude Code, Codex, Gemini CLI">
+				<span class="hnav__engines hnav__engines--panel" title="Engine-swappable: Claude Code, Codex">
 					{ENGINES.map((name) => <BrandIcon name={name} size="15px" />)}
-					<em>3 engines</em>
+					<em>2 engines</em>
 				</span>
 				<a href={github} rel="noopener"><BrandIcon name="github" size="15px" /> GitHub</a>
 			</nav>
