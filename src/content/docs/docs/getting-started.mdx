@@ -18,12 +18,12 @@ curl -fsSL https://ikenga.dev/install.sh | sh
 
 The script detects your OS and architecture, downloads the matching artifact from the latest GitHub Release, and installs it:
 
-- **macOS** — mounts the universal `.dmg` (**~40 MB**) and copies `Ikenga.app` into `/Applications`. Ikenga is not yet code-signed, so the script clears the Gatekeeper quarantine flag on the copy and prints a line saying so.
+- **macOS** — mounts the universal `.dmg` (**~40 MB**) and copies `Ikenga.app` into `/Applications`. Ikenga is not yet code-signed, so macOS shows a Gatekeeper prompt the first time you open it; the script prints how to open it anyway (right-click → Open, or System Settings → Privacy & Security → Open Anyway).
 - **Linux** — defaults to the system-wide `.deb` (**~22 MB**) when `dpkg` is present, printing the single `sudo apt-get install` line to paste; otherwise it installs the no-sudo AppImage (**~110 MB**) to `~/.local/bin/ikenga` and makes it executable. Force either with `IKENGA_FORMAT=deb` or `IKENGA_FORMAT=appimage`. Both download from GitHub's release CDN, which can run slowly — **give the transfer a minute or two before assuming it stalled.**
 
 ### macOS — Apple Silicon and Intel
 
-Releases ship a single universal `.dmg` that runs natively on both Apple Silicon (arm64) and Intel (x86_64), so the install script downloads the same file on either chip. Like the other installers it is not yet code-signed, so if you open the `.dmg` yourself instead of using the script, macOS shows a first-run Gatekeeper warning that you approve once.
+Releases ship a single universal `.dmg` that runs natively on both Apple Silicon (arm64) and Intel (x86_64), so the install script downloads the same file on either chip. Like the other installers it is not yet code-signed, so macOS shows a first-run Gatekeeper warning whether you use the script or open the `.dmg` yourself. Approve it once: right-click the app and choose Open, or go to System Settings → Privacy & Security and click Open Anyway.
 
 ### Linux — arm64
 
