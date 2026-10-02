@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightSidebarTopics from 'starlight-sidebar-topics';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import icon from 'astro-icon';
@@ -27,39 +28,62 @@ export default defineConfig({
 				},
 			],
 			customCss: ['./src/styles/global.css'],
-			sidebar: [
-				{
-					label: 'Start here',
-					items: [
-						{ label: 'What is Ikenga?', slug: 'docs' },
-						{ label: 'Install', slug: 'docs/getting-started' },
-						{ label: 'Build your first pkg', slug: 'docs/build-a-pkg' },
-					],
-				},
-				{
-					label: 'Groundwork',
-					autogenerate: { directory: 'docs/groundwork' },
-				},
-				{
-					label: 'Studio',
-					autogenerate: { directory: 'docs/studio' },
-				},
-				{
-					label: 'Pkgs',
-					autogenerate: { directory: 'docs/pkgs' },
-				},
-				{
-					label: 'Engines',
-					autogenerate: { directory: 'docs/engines' },
-				},
-				{
-					label: 'MCP',
-					items: [{ label: 'mcp-iyke', slug: 'docs/mcp-iyke' }],
-				},
-				{
-					label: 'Contribute',
-					items: [{ label: 'Contributing', slug: 'docs/contributing' }],
-				},
+			// SPIKE (WP-06): two audience topics via starlight-sidebar-topics. This
+			// plugin replaces the stock `sidebar` option.
+			plugins: [
+				starlightSidebarTopics([
+					{
+						label: 'Use',
+						link: '/docs/getting-started/',
+						icon: 'open-book',
+						id: 'use',
+						items: [
+							{
+								label: 'Start here',
+								items: [
+									{ label: 'What is Ikenga?', slug: 'docs' },
+									{ label: 'Install', slug: 'docs/getting-started' },
+								],
+							},
+							{
+								label: 'Groundwork',
+								items: [{ autogenerate: { directory: 'docs/groundwork' } }],
+							},
+							{
+								label: 'Studio',
+								items: [{ autogenerate: { directory: 'docs/studio' } }],
+							},
+						],
+					},
+					{
+						label: 'Build',
+						link: '/docs/build-a-pkg/',
+						icon: 'puzzle',
+						id: 'build',
+						items: [
+							{
+								label: 'Start here',
+								items: [{ label: 'Build your first pkg', slug: 'docs/build-a-pkg' }],
+							},
+							{
+								label: 'Pkgs',
+								items: [{ autogenerate: { directory: 'docs/pkgs' } }],
+							},
+							{
+								label: 'Engines',
+								items: [{ autogenerate: { directory: 'docs/engines' } }],
+							},
+							{
+								label: 'MCP',
+								items: [{ label: 'mcp-iyke', slug: 'docs/mcp-iyke' }],
+							},
+							{
+								label: 'Contribute',
+								items: [{ label: 'Contributing', slug: 'docs/contributing' }],
+							},
+						],
+					},
+				]),
 			],
 		}),
 		react(),
