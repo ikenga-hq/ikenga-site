@@ -1,0 +1,50 @@
+---
+// Team and Enterprise on /teams: what each includes and how to ask for it.
+// Prices live only on the pricing page; this block links there and shows none.
+import { contactHref, PRICING_HREF } from './links';
+import { RELEASES_URL } from '../../lib/release';
+import Icon from '../home/Icon.astro';
+---
+
+<div class="tiers" role="list">
+	<div class="tier" role="listitem">
+		<span class="tn">Free</span>
+		<ul>
+			<li>The full app, free and open source.</li>
+			<li>Community support on GitHub.</li>
+		</ul>
+		<a class="btn btn-quiet btn-wide" href={RELEASES_URL} data-os-href>Download</a>
+	</div>
+	<div class="tier" role="listitem">
+		<span class="tn">Team <span class="pill beta">Early access</span></span>
+		<ul>
+			<li>Priority support in business hours.</li>
+		</ul>
+		<a class="btn btn-quiet btn-wide" href={contactHref('team')}>Talk to us</a>
+	</div>
+	<div class="tier" role="listitem">
+		<span class="tn">Enterprise <span class="pill beta">Early access</span></span>
+		<ul>
+			<li>Support with an SLA, help running your own server, and custom builds.</li>
+		</ul>
+		<a class="btn btn-quiet btn-wide" href={contactHref('enterprise')}>Talk to us</a>
+	</div>
+</div>
+<div class="addon">
+	<span class="an">Managed instance</span>
+	<span class="pill">Not available yet</span>
+	<p>
+		An add-on to Enterprise: a dedicated Ikenga server for your organisation, operated by us. We will not offer it until
+		the controls listed on the security page are in place. <a href="/security/#managed">Who could read your data on
+		one</a>.
+	</p>
+</div>
+<p class="fine">
+	Team and Enterprise are in early access: design partners and a waitlist only. We won't take payment for them or sign
+	a paid contract until our installers are code-signed. We count members, not seats. A member is a person with the Owner or Operator
+	role; Reviewers and time-limited Guests are free. Seats, the named slots for agent sessions, are always free and
+	unlimited.
+</p>
+<p class="more-link">
+	<a href={PRICING_HREF}>See plans and prices<Icon name="arrow" class="i" /></a>
+</p>

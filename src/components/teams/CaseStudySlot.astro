@@ -1,0 +1,63 @@
+---
+// The worked-example slot on /teams. One field drives it:
+//   none       no case study yet: a single quiet row (the launch default)
+//   preparing  a write-up is being prepared, with the subject's written approval
+// A published case study needs its own data file and layout, and its approval
+// on record, before this slot can show one; until then only these two states exist.
+import { contactHref } from './links';
+
+type State = 'none' | 'preparing';
+const STATE = 'none' as State;
+---
+
+<div class="cs-slot" data-case-study={STATE}>
+	<h3>A worked example</h3>
+	{
+		STATE === 'none' ? (
+			<p>
+				We have not published a case study yet. Until we do, the evidence on this page is the product itself: every
+				feature here shows its status and its limits, and the source is open under Apache-2.0.
+			</p>
+		) : (
+			<p>
+				We are preparing a write-up of how we run our own company on Ikenga. It will say what we use, what we measured
+				and what is still rough.
+			</p>
+		)
+	}
+	<p class="cs-links">
+		{STATE === 'none' && <a href="https://github.com/ikenga-hq">Read the source</a>}
+		<a href={contactHref('team')}>Talk to us</a>
+	</p>
+</div>
+
+<style>
+	.cs-slot {
+		margin-top: var(--space-16);
+		padding: var(--space-5) 0;
+		border-top: 1px solid var(--rule);
+		border-bottom: 1px solid var(--rule);
+	}
+	h3 {
+		margin: 0;
+		font: 600 var(--text-h3) / var(--lead-h3) var(--font-body);
+	}
+	.cs-slot p {
+		margin: var(--space-2) 0 0;
+		max-width: 62ch;
+		color: var(--fg-muted);
+		font-size: var(--text-body-sm);
+		line-height: var(--lead-body-sm);
+	}
+	.cs-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 var(--space-5);
+	}
+	.cs-links a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		color: var(--fg);
+	}
+</style>

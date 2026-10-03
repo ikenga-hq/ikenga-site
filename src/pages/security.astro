@@ -1,0 +1,267 @@
+---
+// /security: for a team's security reviewer. Who can read your data, the
+// controls that ship today with their status and limits, how installers and
+// updates are checked, and the compliance status. Status, versions and limits
+// come from the truth data (src/data/truth/*.json); the release facts come from
+// src/lib/release.ts.
+import PageShell from '../components/teams/PageShell.astro';
+import FeatureRows from '../components/teams/FeatureRows.astro';
+import ComingLanes from '../components/teams/ComingLanes.astro';
+import ClaudeCodeControls from '../components/teams/ClaudeCodeControls.astro';
+import { contactHref, SECURITY_POLICY_HREF } from '../components/teams/links';
+import Custody from '../components/security/Custody.astro';
+import Icon from '../components/home/Icon.astro';
+import { feature } from '../lib/truth/read';
+import { CHECKSUM_FILE, latestRelease } from '../lib/release';
+
+const release = await latestRelease();
+const signing = feature('install.signed-installers', ['next', 'in-progress', 'exploring']);
+
+const sections = [
+	{ id: 'overview', label: 'Overview', icon: 'shield', ctx: 'get' },
+	{ id: 'custody', label: 'Who can read your data', icon: 'lock', ctx: 'get' },
+	{ id: 'desktop', label: 'Controls in the app', icon: 'check', ctx: 'local' },
+	{ id: 'server', label: 'On a server you run', icon: 'devices', ctx: 'get' },
+	{ id: 'installers', label: 'Installers & updates', icon: 'box', ctx: 'get' },
+	{ id: 'claude-code', label: 'Beside Claude Code', icon: 'chip', ctx: 'get' },
+	{ id: 'coming', label: 'Coming', icon: 'clock', ctx: 'get' },
+	{ id: 'report', label: 'Report a problem', icon: 'doc', ctx: 'get' },
+];
+const titles = { get: 'Security', local: 'On your machine' };
+
+const DESKTOP = [
+	{
+		id: 'registry.signed-catalog',
+		name: 'Signed catalogue',
+		what: 'The catalogue of apps and extensions is signed, and the app verifies it.',
+	},
+	{
+		id: 'ngwa.install-consent',
+		name: 'Consent at install',
+		what: 'You see what each app or extension can access before it installs.',
+	},
+	{
+		id: 'updates.permission-review',
+		name: 'Held updates',
+		what: 'An update that asks for more access is held until you review it.',
+	},
+	{
+		id: 'ngwa.trusted-tier',
+		name: 'Trust-gated capabilities',
+		what: 'Sensitive capabilities are gated by trust, not by a paid plan.',
+	},
+	{
+		id: 'ngwa.scopes',
+		name: 'Personal and project scope',
+		what: 'Install an app for yourself, or for one project only.',
+	},
+	{
+		id: 'vault.passphrase',
+		name: 'Passphrase vault',
+		what: 'Keys stay in an encrypted vault that locks itself when idle.',
+	},
+	{ id: 'security.app-lock', name: 'App lock', what: 'Lock Ikenga when you step away, with a PIN or your passphrase.' },
+];
+const SERVER = [
+	{
+		id: 'server.multi-user',
+		name: 'Multi-user server',
+		what: 'Each person signs in to their own account and works in their own space, as their own Unix user.',
+	},
+	{
+		id: 'access.members',
+		name: 'Members and roles',
+		what: 'A role (Owner, Operator, Reviewer or Guest) limits what each person can see and do.',
+	},
+	{
+		id: 'access.device-pairing',
+		name: 'Device pairing',
+		what: 'A device gets in only after you confirm the same four-word phrase on both screens. Each device has its own access level, and you can revoke it at any time.',
+	},
+	{
+		id: 'vault.member-secrets',
+		name: 'Per-person secrets',
+		what: 'Each person keeps their own secrets, separate from everyone else’s.',
+	},
+	{
+		id: 'access.audit-log',
+		name: 'Audit log',
+		what: 'Sign-ins, pairings, grants, revokes, role changes, approvals and dispatches go into a hash-chained log you can verify and export.',
+	},
+];
+const NEXT = [
+	{ id: 'install.signed-installers', text: 'Signed installers for macOS and Windows.' },
+	{ id: 'access.oidc-sign-in', text: 'Sign in to a multi-user server with your identity provider (OpenID Connect).' },
+];
+const EXPLORING = [
+	{ id: 'access.saml', text: 'SAML sign-in.' },
+	{ id: 'access.scim', text: 'SCIM provisioning.' },
+	{ id: 'access.siem-export', text: 'Sending the audit log to your SIEM.' },
+	{ id: 'policy.org-apps', text: 'Admin policy for the apps and tools people can install.' },
+	{ id: 'registry.private', text: 'A private catalogue for your team.' },
+];
+---
+
+<PageShell
+	title="Ikenga security: who can read your data"
+	description="Who can read your data in Ikenga, the security controls that ship today with their status and limits, and our compliance status."
+	path="/security/"
+	sections={sections}
+	titles={titles}
+>
+	<section class="overview" id="overview" data-ctx="get" aria-labelledby="h-overview">
+		<p class="eyebrow">
+			<span>Security</span><span aria-hidden="true">·</span><span>Open source</span><span aria-hidden="true">·</span><span
+				>Apache-2.0</span
+			>
+		</p>
+		<h1 id="h-overview" class="page-h1">Who can read your data, and what protects it.</h1>
+		<p class="lede">
+			This page is for the person who reviews Ikenga before a team uses it. Every control below shows its status and its
+			limits. The source is open, so you can check any of it.
+		</p>
+		<p class="compliance"><strong>No SOC 2 yet; security questionnaire on request.</strong></p>
+		<div class="cta-row">
+			<a class="btn btn-quiet" href={contactHref('other')}>Talk to us</a>
+			<a class="btn btn-quiet" href={SECURITY_POLICY_HREF}>Report a vulnerability</a>
+		</div>
+	</section>
+
+	<section class="sec" id="custody" data-ctx="get" aria-labelledby="h-custody">
+		<div class="h2-row"><h2 id="h-custody">Who can read your data</h2></div>
+		<Custody />
+	</section>
+
+	<section class="sec" id="desktop" data-ctx="local" aria-labelledby="h-desktop">
+		<div class="h2-row"><h2 id="h-desktop">Controls in the desktop app.</h2></div>
+		<p>
+			Ikenga itself sends no usage analytics; the engines you run follow their own settings. We checked this by searching
+			the desktop app's source code and dependencies, not by capturing its network traffic.
+		</p>
+		<FeatureRows items={DESKTOP} label="Controls in the desktop app" />
+	</section>
+
+	<section class="sec" id="server" data-ctx="get" aria-labelledby="h-server">
+		<div class="h2-row"><h2 id="h-server">Controls on a server you run.</h2></div>
+		<p>
+			These controls need a multi-user server, which you build and run yourself on a Linux host. It is not part of the
+			desktop download. Each one is in beta.
+		</p>
+		<FeatureRows items={SERVER} where="On a server you build and run yourself." label="Controls on a server you run" />
+	</section>
+
+	<section class="sec" id="installers" data-ctx="get" aria-labelledby="h-installers">
+		<div class="h2-row"><h2 id="h-installers">Installers and updates.</h2></div>
+		<p>
+			<strong>Signed installers for macOS and Windows are {signing.status === 'next' ? 'next' : 'not available yet'}.</strong>
+			{signing.limits.join(' ')} The install script fetches the same files from the GitHub release and does not turn off
+			any security check on your computer.
+		</p>
+		<p>
+			{
+				release.checksums ? (
+					<Fragment>
+						Each release includes <code>{CHECKSUM_FILE}</code>, with the SHA-256 digest of every file, so you can check a
+						download before you open it.
+					</Fragment>
+				) : (
+					<Fragment>
+						Each file on the release page shows its SHA-256 digest, so you can check a download before you open it.
+					</Fragment>
+				)
+			}
+		</p>
+		<p class="more-link">
+			<a href="/docs/getting-started/">How to open Ikenga the first time<Icon name="arrow" class="i" /></a>
+		</p>
+	</section>
+
+	<section class="sec" id="claude-code" data-ctx="get" aria-labelledby="h-claude-code">
+		<div class="h2-row"><h2 id="h-claude-code">Claude Code's organisation controls still apply.</h2></div>
+		<ClaudeCodeControls short />
+		<p class="more-link">
+			<a href="/teams/#claude-code">What Ikenga adds beside them<Icon name="arrow" class="i" /></a>
+		</p>
+	</section>
+
+	<section class="sec" id="coming" data-ctx="get" aria-labelledby="h-coming">
+		<div class="h2-row"><h2 id="h-coming">Security work that is coming.</h2></div>
+		<ComingLanes next={NEXT} exploring={EXPLORING} />
+	</section>
+
+	<section class="sec" id="report" data-ctx="get" aria-labelledby="h-report">
+		<div class="h2-row"><h2 id="h-report">Report a vulnerability.</h2></div>
+		<p>
+			Please report security problems privately, not in a public issue. Our security policy says how, and which
+			versions get fixes.
+		</p>
+		<p class="more-link">
+			<a href={SECURITY_POLICY_HREF}>Read the security policy<Icon name="arrow" class="i" /></a>
+		</p>
+	</section>
+
+	<section class="close" data-ctx="get" aria-labelledby="h-close">
+		<h2 id="h-close">Send us your security questionnaire.</h2>
+		<div class="row">
+			<a class="btn btn-quiet" href={contactHref('other')}>Talk to us</a>
+			<a class="btn btn-quiet" href="/teams/">Ikenga for teams</a>
+		</div>
+	</section>
+
+	<Fragment slot="companion">
+		<div class="co-panel" data-panel="get">
+			<h2>For security reviewers</h2>
+			<p>No SOC 2 yet. We answer a standard security questionnaire, CAIQ Lite, on request.</p>
+			<ul class="paths">
+				<li>
+					<a href={contactHref('other')}
+						><span class="pt">Talk to us</span><Icon name="arrow" class="i arrow" /><span class="pd"
+							>Questionnaires and questions about running Ikenga.</span
+						></a
+					>
+				</li>
+				<li>
+					<a href={SECURITY_POLICY_HREF}
+						><span class="pt">Report a vulnerability</span><Icon name="arrow" class="i arrow" /><span class="pd"
+							>Our security policy on GitHub.</span
+						></a
+					>
+				</li>
+				<li>
+					<a href="https://github.com/ikenga-hq"
+						><span class="pt">Read the source</span><Icon name="arrow" class="i arrow" /><span class="pd"
+							>Everything is open under Apache-2.0.</span
+						></a
+					>
+				</li>
+			</ul>
+		</div>
+		<div class="co-panel" data-panel="local" hidden>
+			<h2>What stays yours</h2>
+			<ul class="trust-list">
+				<li><Icon name="check" class="i" />Keys stay in a passphrase vault; lock the app when you step away.</li>
+				<li><Icon name="check" class="i" />Ikenga itself sends no usage analytics; engines follow their own settings.</li>
+				<li>
+					<Icon name="check" class="i" />Each engine uses your own install, sign-in or key; Ikenga includes no model access.
+				</li>
+			</ul>
+		</div>
+	</Fragment>
+</PageShell>
+
+<style>
+	.page-h1 {
+		max-width: 20ch;
+		font-size: clamp(36px, 4.4vw, 48px);
+	}
+	.compliance {
+		margin: var(--space-6) 0 0;
+		color: var(--fg);
+	}
+	.cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		margin-top: var(--space-8);
+	}
+</style>

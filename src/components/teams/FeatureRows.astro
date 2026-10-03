@@ -1,0 +1,49 @@
+---
+// A list of released features. Status, version and every limit are read from
+// the truth data (src/data/truth/features.json); only the name and the one-line
+// description are written by the page. A row that is not shipped or beta fails
+// the build, so nothing unreleased can be listed here.
+import { feature, type FeatureRow } from '../../lib/truth/read';
+
+export interface FeatureItem {
+	id: string;
+	name: string;
+	what: string;
+}
+
+interface Props {
+	items: FeatureItem[];
+	/** Shown under each description, for features that need something the download does not include. */
+	where?: string;
+	label?: string;
+}
+const { items, where, label } = Astro.props;
+
+const STATUS: Record<string, string> = { shipped: 'Shipped', beta: 'Beta' };
+const rows: (FeatureRow & FeatureItem)[] = items.map((i) => ({ ...feature(i.id), ...i }));
+---
+
+<ul class="team" aria-label={label}>
+	{
+		rows.map((r) => (
+			<li data-feature={r.id}>
+				<p class="team-h">
+					{r.name}
+					<span class={r.status === 'beta' ? 'pill beta' : 'pill'}>{STATUS[r.status]}</span>
+					<span class="since">
+						{r.status === 'beta' ? 'Beta since' : 'Since'} {r.since}
+					</span>
+				</p>
+				<p>{r.what}</p>
+				{where && <p class="where">{where}</p>}
+				{r.limits.length > 0 && (
+					<ul class="lim" aria-label={`${r.name}: limits`}>
+						{r.limits.map((l) => (
+							<li>{l}</li>
+						))}
+					</ul>
+				)}
+			</li>
+		))
+	}
+</ul>
