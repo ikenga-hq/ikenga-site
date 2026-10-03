@@ -28,7 +28,10 @@
  *      a `scope`, and optionally `fresh_install_ready`.
  *   4. A tier has a nullable `price`, `includes` and `coming` lists of feature ids (cross-checked
  *      against each feature's status), `prerequisites` that are public gate slugs, and an
- *      `availability` of early-access, self-serve or unavailable.
+ *      `availability` of early-access, self-serve or unavailable. Every other tier includes at least
+ *      what the free tier includes. Only the personal tier carries `personal` (sizes, regions and
+ *      prices), and its `price` is the lowest of those prices. A sized add-on may publish its spec,
+ *      the members it suits and its regions; a region priced by quote carries no price.
  *   5. Feature ids have the form `<area>.<slug>` (at least one dot, and the first segment equals
  *      `area`), so a claim check can find an id in free prose without false hits on ordinary words.
  *   6. A glossary term whose UI label differs from the canonical term carries `shell_label`, and
@@ -400,7 +403,7 @@ export type Engine = z.infer<typeof EngineSchema>;
 
 // ───────────────────────────── tiers[] ─────────────────────────────
 
-export const TierIdSchema = z.enum(['free', 'team', 'enterprise']);
+export const TierIdSchema = z.enum(['free', 'personal', 'team', 'enterprise']);
 export type TierId = z.infer<typeof TierIdSchema>;
 
 export const AvailabilitySchema = z.enum(['early-access', 'self-serve', 'unavailable']);
@@ -415,6 +418,7 @@ export const GATE_IDS = [
   'managed-ops',
   'billing',
   'legal-and-intake',
+  'provisioning',
 ] as const;
 export const GateIdSchema = z.enum(GATE_IDS);
 export type GateId = z.infer<typeof GateIdSchema>;
@@ -428,21 +432,175 @@ export const GATE_LABELS: Readonly<Record<GateId, string>> = {
   'managed-ops': 'Managed operations in place',
   billing: 'Billing live',
   'legal-and-intake': 'Terms, privacy and contact intake live',
+  provisioning: 'Automated server provisioning live',
 };
 
 /** USD per month; null = not published. */
 export const PriceSchema = z.number().nonnegative().refine((n) => isFinite(n), 'price must be finite');
 
+/**
+ * A region a server can run in. `list` = the published price applies; `quote` = priced on request,
+ * so nothing in that region carries a price.
+ */
+export const RegionSchema = z
+  .object({
+    id: SlugSchema,
+    label: NonEmptySchema,
+    pricing: z.enum(['list', 'quote']),
+  })
+  .strict();
+export type Region = z.infer<typeof RegionSchema>;
+
+const PositiveSchema = z.number().positive().refine((n) => isFinite(n), 'must be finite');
+
+/** Published machine spec of a managed server size. */
+export const SpecSchema = z
+  .object({
+    ram_gb: PositiveSchema,
+    vcpu: z.number().int().positive(),
+    /** True when `vcpu` is a floor ("4 or more vCPU"), not an exact count. */
+    vcpu_is_minimum: z.boolean().optional(),
+    disk_gb: PositiveSchema,
+  })
+  .strict();
+export type Spec = z.infer<typeof SpecSchema>;
+
+/** How many members a size suits. `estimate` stays true until capacity is measured. */
+export const MemberFitSchema = z
+  .object({
+    up_to: z.number().int().positive(),
+    estimate: z.boolean(),
+  })
+  .strict();
+export type MemberFit = z.infer<typeof MemberFitSchema>;
+
+function checkRegions(ctx: IssueSink, regions: readonly Region[] | undefined, path: (string | number)[]): void {
+  if (!regions) return;
+  checkUnique(
+    ctx,
+    regions.map((r) => r.id),
+    path,
+    'region id',
+  );
+}
+
 export const AddonSchema = z
   .object({
     id: SlugSchema,
+    /** Size name for a sized add-on (small, standard, large). */
+    size: SlugSchema.optional(),
     price: PriceSchema.nullable(),
     /** `org` = flat fee per organisation; `member` = per member. */
     unit: z.enum(['org', 'member']),
+    spec: SpecSchema.optional(),
+    members: MemberFitSchema.optional(),
+    regions: z.array(RegionSchema).min(1).optional(),
     prerequisites: z.array(GateIdSchema).optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((a, ctx) => {
+    checkRegions(ctx, a.regions, ['regions']);
+    if (a.price === null && (a.regions || []).some((r) => r.pricing === 'list')) {
+      fail(ctx, ['price'], 'a region at list price needs a published price; use pricing "quote" or set price');
+    }
+  });
 export type Addon = z.infer<typeof AddonSchema>;
+
+// ───────────────────────────── personal tier ─────────────────────────────
+
+/** Machine spec of a personal server size. Only RAM is required: a small sleeping box may publish nothing else. */
+export const PersonalSpecSchema = z
+  .object({
+    ram_gb: PositiveSchema,
+    vcpu: z.number().int().positive().optional(),
+    disk_gb: PositiveSchema.optional(),
+  })
+  .strict();
+
+/** One region's price for a size. `price_max` makes it a range ("$28–32"). */
+export const RegionPriceSchema = z
+  .object({
+    region: SlugSchema,
+    price: PriceSchema,
+    price_max: PriceSchema.optional(),
+  })
+  .strict()
+  .superRefine((p, ctx) => {
+    if (p.price_max !== undefined && p.price_max <= p.price) fail(ctx, ['price_max'], 'price_max must be above price');
+  });
+export type RegionPrice = z.infer<typeof RegionPriceSchema>;
+
+export const PersonalSizeSchema = z
+  .object({
+    id: SlugSchema,
+    spec: PersonalSpecSchema,
+    /** The box suspends when idle and resumes on the next request. */
+    sleeps_when_idle: z.boolean().optional(),
+    prices: z.array(RegionPriceSchema).min(1),
+  })
+  .strict();
+export type PersonalSize = z.infer<typeof PersonalSizeSchema>;
+
+/**
+ * The personal plan: one small server per person, either run by us in a region the buyer picks
+ * (`hosted`) or deployed into the buyer's own cloud account (`own-cloud`, no server charge). Both
+ * include an allowance of decision tokens; use beyond it is metered.
+ */
+export const PersonalPlanSchema = z
+  .object({
+    delivery: z.array(z.enum(['hosted', 'own-cloud'])).min(1),
+    regions: z.array(RegionSchema).min(1),
+    sizes: z.array(PersonalSizeSchema).min(1),
+    decision_tokens: z
+      .object({
+        allowance: z.literal('included'),
+        overage: z.enum(['metered', 'packs']),
+      })
+      .strict(),
+    /** Prices are before VAT. */
+    prices_exclude_vat: z.boolean(),
+    /** Prices are indicative until launch. */
+    indicative: z.boolean(),
+  })
+  .strict()
+  .superRefine((p, ctx) => {
+    checkRegions(ctx, p.regions, ['regions']);
+    checkUnique(
+      ctx,
+      p.delivery,
+      ['delivery'],
+      'delivery mode',
+    );
+    checkUnique(
+      ctx,
+      p.sizes.map((s) => s.id),
+      ['sizes'],
+      'size id',
+    );
+    const byId: Record<string, Region> = {};
+    p.regions.forEach((r) => {
+      byId[r.id] = r;
+    });
+    p.sizes.forEach((s, si) => {
+      checkUnique(
+        ctx,
+        s.prices.map((x) => x.region),
+        ['sizes', si, 'prices'],
+        'region',
+      );
+      s.prices.forEach((x, pi) => {
+        const r = byId[x.region];
+        if (!r) fail(ctx, ['sizes', si, 'prices', pi, 'region'], `unknown region "${x.region}"`);
+        else if (r.pricing === 'quote') fail(ctx, ['sizes', si, 'prices', pi, 'region'], `region "${x.region}" is priced by quote; it cannot carry a price`);
+      });
+    });
+  });
+export type PersonalPlan = z.infer<typeof PersonalPlanSchema>;
+
+/** The lowest list price across a personal plan's sizes and regions: its "from" figure. */
+export function personalFrom(p: PersonalPlan): number {
+  return Math.min(...p.sizes.flatMap((s) => s.prices.map((x) => x.price)));
+}
 
 export const CtaSchema = z
   .object({
@@ -474,9 +632,17 @@ export const TierSchema = z
     prerequisites: z.array(GateIdSchema),
     availability: AvailabilitySchema,
     cta: CtaSchema,
+    /** The personal plan's sizes, regions and prices. Required on the personal tier, forbidden elsewhere. */
+    personal: PersonalPlanSchema.optional(),
   })
   .strict()
   .superRefine((t, ctx) => {
+    if (t.id === 'personal' && t.personal === undefined) fail(ctx, ['personal'], 'the personal tier needs "personal": its sizes, regions and prices');
+    if (t.id !== 'personal' && t.personal !== undefined) fail(ctx, ['personal'], `"personal" belongs to the personal tier only, not "${t.id}"`);
+    if (t.personal !== undefined && t.personal.delivery.indexOf('hosted') !== -1) {
+      const from = personalFrom(t.personal);
+      if (t.price !== from) fail(ctx, ['price'], `the personal tier's price is its "from" figure: the lowest size price, ${from}`);
+    }
     checkUnique(ctx, t.includes, ['includes'], 'feature id');
     checkUnique(ctx, t.coming, ['coming'], 'feature id');
     checkUnique(ctx, t.prerequisites, ['prerequisites'], 'gate id');
@@ -754,6 +920,17 @@ export const TruthSetSchema = z
     set.roadmap.forEach((r, i) => {
       if (!byId[r.feature_id]) fail(ctx, ['roadmap', i, 'feature_id'], `unknown feature id "${r.feature_id}"`);
     });
+
+    // A paid tier never takes away what the free tier gives.
+    const free = set.tiers.find((t) => t.id === 'free');
+    if (free) {
+      set.tiers.forEach((t, ti) => {
+        if (t.id === 'free') return;
+        free.includes.forEach((id) => {
+          if (t.includes.indexOf(id) === -1) fail(ctx, ['tiers', ti, 'includes'], `"${t.id}" must include everything free includes; missing "${id}"`);
+        });
+      });
+    }
 
     set.tiers.forEach((t, ti) => {
       t.includes.forEach((id, i) => {

@@ -1,0 +1,44 @@
+---
+// The personal plan's server sizes and their price in each region, from the
+// personal tier in src/data/truth/tiers.json. Regions priced by quote are named
+// under the sizes and never carry a figure.
+import { tier, range, titleCase } from './tiers';
+
+const plan = tier('personal').personal!;
+const listRegions = plan.regions.filter((r) => r.pricing === 'list');
+const quoteRegions = plan.regions.filter((r) => r.pricing === 'quote');
+
+const specLine = (s: (typeof plan.sizes)[number]['spec']) =>
+	[s.vcpu !== undefined ? `${s.vcpu} vCPU` : null, `${s.ram_gb} GB RAM`, s.disk_gb !== undefined ? `${s.disk_gb} GB disk` : null]
+		.filter(Boolean)
+		.join(' · ');
+
+const terms = `Every price is per month${plan.prices_exclude_vat ? ', before VAT' : ''}${plan.indicative ? ', and indicative until launch' : ''}.`;
+const fine = quoteRegions.length > 0 ? `${quoteRegions.map((r) => r.label).join(', ')}: priced on request. ${terms}` : terms;
+---
+
+<ul class="p-sizes" aria-label="Personal server sizes">
+	{
+		plan.sizes.map((s) => (
+			<li class="p-size">
+				<span class="sn">{titleCase(s.id)}</span>
+				<span class="spec num">{specLine(s.spec)}</span>
+				{s.sleeps_when_idle && (
+					<span class="note">Sleeps when idle and wakes on your next request. Long agent runs pause while it sleeps.</span>
+				)}
+				<dl class="rp">
+					{listRegions.map((r) => {
+						const p = s.prices.find((x) => x.region === r.id);
+						return p ? (
+							<>
+								<dt>{r.label}</dt>
+								<dd class="num">{range(p.price, p.price_max)}</dd>
+							</>
+						) : null;
+					})}
+				</dl>
+			</li>
+		))
+	}
+</ul>
+<p class="fine">{fine}</p>

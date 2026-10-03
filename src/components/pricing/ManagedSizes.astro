@@ -1,0 +1,56 @@
+---
+// The managed instance sizes: price, machine spec, the members each size suits
+// and the regions it runs in, all from the enterprise tier's add-ons in
+// src/data/truth/tiers.json. Member counts carry "estimate" while the data
+// marks them so.
+import { tier, sizedAddons, money, titleCase } from './tiers';
+import type { Region } from '../../lib/truth/schema';
+
+const sizes = sizedAddons(tier('enterprise'));
+
+// Regions, merged across sizes in first-seen order. A region priced by quote for any size is shown as by quote.
+const regions: Region[] = [];
+sizes.forEach((a) =>
+	(a.regions ?? []).forEach((r) => {
+		const seen = regions.find((x) => x.id === r.id);
+		if (!seen) regions.push({ ...r });
+		else if (r.pricing === 'quote') seen.pricing = 'quote';
+	}),
+);
+---
+
+<ul class="p-sizes p-managed" aria-label="Managed instance sizes">
+	{
+		sizes.map((a) => (
+			<li class="p-size">
+				<span class="sn">{titleCase(a.size!)}</span>
+				<span class="sp num">
+					{a.price !== null ? money(a.price) : 'Talk to us'}
+					{a.price !== null && <span class="u">per organisation per month</span>}
+				</span>
+				{a.spec && (
+					<span class="spec num">
+						{a.spec.ram_gb} GB RAM · {a.spec.vcpu_is_minimum ? `${a.spec.vcpu} or more` : a.spec.vcpu} vCPU · {a.spec.disk_gb} GB
+						disk
+					</span>
+				)}
+				{a.members && (
+					<span class="note">
+						For up to {a.members.up_to} members{a.members.estimate && <span class="pill exp est">estimate</span>}
+					</span>
+				)}
+			</li>
+		))
+	}
+</ul>
+{
+	regions.length > 0 && (
+		<ul class="p-regions" aria-label="Regions">
+			{regions.map((r) => (
+				<li>
+					<strong>{r.label}</strong> {r.pricing === 'list' ? 'list price' : 'by quote'}
+				</li>
+			))}
+		</ul>
+	)
+}
