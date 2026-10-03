@@ -31,7 +31,7 @@ Every pkg has a `manifest.json` at its root. A minimal UI-iframe manifest:
   "id": "com.example.dashboard",
   "name": "Dashboard",
   "version": "0.1.0",
-  "ikenga_api": "1",
+  "ikenga_api": "5",
   "kind": "embedded",
   "author": { "name": "Example", "key": "example" },
 
@@ -43,7 +43,7 @@ Every pkg has a `manifest.json` at its root. A minimal UI-iframe manifest:
 }
 ```
 
-Beyond `ui`, a manifest may declare any subset of `mcp`, `sidecars`, `engine`, `skills`, `commands`, `agents`, `iyke`, `cron`, `settings`, `capabilities`, and `permissions`. The `ikenga_api` field is the numeric host-API version your pkg targets (currently `"1"`); the host supports the current version and the one before it.
+Beyond `ui`, a manifest may declare blocks from `manifest.ts`: `mcp`, `sidecars`, `engine`, `iyke`, `cron`, `window`, `queries`, `workflows`, `settings`, `capabilities`, `permissions`, `migrations`, `screenshots`, and `requires` (the legacy `skills`, `commands`, and `agents` manifest fields are retired; dependencies on standalone primitives are declared via `requires`). The `ikenga_api` field targets a supported API version in the window 1–5 (currently `"5"`).
 
 UI routes accept three `kind`s: `"iframe"`, `"webview"`, and `"component"` (the last is reserved for host-builtin React components — third-party `component` routes won't mount).
 
@@ -51,9 +51,9 @@ UI routes accept three `kind`s: `"iframe"`, `"webview"`, and `"component"` (the 
 
 A pkg only gets what its manifest asks for.
 
-- **`capabilities`** are opt-in, host-resolved features. The two that exist today are **Supabase** (the shell threads credentials from its encrypted vault through the handshake at mount time, so you never bake keys into a build) and **webview** child windows (`capabilities.webview.child_webviews` plus a declared list of cookie partitions). A `"webview"` route won't mount unless the matching capability is declared.
+- **`capabilities`** are opt-in, host-resolved features. There are seven capabilities: `supabase` (vault credentials for database access), `sqlite` (local SQLite access), `webview` (child webviews and cookie partitions), `agentOps`, and the elevated capabilities `http` (host-proxied fetch), `secrets` (named-secret injection), and `invoke` (host invoke passthrough). Elevated capabilities are inert unless the package is trusted.
 
-- **`permissions`** are scoped grants the kernel checks: `shell.execute` (which commands may be spawned), `net` (URL prefixes), `fs.read` / `fs.write` (path globs, which may use `$pkg_data`, `$pkg_install`, `$home`). Asking for `fs.write` outside your own `$pkg_data` triggers the **trust gate** — that pkg won't auto-trust on install, and the user is prompted to consent (the "share kola" ritual). A pkg with an empty permissions block and no sensitive capabilities auto-trusts.
+- **`permissions`** has ten keys checked by the kernel: `shell.execute`, `fs.read`, `fs.write`, `net`, `sqlite.tables`, `supabase.tables` (compat alias), `vault.keys`, `engine`, `notify`, and `events`. Asking for sensitive permissions (such as `fs.write` outside your own `$pkg_data`) triggers the trust gate — the package won't auto-trust on install, and consent happens on the store's install sheet (the "Share kola" step). A pkg with an empty permissions block and no sensitive capabilities auto-trusts.
 
 ## The AppBridge handshake
 
@@ -72,7 +72,7 @@ The handshake uses [`@modelcontextprotocol/ext-apps`](https://www.npmjs.com/pack
 
 | Phase | What happens |
 | --- | --- |
-| **Install** | `ikenga add <pkg>` resolves the pkg, validates its manifest, runs the trust check, and registers every declared block with the kernel. Auto-trusts if there are no sensitive permissions; otherwise prompts. |
+| **Install** | `ikenga add <pkg>` writes to disk, and the shell registers the pkg on next boot. Consent for sensitive permissions happens on the store's install sheet. |
 | **Boot** | The kernel re-discovers installed pkgs and replays their registrations. Long-lived MCP servers and sidecars spawn here. |
 | **Update** | `ikenga update` pulls a newer version through the same validate-then-register path. If a pkg gained sensitive permissions since last install, the user is re-prompted to consent. |
 | **Remove (Retire)** | The kernel unregisters every block the pkg contributed. Skill-only pkgs also remove the content they copied into `~/.claude/`. |
@@ -83,7 +83,7 @@ Long-lived MCP servers and sidecars run under a supervisor with a full state mac
 
 | CLI | Job | Commands |
 | --- | --- | --- |
-| **`ikenga`** | Disk-side **package manager** — mutates what's installed. | `list`, `add`, `update`, `remove`, `dev <path>` |
+| **`ikenga`** | Disk-side **package manager** — mutates what's installed. | `list`, `add`, `update`, `remove`, `dev <path>`, `doctor` |
 | **`iyke`** | Runtime **controller** — drives a shell that's already running over its localhost bridge. | navigate panes, switch modes, inspect state |
 
 `ikenga dev <path>` is the developer loop: it symlinks a pkg into the running shell, auto-trusts the source, and hot-reloads on manifest changes — no shell restart. Iframe code changes flow through your dev server's HMR; sidecar and MCP source changes restart through the supervisor's file watcher; `Ctrl-C` unregisters cleanly. See the **[Build your first pkg](/docs/build-a-pkg)** tutorial.

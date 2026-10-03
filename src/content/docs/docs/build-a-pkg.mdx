@@ -36,20 +36,6 @@ A UI-iframe pkg can be filled in three ways. They produce the same `kind: "ifram
 
 ## 2. Scaffold
 
-You have two ways to get a starting skeleton.
-
-### Option A — the pkg-builder skill (recommended)
-
-If you have the [`ikenga-pkg-builder`](https://github.com/ikenga-hq/ikenga-pkgs) Claude Code skill installed, just ask:
-
-```
-/ikenga-pkg-builder
-```
-
-It asks four or five plain-language questions, derives the right archetype and shape, copies the matching template, substitutes your package details, sets any vault keys it needs, and registers the pkg with the running shell — landing you straight at step 4. If you went this route, skim steps 3 and 4 to understand what it set up, then jump to step 5.
-
-### Option B — copy a template by hand
-
 Copy the thin-vanilla starter and rename it. Your pkg directory should look like this:
 
 ```
@@ -70,14 +56,14 @@ Two layout rules that will save you an afternoon:
 
 ## 3. Write the manifest
 
-The `manifest.json` is the contract. Here's a complete one for a thin-vanilla panel that loads React from a CDN and talks to Supabase:
+The `manifest.json` is the contract. Here's a complete one for a thin-vanilla panel that loads React from a CDN and talks to local SQLite:
 
 ```json
 {
   "id": "com.yourname.hello-panel",
   "name": "Hello Panel",
   "version": "0.1.0",
-  "ikenga_api": "1",
+  "ikenga_api": "5",
   "kind": "embedded",
   "author": { "name": "Your Name", "key": "yourname" },
 
@@ -89,21 +75,25 @@ The `manifest.json` is the contract. Here's a complete one for a thin-vanilla pa
       "script-src": ["'self'", "'unsafe-inline'", "https://esm.sh"],
       "style-src":  ["'self'", "'unsafe-inline'", "https://esm.sh"],
       "font-src":   ["'self'", "https://esm.sh", "data:"],
-      "connect-src": ["'self'", "https://esm.sh", "https://*.supabase.co", "wss://*.supabase.co"]
+      "connect-src": ["'self'", "https://esm.sh"]
     }
   },
 
   "capabilities": {
-    "supabase": { "required": false }
+    "sqlite": { "db": "ikenga.local" }
   },
 
   "permissions": {
     "shell.execute": [],
     "fs.read": [],
     "fs.write": [],
-    "net": ["https://esm.sh", "https://*.supabase.co"],
+    "net": ["https://esm.sh"],
+    "sqlite.tables": [],
     "supabase.tables": [],
-    "vault.keys": []
+    "vault.keys": [],
+    "engine": [],
+    "notify": [],
+    "events": []
   }
 }
 ```
@@ -112,9 +102,9 @@ What matters here:
 
 - **`id`** is a reverse-DNS identifier you own (`com.yourname.<slug>`). It's how the kernel namespaces routes, permissions, and storage.
 - **`source`** is a path under `dist/`. The route registers internally and the shell mounts it at `/pkg/<id>/`.
-- **`ikenga_api: "1"`** is the host-API version you target. The host supports the current version and the one before it.
-- **`csp`** overrides **replace** the matching directive — list `'self'` explicitly if you still want same-origin access. The block above is the right starting point for a thin pkg loading React from `esm.sh` and talking to Supabase.
-- **`capabilities.supabase`** — set `required: true` only if your pkg can't run without credentials; the shell then fails the mount with an actionable error if the vault is empty. With `false`, the credentials arrive as `null` and you handle the no-Supabase case.
+- **`ikenga_api: "5"`** is the host-API version you target. The host supports versions in the window 1–5 (current is 5).
+- **`csp`** overrides **replace** the matching directive — list `'self'` explicitly if you still want same-origin access. The block above is the right starting point for a thin pkg loading React from `esm.sh`.
+- **`capabilities.sqlite`** — requests access to local SQLite storage (validated against `sqlite.tables` in `permissions`).
 - A pkg with an empty `permissions` block and no sensitive capabilities **auto-trusts** on install. Asking for `fs.write` outside your own storage triggers the trust gate.
 
 ### The AppBridge handshake (the part that makes it live)
@@ -194,9 +184,9 @@ When it's ready, published pkgs live in the [`ikenga-pkgs`](https://github.com/i
 4. Merge to `main`. The release workflow opens a "Version Packages" PR that bumps versions and writes changelogs.
 5. Merge "Version Packages." The workflow then publishes the pkg, creates a GitHub Release for it, and pushes a fresh entry to the **registry index** — the static catalogue the shell's package manager and the `ikenga` CLI both read.
 
-> The `@ikenga/` npm scope is owned by Royalti, Inc. Third-party authors publish under their own scope and submit to the registry index via a PR to [`ikenga-registry`](https://github.com/ikenga-hq/ikenga-registry).
+Third-party authors publish packages through the [`ikenga-pkgs`](https://github.com/ikenga-hq/ikenga-pkgs) release flow. (The registry index in `ikenga-registry` is generated automatically.)
 
-Once it's in the registry, anyone can install it with `ikenga add <pkg>` — and you've shipped your first pkg.
+Once it's in the registry, anyone can install it with `ikenga add <pkg>`, through the in-app store (Ngwa), or via "Add from URL" — and you've shipped your first pkg.
 
 ## Where to go next
 
