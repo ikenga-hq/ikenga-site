@@ -622,6 +622,9 @@ async function selfTest(schema, root) {
   const okTags = async () => ({ ok: true });
   const stubTags = async (ref) => (ref.version === '9.9.9' ? { ok: false, reason: 'missing' } : { ok: true });
   const firstReleased = truth0['features.json'].find((f) => f.status === 'shipped');
+  // Any row that has not released (in-progress, next or exploring). Do not assume one is in-progress: once the last
+  // in-progress row ships, none may be left.
+  const firstUnreleased = truth0['features.json'].find((f) => f.status !== 'shipped' && f.status !== 'beta');
   const roadmapShipped = truth0['roadmap.json'].find((r) => {
     const f = truth0['features.json'].find((x) => x.id === r.feature_id);
     return f && f.status === 'shipped';
@@ -642,9 +645,9 @@ async function selfTest(schema, root) {
     { name: '"notify me" on a card for a shipped feature', expect: ['lanes'], skip: !roadmapShipped, mutate: (t) => { t['roadmap.json'].find((r) => r.feature_id === roadmapShipped.feature_id).notify = true; } },
     { name: 'roadmap card for an unknown feature id', expect: ['refs'], mutate: (t) => { t['roadmap.json'].push({ feature_id: 'nope.missing', public_label: 'Nope', notify: false }); } },
     { name: 'tier includes an unknown feature id', expect: ['tiers'], mutate: (t) => { t['tiers.json'] = [aTier({ includes: ['nope.missing'] })]; } },
-    { name: 'tier includes a feature that has not released', expect: ['tiers'], mutate: (t) => { const f = t['features.json'].find((x) => x.status === 'in-progress'); t['tiers.json'] = [aTier({ includes: [f.id] })]; } },
+    { name: 'tier includes a feature that has not released', expect: ['tiers'], mutate: (t) => { t['tiers.json'] = [aTier({ includes: [firstUnreleased.id] })]; } },
     { name: 'tier lists a released feature under coming', expect: ['tiers'], mutate: (t) => { t['tiers.json'] = [aTier({ coming: [firstReleased.id] })]; } },
-    { name: 'valid tier refs pass', expect: [], mutate: (t) => { const f = t['features.json'].find((x) => x.status === 'in-progress'); t['tiers.json'] = [aTier({ includes: [firstReleased.id], coming: [f.id] })]; } },
+    { name: 'valid tier refs pass', expect: [], mutate: (t) => { t['tiers.json'] = [aTier({ includes: [firstReleased.id], coming: [firstUnreleased.id] })]; } },
     { name: 'public safety: seeded internal id in a truth row', expect: ['public-safety'], files: seed('src/data/truth/features.json', '  "limits": ["Waits on SEEDED-INTERNAL-42."]\n') },
     { name: 'public safety: seeded id in an extra file of src/data/truth (every file is scanned, not only the named ones)', expect: ['public-safety'], files: seed('src/data/truth/notes.txt', 'SEEDED-INTERNAL-7\n') },
     { name: 'public safety: seeded id in src/lib/truth', expect: ['public-safety'], files: seed('src/lib/truth/helper.ts', '// see SEEDED-INTERNAL-9\n') },
