@@ -1,5 +1,5 @@
 ---
-title: Pkgs
+title: What you can build
 description: Manifest-driven packages — the unit of everything beyond the window chrome.
 ---
 
@@ -18,13 +18,13 @@ Pick the smallest archetype that fits what your pkg contributes. A single pkg ca
 | **UI iframe** | A panel that renders your own HTML/React in the shell, served by the kernel's in-process content server. | You're shipping a mini-app, dashboard, form, or panel you control end to end and it's happy inside an iframe. |
 | **UI webview** | A native child webview (not an iframe). | You need to drive a third-party site that refuses iframe embedding (via CSP `frame-ancestors` or `X-Frame-Options`), or you want per-pkg cookie isolation that survives reinstall. |
 | **MCP server** | Tools the AI engine can call, over the Model Context Protocol. | You're surfacing capabilities for the agent to invoke — read data, hit an API, kick off a workflow. |
-| **Engine adapter** | A new AI backend the shell can use as the chat engine. | You're integrating a CLI-based AI engine (see **[Engines](/docs/engines)**). |
+| **Engine adapter** | A new AI backend the shell can use as the chat engine. | You're integrating a CLI-based AI engine (see **[Engines](/docs/use/engines/)**). |
 | **Sidecar** | A supervised, long-running bundled binary. | You have a worker that doesn't fit the MCP shape — a preview server, a render worker, a websocket client — and want explicit lifecycle control. |
 | **Skill-only** | Claude Code skills, slash commands, and/or agents — no UI, no process. | The functionality is pure prompt and workflow. The simplest possible pkg. |
 
 ## The manifest
 
-Every pkg has a `manifest.json` at its root. A minimal UI-iframe manifest:
+Every pkg has a `manifest.json` at its root ([the manifest guide](/docs/build/manifest/) covers every block). A minimal UI-iframe manifest:
 
 ```json
 {
@@ -66,7 +66,7 @@ The rules that matter:
 - Because the handshake is async, you can't construct a Supabase client at module-eval time — use a lazy getter that runs after `hostContext` arrives.
 - Run standalone (outside the shell) and the handshake is skipped, so build a sensible fallback for local dev.
 
-The handshake uses [`@modelcontextprotocol/ext-apps`](https://www.npmjs.com/package/@modelcontextprotocol/ext-apps). The **[Build your first pkg](/docs/build-a-pkg)** tutorial walks the whole flow.
+The handshake uses [`@modelcontextprotocol/ext-apps`](https://www.npmjs.com/package/@modelcontextprotocol/ext-apps). The **[Build your first app](/docs/build/first-pkg/)** tutorial walks the whole flow.
 
 ## Lifecycle
 
@@ -86,10 +86,11 @@ Long-lived MCP servers and sidecars run under a supervisor with a full state mac
 | **`ikenga`** | Disk-side **package manager** — mutates what's installed. | `list`, `add`, `update`, `remove`, `dev <path>`, `doctor` |
 | **`iyke`** | Runtime **controller** — drives a shell that's already running over its localhost bridge. | navigate panes, switch modes, inspect state |
 
-`ikenga dev <path>` is the developer loop: it symlinks a pkg into the running shell, auto-trusts the source, and hot-reloads on manifest changes — no shell restart. Iframe code changes flow through your dev server's HMR; sidecar and MCP source changes restart through the supervisor's file watcher; `Ctrl-C` unregisters cleanly. See the **[Build your first pkg](/docs/build-a-pkg)** tutorial.
+`ikenga dev <path>` is the developer loop: it symlinks a pkg into the running shell, auto-trusts the source, and hot-reloads on manifest changes — no shell restart. Iframe code changes flow through your dev server's HMR; sidecar and MCP source changes restart through the supervisor's file watcher; `Ctrl-C` unregisters cleanly. See the **[Build your first app](/docs/build/first-pkg/)** tutorial.
 
 ## Where to go next
 
-- **[Build your first pkg →](/docs/build-a-pkg)** — scaffold, run hot-mounted, publish.
-- **[Engines →](/docs/engines)** — the engine-adapter archetype in depth.
-- **[mcp-iyke →](/docs/mcp-iyke)** — driving a running shell as MCP tools.
+- **[Build your first app →](/docs/build/first-pkg/)** — scaffold, run hot-mounted, publish.
+- **[The manifest →](/docs/build/manifest/)** — every block, capability and permission, and how trust works.
+- **[Engines →](/docs/use/engines/)** — the engine-adapter archetype in depth.
+- **[mcp-iyke →](/docs/reference/catalogue/mcp-iyke/)** — driving a running shell as MCP tools.

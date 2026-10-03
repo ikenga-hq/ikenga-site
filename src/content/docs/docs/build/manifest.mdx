@@ -1,0 +1,146 @@
+---
+title: The manifest
+description: How manifest.json declares what a pkg contributes and what it may touch — capabilities, permissions, trust, requires and view contributions.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import FeatureStatus from '../../../../components/docs/FeatureStatus.astro';
+
+Every pkg has a `manifest.json` at its root. The shell reads it at boot, validates it, and registers each block it declares. Anything the manifest does not declare, the pkg does not get. This page explains the blocks and the choices behind them; the schema itself is published as the `ManifestSchema` export of [`@ikenga/contract`](https://www.npmjs.com/package/@ikenga/contract).
+
+<FeatureStatus id="sdk.contract" />
+
+## The required fields
+
+```json
+{
+  "id": "com.example.dashboard",
+  "name": "Dashboard",
+  "version": "0.1.0",
+  "ikenga_api": "5"
+}
+```
+
+| Field | What it is |
+| --- | --- |
+| `id` | A reverse-DNS identifier you own, such as `com.example.dashboard`: lowercase letters and digits, at least two dot-separated parts. The shell uses it to namespace routes, permissions and storage. |
+| `name` | The display name. |
+| `version` | Your pkg's version. |
+| `ikenga_api` | The manifest API version you target, as a numeric string. The shell accepts versions `"1"` to `"5"`; `"5"` is current. |
+
+Optional descriptive fields: `kind` (a hint such as `"embedded"`, `"windowed"`, `"engine"` or `"skill"`; it is not enforced), `author` (`{ "name", "key" }`), `targets` (Rust target triples, empty for any host) and `screenshots` (`{ "path", "caption" }` entries shown in the store).
+
+## Blocks: what a pkg contributes
+
+A pkg declares only the blocks it needs. The shell walks whatever is present.
+
+| Block | Contributes |
+| --- | --- |
+| `ui` | Routes rendered in a pane, and the view contributions below. |
+| `mcp` | MCP servers the engine can call. Each entry has `name`, `command`, `args`, `env`, a `lifecycle` of `"per-call"` (default) or `"long-lived"`, and for long-lived servers `restart_when_changed` globs and `auto_restart`. |
+| `sidecars` | Supervised background binaries. A sidecar's `name` must start with `pa-<slug>-`, where the slug is your `id` with dots turned into dashes. `bin` may contain `{target}` for the host triple. |
+| `engine` | An engine adapter. See [Engines](/docs/use/engines/). |
+| `iyke` | Routes on the local control bridge, under `/pkg/<id>/`, handled by a sidecar or an event. |
+| `cron` | Scheduled jobs: a six-field expression (seconds first) and a handler. |
+| `settings` | Fields shown in Settings: `string`, `number`, `boolean` or `secret`. |
+| `workflows` | Multi-step workflows built from your own bridge routes, with dependencies between steps. |
+| `window` | A separate native window. |
+| `queries` | Query-cache key prefixes the pkg owns. |
+| `migrations` | A path inside the pkg to its database migrations. |
+| `requires` | Standalone skills, agents, commands, hooks or MCP servers this pkg depends on (see below). |
+| `capabilities` | Host features the pkg opts in to (see below). |
+| `permissions` | What the pkg may touch (see below). |
+
+<Aside type="caution" title="Retired fields fail validation">
+The shell rejects a manifest that declares fields it does not know. Older manifests may carry `skills`, `commands` or `agents` (now declared through `requires`), `ui.nav` (now `ui.views`) or `ui.side_pane_viewers` (now `ui.views` or `ui.companion_panels`). Remove them.
+</Aside>
+
+## UI routes and view contributions
+
+`ui.routes` lists what the pkg can render. Each route has a `path`, a `kind` and a `source`:
+
+- `"iframe"` — your own HTML, served by the shell. `source` is a path inside the pkg, such as `dist/index.html`.
+- `"webview"` — a native child webview, for sites that refuse to load in an iframe. Needs the `webview` capability.
+- `"component"` — reserved for components built into the shell. A third-party pkg cannot use it.
+
+`ui.csp` overrides Content-Security-Policy directives for your iframe; an override replaces the whole directive, so list `'self'` if you still want it.
+
+Routes say what can be rendered. These blocks say where it shows up in the workspace:
+
+| Block | Where it appears |
+| --- | --- |
+| `ui.views` | An entry people can open and pin. `route` must match one of your `ui.routes` paths. `pin_on_install: true` pins it once, at first install. |
+| `ui.explorer_sections` | A section in the project Explorer. The shell renders it natively from JSON your `data_route` returns (rows with a label, an optional badge and an optional target to open). |
+| `ui.companion_panels` | A panel in the Companion. It shows state, not conversation. `session_scoped: true` passes the selected agent session to the panel. |
+| `ui.context_actions` | An item in the menu for a file, an artifact, an agent session or a store item. It either hands a prompt to Chi or opens one of your views. It may request a single-key shortcut, which is granted only if the key is free. |
+| `ui.command_palette` | A command palette entry, with the same two kinds of action. |
+| `ui.widgets` | A widget on the project dashboard, `small`, `medium` or `wide`. |
+
+<FeatureStatus id="ngwa.contributions" />
+
+## Capabilities
+
+Capabilities are host features a pkg opts in to. The shell resolves them and hands the result to your iframe during the AppBridge handshake.
+
+| Capability | What it gives you |
+| --- | --- |
+| `sqlite` | Access to the local SQLite database (`true`, or `{ "db": "ikenga.local" }`). Tables are limited by `permissions["sqlite.tables"]`. |
+| `supabase` | Supabase credentials from the user's vault. `required: true` refuses to mount when they are missing. |
+| `webview` | Child webviews: `child_webviews`, named cookie `partitions`, browser `engines`, and `allowed_origins`. Leaving `allowed_origins` out allows any origin with a warning; an empty list allows none. |
+| `agentOps` | Host verbs to list, run and enable scheduled agent jobs. |
+| `http` | A host-made HTTP request. The shell attaches an auth header from a declared secret, so the key never enters your iframe. Allowed URLs come from `permissions.net`. |
+| `secrets` | Named secrets resolved from the vault. Your iframe receives each value under the name you declared; the vault key itself stays in the shell. |
+| `invoke` | A named list of host commands the pkg may call. Named commands only, never a wildcard. |
+
+**`http`, `secrets` and `invoke` do nothing unless the pkg is trusted.** See [Trust](#trust) below.
+
+## Permissions
+
+`permissions` lists what the pkg may touch. Every key is a list and defaults to empty.
+
+| Key | Controls |
+| --- | --- |
+| `shell.execute` | Commands the pkg may run. |
+| `fs.read`, `fs.write` | Paths the pkg may read or write. |
+| `net` | Origins the pkg may reach. |
+| `sqlite.tables` | Local tables the pkg may use. |
+| `supabase.tables` | An older name for `sqlite.tables`, kept so `"1"` manifests still load. New manifests use `sqlite.tables`. |
+| `vault.keys` | Vault keys the pkg may resolve (for example through `secrets`). |
+| `engine` | Engine scopes; `"invoke"` lets the pkg send work to the active agent session. |
+| `notify` | `"send"` lets the pkg raise a system notification. |
+| `events` | Events the pkg may use. |
+
+## Trust
+
+When someone installs a pkg from the store, the install sheet shows what it asks for, and they consent before it is installed.
+
+<FeatureStatus id="ngwa.install-consent" />
+
+A pkg with an empty `permissions` block and no sensitive capabilities is trusted automatically. Asking for sensitive permissions, such as `shell.execute` or `fs.write` outside your own data folder, means the user grants it instead. Only a trusted pkg gets the `http`, `secrets` and `invoke` capabilities. An update that asks for new permissions is held for review rather than installed silently.
+
+<FeatureStatus id="ngwa.trusted-tier" />
+<FeatureStatus id="updates.permission-review" />
+
+Registry pkgs can carry a `signature` (`"ed25519:<base64>"`) over the normalized manifest. The shell checks it at install against the publisher key named in the signed registry index.
+
+<FeatureStatus id="registry.signed-catalog" />
+
+## requires
+
+A pkg does not bundle skills, agents or commands inside itself. It names the standalone pieces it depends on, and the store installs them with it:
+
+```json
+{
+  "requires": [
+    { "kind": "skill", "name": "skill-core" },
+    { "kind": "mcp", "name": "@example/mcp-search", "source": "npx", "ref": "1.2.0" }
+  ]
+}
+```
+
+`kind` is one of `skill`, `agent`, `command`, `hook` or `mcp`. `source` is optional (`git`, `npx`, `catalog` or `local`); without it, the dependency is looked up in the catalogue. `ref` pins a tag, branch or version.
+
+## Next
+
+- **[Build your first app →](/docs/build/first-pkg/)** — a complete manifest in a working pkg.
+- **[What you can build →](/docs/build/archetypes/)** — pick the archetype first.

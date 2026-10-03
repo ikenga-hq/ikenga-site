@@ -32,38 +32,42 @@ export default defineConfig({
 				},
 			],
 			customCss: ['./src/styles/global.css'],
+			// Five sections, one per audience: Use, Build, Reference, Operate, Contribute.
+			// Every docs page must appear in exactly one of them.
 			sidebar: [
 				{
-					label: 'Start here',
+					label: 'Use',
 					items: [
-						{ label: 'What is Ikenga?', slug: 'docs' },
-						{ label: 'Install', slug: 'docs/getting-started' },
-						{ label: 'Build your first pkg', slug: 'docs/build-a-pkg' },
+						'docs',
+						{
+							label: 'Get started',
+							items: ['docs/use/install', 'docs/use/first-launch', 'docs/use/offline-install'],
+						},
+						{ label: 'Your workspace', items: ['docs/use/engines'] },
+						{ label: 'Studio', autogenerate: { directory: 'docs/use/studio' } },
+						{ label: 'Groundwork', autogenerate: { directory: 'docs/use/groundwork' } },
 					],
 				},
 				{
-					label: 'Groundwork',
-					autogenerate: { directory: 'docs/groundwork' },
+					label: 'Build',
+					items: ['docs/build/archetypes', 'docs/build/first-pkg', 'docs/build/manifest'],
 				},
 				{
-					label: 'Studio',
-					autogenerate: { directory: 'docs/studio' },
+					label: 'Reference',
+					items: [
+						{ label: 'Overview', slug: 'docs/reference' },
+						'docs/reference/glossary',
+						{ label: 'Catalogue', autogenerate: { directory: 'docs/reference/catalogue' } },
+					],
 				},
 				{
-					label: 'Pkgs',
-					autogenerate: { directory: 'docs/pkgs' },
-				},
-				{
-					label: 'Engines',
-					autogenerate: { directory: 'docs/engines' },
-				},
-				{
-					label: 'MCP',
-					items: [{ label: 'mcp-iyke', slug: 'docs/mcp-iyke' }],
+					label: 'Operate',
+					badge: { text: 'Beta', variant: 'caution' },
+					items: ['docs/operate'],
 				},
 				{
 					label: 'Contribute',
-					items: [{ label: 'Contributing', slug: 'docs/contributing' }],
+					items: ['docs/contribute'],
 				},
 			],
 		}),

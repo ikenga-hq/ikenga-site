@@ -11,3 +11,45 @@
 # to the storefront.
 /docs/pkgs/suite /packages/ 301
 /docs/pkgs/suite/ /packages/ 301
+
+# The docs moved into five sections (Use, Build, Reference, Operate, Contribute).
+# Old links keep working. Each rule is one hop, listed in both slash forms.
+# Never remove these: other projects' READMEs and published packages link the old paths.
+/docs/getting-started /docs/use/install/ 301
+/docs/getting-started/ /docs/use/install/ 301
+/docs/build-a-pkg /docs/build/first-pkg/ 301
+/docs/build-a-pkg/ /docs/build/first-pkg/ 301
+/docs/contributing /docs/contribute/ 301
+/docs/contributing/ /docs/contribute/ 301
+/docs/engines /docs/use/engines/ 301
+/docs/engines/ /docs/use/engines/ 301
+/docs/mcp-iyke /docs/reference/catalogue/mcp-iyke/ 301
+/docs/mcp-iyke/ /docs/reference/catalogue/mcp-iyke/ 301
+/docs/pkgs/mcp-browser /docs/reference/catalogue/mcp-browser/ 301
+/docs/pkgs/mcp-browser/ /docs/reference/catalogue/mcp-browser/ 301
+/docs/pkgs/tasks /docs/reference/catalogue/tasks/ 301
+/docs/pkgs/tasks/ /docs/reference/catalogue/tasks/ 301
+/docs/pkgs /docs/build/archetypes/ 301
+/docs/pkgs/ /docs/build/archetypes/ 301
+/docs/studio/concepts /docs/use/studio/concepts/ 301
+/docs/studio/concepts/ /docs/use/studio/concepts/ 301
+/docs/studio /docs/use/studio/ 301
+/docs/studio/ /docs/use/studio/ 301
+/docs/groundwork/actions /docs/use/groundwork/actions/ 301
+/docs/groundwork/actions/ /docs/use/groundwork/actions/ 301
+/docs/groundwork/board /docs/use/groundwork/board/ 301
+/docs/groundwork/board/ /docs/use/groundwork/board/ 301
+/docs/groundwork/concepts /docs/use/groundwork/concepts/ 301
+/docs/groundwork/concepts/ /docs/use/groundwork/concepts/ 301
+/docs/groundwork/explorer /docs/use/groundwork/explorer/ 301
+/docs/groundwork/explorer/ /docs/use/groundwork/explorer/ 301
+/docs/groundwork/film-workflow /docs/use/groundwork/film-workflow/ 301
+/docs/groundwork/film-workflow/ /docs/use/groundwork/film-workflow/ 301
+/docs/groundwork/orchestrate /docs/use/groundwork/orchestrate/ 301
+/docs/groundwork/orchestrate/ /docs/use/groundwork/orchestrate/ 301
+/docs/groundwork/profiles /docs/use/groundwork/profiles/ 301
+/docs/groundwork/profiles/ /docs/use/groundwork/profiles/ 301
+/docs/groundwork/state-model /docs/use/groundwork/state-model/ 301
+/docs/groundwork/state-model/ /docs/use/groundwork/state-model/ 301
+/docs/groundwork /docs/use/groundwork/ 301
+/docs/groundwork/ /docs/use/groundwork/ 301
