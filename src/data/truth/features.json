@@ -607,14 +607,14 @@
     "scope": "single-user-server",
     "limits": [
       "Not part of the desktop download: you build and deploy the server yourself.",
-      "Access is by one shared token; per-device pairing is in progress.",
-      "The Devices screen shows the server's exposure read-only and is not a security boundary."
+      "Access is by the server's shared token, or by pairing a device (pairing is new in 0.19.0).",
+      "The Devices screen shows how the server is exposed to the network, read-only; it does not change it."
     ],
     "audiences": [
       "individuals",
       "teams"
     ],
-    "last_verified": "2026-10-02"
+    "last_verified": "2026-10-03"
   },
   {
     "id": "bridge.local-api",
@@ -653,89 +653,108 @@
     "id": "server.multi-user",
     "area": "server",
     "plain_name": "Multi-user server",
-    "status": "in-progress",
-    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/362",
+    "status": "beta",
+    "since": "0.19.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.19.0",
     "scope": "multi-user-server",
     "limits": [
       "Members of one organisation share the server and are mutually trusted; it is not built for untrusted tenants.",
-      "Sign-in is by username and password; single sign-on is not available yet."
+      "Sign-in is by username and password; single sign-on is not available yet.",
+      "The server needs a Linux host: it runs as root under systemd and gives each person their own Unix user.",
+      "Not part of the desktop download: you build and deploy the server yourself."
     ],
     "audiences": [
       "teams"
     ],
-    "last_verified": "2026-10-02"
+    "last_verified": "2026-10-03"
   },
   {
     "id": "access.device-pairing",
     "area": "access",
     "plain_name": "Device pairing and phone-sized remote client",
-    "status": "in-progress",
-    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/365",
+    "status": "beta",
+    "since": "0.19.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.19.0",
     "scope": "single-user-server",
-    "limits": [],
+    "limits": [
+      "Pairing is covered by automated tests; a check with a real phone over Tailscale is still to come.",
+      "Behind a reverse proxy such as Caddy or tailscale serve, pairing a phone can fail with a \"cookie_rejected\" message, because the server sees the proxy's address."
+    ],
     "audiences": [
       "individuals",
       "teams"
     ],
-    "last_verified": "2026-10-02"
+    "last_verified": "2026-10-03"
   },
   {
     "id": "access.permission-routing",
     "area": "access",
     "plain_name": "Approval routing across devices and people",
-    "status": "in-progress",
-    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/366",
+    "status": "beta",
+    "since": "0.19.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.19.0",
     "scope": "multi-user-server",
-    "limits": [],
+    "limits": [
+      "Today a paired device can answer permission requests raised by the desktop app. On a multi-user server the routing rules are built and tested, but the server's agent engines do not raise permission requests yet."
+    ],
     "audiences": [
       "teams"
     ],
-    "last_verified": "2026-10-02"
+    "last_verified": "2026-10-03"
   },
   {
     "id": "access.members",
     "area": "access",
     "plain_name": "Members, roles and invites",
-    "status": "in-progress",
-    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/368",
+    "status": "beta",
+    "since": "0.19.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.19.0",
     "scope": "multi-user-server",
     "limits": [
-      "The spend cap is shown but not enforced."
+      "The spend cap is shown but not enforced.",
+      "Invites are links you copy and send yourself; Ikenga does not send email.",
+      "Ownership cannot be transferred yet.",
+      "Work done through a share never uses the owner's secrets."
     ],
     "audiences": [
       "teams"
     ],
-    "last_verified": "2026-10-02"
+    "last_verified": "2026-10-03"
   },
   {
     "id": "access.audit-log",
     "area": "access",
     "plain_name": "Hash-chained audit log",
-    "status": "in-progress",
-    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/364",
+    "status": "beta",
+    "since": "0.19.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.19.0",
     "scope": "multi-user-server",
     "limits": [
-      "Export to external logging tools is not available."
+      "Export to external logging tools is not available.",
+      "Removing only the newest entries from the log may not be detected."
     ],
     "audiences": [
       "teams"
     ],
-    "last_verified": "2026-10-02"
+    "last_verified": "2026-10-03"
   },
   {
     "id": "vault.member-secrets",
     "area": "vault",
     "plain_name": "Per-member secrets on a server",
-    "status": "in-progress",
-    "ref_public": "https://github.com/ikenga-hq/ikenga/pull/363",
+    "status": "beta",
+    "since": "0.19.0",
+    "ref_public": "https://github.com/ikenga-hq/ikenga/releases/tag/v0.19.0",
     "scope": "multi-user-server",
     "limits": [
-      "Secrets are sealed under a key the server operator holds; a lost key cannot be recreated, so back it up."
+      "Secrets are sealed under a key the server operator holds; a lost key cannot be recreated, so back it up.",
+      "A secret value can be at most 64 KiB, and one person's store at most 8 MiB; a write past either is refused.",
+      "There is no command to rotate the server's key yet."
     ],
     "audiences": [
       "teams"
     ],
-    "last_verified": "2026-10-02"
+    "last_verified": "2026-10-03"
   },
   {
     "id": "engines.claude-code",
