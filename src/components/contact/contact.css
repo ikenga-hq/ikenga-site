@@ -1,0 +1,247 @@
+/* Contact page styles — built with Theme A Dusk Wood tokens */
+
+.contact-section {
+	padding-top: var(--space-12);
+	padding-bottom: var(--space-16);
+}
+
+.contact-form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-5);
+	margin-top: var(--space-8);
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+
+.form-group label {
+	font: 500 var(--text-body-sm) / var(--lead-body-sm) var(--font-body);
+	color: var(--fg);
+}
+
+.form-group .req {
+	color: var(--ember);
+	margin-left: 2px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+	width: 100%;
+	background: var(--bg-surface);
+	color: var(--fg);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	padding: var(--space-3) var(--space-4);
+	font: 400 var(--text-body) / var(--lead-body) var(--font-body);
+	transition: border-color var(--motion-fast) var(--ease-calm);
+	box-shadow: var(--shadow-1);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+	outline: 2px solid var(--focus);
+	outline-offset: 1px;
+	border-color: var(--focus);
+}
+
+.form-select {
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right var(--space-4) center;
+	padding-right: var(--space-10);
+	cursor: pointer;
+}
+
+.form-select option {
+	background: var(--bg-surface);
+	color: var(--fg);
+}
+
+.form-textarea {
+	resize: vertical;
+	min-height: 120px;
+}
+
+.consent-group {
+	margin-top: var(--space-2);
+}
+
+.consent-label {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--space-3);
+	font: 400 var(--text-body-sm) / var(--lead-body-sm) var(--font-body);
+	color: var(--fg-muted);
+	cursor: pointer;
+}
+
+.consent-label input[type='checkbox'] {
+	appearance: none;
+	margin-top: 2px;
+	width: 18px;
+	height: 18px;
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-xs);
+	background: var(--bg-surface);
+	flex-shrink: 0;
+	cursor: pointer;
+	position: relative;
+	transition: background-color var(--motion-fast) var(--ease-calm), border-color var(--motion-fast) var(--ease-calm);
+}
+
+.consent-label input[type='checkbox']:checked {
+	background: var(--primary);
+	border-color: var(--primary);
+}
+
+.consent-label input[type='checkbox']:checked::after {
+	content: '';
+	position: absolute;
+	left: 5px;
+	top: 2px;
+	width: 4px;
+	height: 8px;
+	border: solid var(--primary-fg);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+
+.consent-label input[type='checkbox']:focus-visible {
+	outline: 2px solid var(--focus);
+	outline-offset: 2px;
+}
+
+.consent-label span {
+	user-select: none;
+}
+
+.form-actions {
+	margin-top: var(--space-4);
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+.form-msg {
+	font-size: var(--text-body-sm);
+	line-height: var(--lead-body-sm);
+	padding: var(--space-3) var(--space-4);
+	border-radius: var(--radius-md);
+	display: none;
+}
+
+.form-msg[data-state='error'] {
+	display: block;
+	background: color-mix(in srgb, var(--danger) 14%, transparent);
+	color: var(--fg);
+	border: 1px solid var(--danger);
+}
+
+.form-msg[data-state='ok'] {
+	display: block;
+	background: color-mix(in srgb, var(--live) 14%, transparent);
+	color: var(--fg);
+	border: 1px solid var(--live);
+}
+
+.form-msg a {
+	color: inherit;
+	text-decoration: underline;
+	font-weight: 500;
+}
+
+.sent-banner {
+	display: none;
+	padding: var(--space-6);
+	background: var(--bg-surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	margin-top: var(--space-8);
+}
+
+.sent-banner:target,
+.sent-banner[data-visible='true'] {
+	display: block;
+}
+
+/* Hide form when sent is active */
+.sent-banner:target ~ #contact-form,
+.sent-banner[data-visible='true'] ~ #contact-form {
+	display: none;
+}
+
+.sent-banner h2 {
+	font: 600 var(--text-h2) / var(--lead-h2) var(--font-display);
+	margin: 0 0 var(--space-2);
+}
+
+.sent-banner p {
+	font-size: var(--text-body);
+	line-height: var(--lead-body);
+	color: var(--fg-muted);
+	margin: 0 0 var(--space-5);
+}
+
+.hp-wrap {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Companion details */
+.co-panel h2 {
+	font: 600 var(--text-h3) / var(--lead-h3) var(--font-display);
+	margin: 0 0 var(--space-4);
+}
+
+.co-panel p {
+	font-size: var(--text-body-sm);
+	line-height: var(--lead-body-sm);
+	color: var(--fg-muted);
+	margin: 0 0 var(--space-4);
+}
+
+.co-cards {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+.co-card {
+	padding: var(--space-4);
+	background: var(--bg-base);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+}
+
+.co-card h3 {
+	font: 600 var(--text-body) / 1.2 var(--font-body);
+	margin: 0 0 var(--space-2);
+	color: var(--fg);
+}
+
+.co-card p {
+	font-size: var(--text-caption);
+	line-height: var(--lead-caption);
+	color: var(--fg-muted);
+	margin: 0 0 var(--space-3);
+}
+
+.co-card a.link {
+	font-size: var(--text-caption);
+	color: var(--primary);
+	text-decoration: underline;
+}
