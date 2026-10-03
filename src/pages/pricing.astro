@@ -1,0 +1,293 @@
+---
+// /pricing: the only page that shows prices. Every figure, billing term,
+// minimum, size, region and call to action is read from
+// src/data/truth/tiers.json, validated against the truth schema at build time
+// (src/components/pricing/tiers.ts). Feature names, statuses, versions and
+// limits come from src/data/truth/features.json. There is no checkout button
+// anywhere: paid plans are a waitlist or a conversation.
+import PricingShell from '../components/pricing/PricingShell.astro';
+import TierCards from '../components/pricing/TierCards.astro';
+import PersonalSizes from '../components/pricing/PersonalSizes.astro';
+import ManagedSizes from '../components/pricing/ManagedSizes.astro';
+import FeatureList from '../components/pricing/FeatureList.astro';
+import Icon from '../components/home/Icon.astro';
+import {
+	TIERS,
+	TIER_NAMES,
+	tier,
+	money,
+	addonFrom,
+	sharedIncludes,
+	sharedComing,
+	extraIncludes,
+	releasedRows,
+	comingRows,
+} from '../components/pricing/tiers';
+import { ctaHref, contactHref, TEAMS_HREF, SECURITY_HREF, ROADMAP_HREF } from '../components/pricing/links';
+
+const personal = tier('personal');
+const plan = personal.personal!;
+const team = tier('team');
+const enterprise = tier('enterprise');
+const managedFrom = addonFrom(enterprise);
+
+// What every plan includes, split by where it runs.
+const included = releasedRows(sharedIncludes());
+const onDesktop = included.filter((r) => r.scope === 'desktop');
+const onServer = included.filter((r) => r.scope !== 'desktop');
+const coming = comingRows(sharedComing());
+const extras = TIERS.map((t) => ({ t, rows: releasedRows(extraIncludes(t)) })).filter((x) => x.rows.length > 0);
+
+// Paid plans whose sale waits on signed installers, from their prerequisites.
+const paid = TIERS.filter((t) => t.price !== 0);
+const signingGated = paid.filter((t) => t.prerequisites.includes('signing')).map((t) => TIER_NAMES[t.id]);
+const listJoin = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+
+const hasHosted = plan.delivery.includes('hosted');
+const hasOwnCloud = plan.delivery.includes('own-cloud');
+const overage = plan.decision_tokens.overage === 'metered' ? 'metered' : 'sold in prepaid packs';
+
+const sections = [
+	{ id: 'overview', label: 'Plans', icon: 'tag', ctx: 'get' },
+	{ id: 'personal', label: 'Personal', icon: 'person', ctx: 'get' },
+	{ id: 'members', label: 'Team & members', icon: 'users', ctx: 'member' },
+	{ id: 'enterprise', label: 'Enterprise', icon: 'briefcase', ctx: 'member' },
+	{ id: 'managed', label: 'Managed instance', icon: 'devices', ctx: 'get' },
+	{ id: 'included', label: 'Every plan includes', icon: 'layers', ctx: 'get' },
+	{ id: 'coming', label: 'Coming', icon: 'clock', ctx: 'get' },
+	{ id: 'early-access', label: 'Early access', icon: 'shield', ctx: 'get' },
+];
+const titles = { get: 'Pricing', member: 'Members and seats' };
+---
+
+<PricingShell
+	title="Ikenga pricing: Free, Personal, Team and Enterprise"
+	description="Ikenga is free and open source. Personal, Team and Enterprise plans are in early access: prices, what each plan includes, and what is still coming."
+	path="/pricing/"
+	sections={sections}
+	titles={titles}
+>
+	<section class="overview" id="overview" data-ctx="get" aria-labelledby="h-overview">
+		<p class="eyebrow">
+			<span>Pricing</span><span aria-hidden="true">·</span><span>Open source</span><span aria-hidden="true">·</span><span
+				>Apache-2.0</span
+			>
+		</p>
+		<h1 id="h-overview" class="p-h1">Free for you. Early access for everything else.</h1>
+		<p class="lede">
+			The desktop app is free and open source, with every feature in it. Paid plans add a server we run for you,
+			support, and help running Ikenga for a team. They are in early access, so there is no checkout: join a waitlist or
+			talk to us.
+		</p>
+		<TierCards />
+		<p class="fine">
+			Team and Enterprise prices are early-access prices. Personal prices are indicative and confirmed at launch. We
+			count members, not seats.
+		</p>
+	</section>
+
+	<section class="sec" id="personal" data-ctx="get" aria-labelledby="h-personal">
+		<div class="h2-row">
+			<h2 id="h-personal">Personal: a server of your own.</h2><span class="pill exp">Coming</span>
+		</div>
+		{
+			hasHosted && (
+				<p>
+					We run a small Ikenga server for you, in the region you pick. It is yours alone: one server per person, never
+					shared with strangers. Pick a size, and change it later.
+				</p>
+			)
+		}
+		{
+			hasOwnCloud && (
+				<p>
+					Or deploy the same server into your own cloud account in one click. You pay your cloud provider for the
+					server, and nothing to us for it.
+				</p>
+			)
+		}
+		<p>
+			Every Personal plan includes an allowance of decision tokens for the Ikenga decisions model, which is in
+			development. Use beyond the allowance is {overage}. Your engines keep using your own Claude Code, Codex or
+			OpenRouter sign-in or key; we do not resell model use.
+		</p>
+		<PersonalSizes />
+		<p class="limits">
+			Personal goes on sale once we can set up each server without a person in the loop. Until then it is a waitlist.
+		</p>
+		<div class="cta-row">
+			<a class="btn btn-quiet" href={ctaHref(personal.cta.href)}>{personal.cta.label}</a>
+		</div>
+	</section>
+
+	<section class="sec" id="members" data-ctx="member" aria-labelledby="h-members">
+		<div class="h2-row"><h2 id="h-members">Team: priced per member.</h2><span class="pill beta">Early access</span></div>
+		<p>
+			<strong>{money(team.price!)} per member per month</strong>, billed annually, or {money(team.price_monthly!)} billed
+			monthly. Early-access price.
+		</p>
+		<p>
+			We count members, not seats. A member is a person with the Owner or Operator role. Reviewers and time-limited
+			Guests are free. If you use the desktop app without a server, a member is a named person covered by your support
+			agreement. A seat is something else: a named slot for an agent session in a project. Seats are always free and
+			unlimited.
+		</p>
+		<p>
+			Team is set up with you, not through a checkout. You get priority support in business hours, and help putting
+			Ikenga in front of your team.
+		</p>
+		<p class="more-link"><a href={TEAMS_HREF}>What a team gets from Ikenga today<Icon name="arrow" /></a></p>
+		<div class="cta-row">
+			<a class="btn btn-quiet" href={ctaHref(team.cta.href)}>{team.cta.label}</a>
+		</div>
+	</section>
+
+	<section class="sec" id="enterprise" data-ctx="member" aria-labelledby="h-enterprise">
+		<div class="h2-row">
+			<h2 id="h-enterprise">Enterprise: support, an SLA and custom builds.</h2><span class="pill beta">Early access</span>
+		</div>
+		<p>
+			<strong>{money(enterprise.price!)} per member per month</strong>, billed annually, with a minimum of
+			{enterprise.min_members} members. Early-access price. Members are counted the same way as on Team.
+		</p>
+		<p>
+			Enterprise adds support with an SLA, help running your own multi-user server, and custom builds.
+			{managedFrom !== null && ' Add a managed instance if you would rather we run the server for you.'}
+		</p>
+		<p class="more-link"><a href={SECURITY_HREF}>How Ikenga handles security<Icon name="arrow" /></a></p>
+		<div class="cta-row">
+			<a class="btn btn-quiet" href={ctaHref(enterprise.cta.href)}>{enterprise.cta.label}</a>
+		</div>
+	</section>
+
+	<section class="sec" id="managed" data-ctx="get" aria-labelledby="h-managed">
+		<div class="h2-row">
+			<h2 id="h-managed">Managed instance.</h2>{
+				managedFrom !== null && <span class="since">from {money(managedFrom)} per organisation per month</span>
+			}
+		</div>
+		<p>
+			An add-on to Enterprise: a dedicated multi-user server for your organisation, operated by us. It is priced per
+			organisation per month by size, on top of your Enterprise members. Members on one server are trusted with each
+			other; it is not built to keep untrusted customers apart.
+		</p>
+		<ManagedSizes />
+		<p class="fine">
+			Member counts are estimates until we have measured each size under real use. Early-access prices.
+		</p>
+		<div class="cta-row">
+			<a class="btn btn-quiet" href={contactHref('managed')}>Talk to us</a>
+		</div>
+	</section>
+
+	<section class="sec" id="included" data-ctx="get" aria-labelledby="h-included">
+		<div class="h2-row"><h2 id="h-included">Every plan includes the full app.</h2></div>
+		<p>
+			Paid plans never take a feature away from Free. This is what every plan, Free included, gets today. Each feature
+			shows its status and its limits.
+		</p>
+		<h3 class="p-h3">In the desktop app</h3>
+		<FeatureList rows={onDesktop} label="In the desktop app" />
+		{
+			onServer.length > 0 && (
+				<>
+					<h3 class="p-h3">On a server you run</h3>
+					<p>The desktop download does not include a server. These features need one that you build and run yourself.</p>
+					<FeatureList rows={onServer} label="On a server you run" />
+				</>
+			)
+		}
+		{
+			extras.map(({ t, rows }) => (
+				<>
+					<h3 class="p-h3">Also in {TIER_NAMES[t.id]}</h3>
+					<FeatureList rows={rows} label={`Also in ${TIER_NAMES[t.id]}`} />
+				</>
+			))
+		}
+	</section>
+
+	{
+		coming.length > 0 && (
+			<section class="sec" id="coming" data-ctx="get" aria-labelledby="h-coming">
+				<div class="h2-row">
+					<h2 id="h-coming">Coming to every plan.</h2>
+				</div>
+				<p>These are on the roadmap. None of them has shipped.</p>
+				<FeatureList rows={coming} label="Coming to every plan" />
+				<p class="more-link">
+					<a href={ROADMAP_HREF}>
+						See the roadmap
+						<Icon name="arrow" />
+					</a>
+				</p>
+			</section>
+		)
+	}
+
+	<section class="sec" id="early-access" data-ctx="get" aria-labelledby="h-early-access">
+		<div class="h2-row"><h2 id="h-early-access">Paid plans are in early access.</h2></div>
+		<p>
+			We are working with a small group of design partners and a waitlist.
+			{
+				signingGated.length > 0 &&
+					` For ${listJoin(signingGated)}, we won't take payment or sign a paid contract until our installers are code-signed.`
+			}
+			{
+				!personal.prerequisites.includes('signing') &&
+					' Personal ships no installer, so it does not wait for signing; it opens once its servers can be set up automatically.'
+			}
+		</p>
+		<p>Prices on this page are early-access prices, and Personal prices are indicative until launch.</p>
+	</section>
+
+	<Fragment slot="companion">
+		<div class="co-panel" data-panel="get">
+			<h2>Plans at a glance</h2>
+			<ul class="price-list">
+				{
+					TIERS.map((t) => (
+						<li>
+							<span class="pn">{TIER_NAMES[t.id]}</span>
+							<span class="pv">{t.price === 0 ? 'Free' : t.personal ? `from ${money(t.price!)}` : money(t.price!)}</span>
+							<span class="pd">
+								{t.price === 0
+									? 'The full app, free and open source.'
+									: t.personal
+										? 'Per month, before VAT. Indicative.'
+										: `Per member per month${t.min_members ? `, minimum ${t.min_members}` : ''}. Early access.`}
+							</span>
+						</li>
+					))
+				}
+				{
+					managedFrom !== null && (
+						<li>
+							<span class="pn">Managed instance</span>
+							<span class="pv">from {money(managedFrom)}</span>
+							<span class="pd">Per organisation per month, added to Enterprise.</span>
+						</li>
+					)
+				}
+			</ul>
+			<ul class="paths">
+				{
+					paid.map((t) => (
+						<li>
+							<a href={ctaHref(t.cta.href)}>
+								<span class="pt">{t.cta.label}</span>
+								<Icon name="arrow" class="i arrow" />
+								<span class="pd">{TIER_NAMES[t.id]}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+		<div class="co-panel" data-panel="member" hidden>
+			<h2>Members, not seats</h2>
+			<p>A member is a person with the Owner or Operator role. Reviewers and time-limited Guests are free.</p>
+			<p>A seat is a named slot for an agent session in a project. Seats are always free and unlimited.</p>
+		</div>
+	</Fragment>
+</PricingShell>

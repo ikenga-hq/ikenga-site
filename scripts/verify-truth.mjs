@@ -632,6 +632,9 @@ async function selfTest(schema, root) {
   const avoidTerm = truth0['glossary.json'].flatMap((g) => g.avoid)[0];
   const aTier = (over) => ({ id: 'team', price: 20, price_monthly: 25, billing_period: 'annual', unit: 'member', addons: [], includes: [], coming: [], prerequisites: [], availability: 'early-access', cta: { kind: 'contact', label: 'Talk to us', href: '/contact/' }, ...over });
   const seed = (file, text) => (f) => f.concat({ file, text });
+  // The personal tier in a mutable copy of the truth data. Its cases need the real tiers.json to carry one.
+  const personalOf = (t) => t['tiers.json'].find((x) => x.id === 'personal');
+  const hasPersonal = !!(truth0['tiers.json'] || []).find((x) => x.id === 'personal');
 
   // Each case: expect = checks that must fire (as errors unless `warnOnly`); mutate edits a copy of the truth data;
   // safety / glossary edit the scanned file lists; patterns overrides the pattern set; contentLint sets the mode.
@@ -648,6 +651,17 @@ async function selfTest(schema, root) {
     { name: 'tier includes a feature that has not released', expect: ['tiers'], mutate: (t) => { t['tiers.json'] = [aTier({ includes: [firstUnreleased.id] })]; } },
     { name: 'tier lists a released feature under coming', expect: ['tiers'], mutate: (t) => { t['tiers.json'] = [aTier({ coming: [firstReleased.id] })]; } },
     { name: 'valid tier refs pass', expect: [], mutate: (t) => { t['tiers.json'] = [aTier({ includes: [firstReleased.id], coming: [firstUnreleased.id] })]; } },
+    { name: 'tiers: the older shape (no personal tier, add-ons without size, spec, members or regions) still passes', expect: [], mutate: (t) => { t['tiers.json'] = [aTier({ id: 'enterprise', price: 40, price_monthly: undefined, min_members: 5, addons: [{ id: 'managed-instance', price: 150, unit: 'org', prerequisites: ['managed-ops'] }] })]; } },
+    { name: 'tiers: a paid tier that lacks a feature the free tier includes', expect: ['tiers'], mutate: (t) => { t['tiers.json'] = [aTier({ id: 'free', price: 0, price_monthly: undefined, billing_period: undefined, unit: undefined, includes: [firstReleased.id] }), aTier({ includes: [] })]; } },
+    { name: 'tiers: the personal tier with no personal plan', expect: ['schema'], skip: !hasPersonal, mutate: (t) => { delete personalOf(t).personal; } },
+    { name: 'tiers: a personal plan on a tier that is not personal', expect: ['schema'], skip: !hasPersonal, mutate: (t) => { t['tiers.json'].find((x) => x.id === 'team').personal = clone(personalOf(t).personal); } },
+    { name: 'tiers: a personal price that is not the lowest size price', expect: ['schema'], skip: !hasPersonal, mutate: (t) => { personalOf(t).price += 1; } },
+    { name: 'tiers: a personal size priced in a region that is quote-only', expect: ['schema'], skip: !hasPersonal, mutate: (t) => { const p = personalOf(t).personal; const q = p.regions.find((r) => r.pricing === 'quote'); p.sizes[0].prices.push({ region: q.id, price: 99 }); } },
+    { name: 'tiers: a personal size priced in an unknown region', expect: ['schema'], skip: !hasPersonal, mutate: (t) => { personalOf(t).personal.sizes[0].prices[0].region = 'nowhere'; } },
+    { name: 'tiers: a personal price range whose top is not above its bottom', expect: ['schema'], skip: !hasPersonal, mutate: (t) => { const x = personalOf(t).personal.sizes[0].prices[0]; x.price_max = x.price; } },
+    { name: 'tiers: an add-on region at list price with no published price', expect: ['schema'], mutate: (t) => { t['tiers.json'] = [aTier({ id: 'enterprise', price_monthly: undefined, addons: [{ id: 'managed-instance-small', price: null, unit: 'org', regions: [{ id: 'eu', label: 'EU', pricing: 'list' }] }] })]; } },
+    { name: 'tiers: an add-on with the same region twice', expect: ['schema'], mutate: (t) => { t['tiers.json'] = [aTier({ id: 'enterprise', price_monthly: undefined, addons: [{ id: 'managed-instance-small', price: 150, unit: 'org', regions: [{ id: 'eu', label: 'EU', pricing: 'list' }, { id: 'eu', label: 'EU again', pricing: 'list' }] }] })]; } },
+    { name: 'tiers: an add-on spec with a fractional vCPU count', expect: ['schema'], mutate: (t) => { t['tiers.json'] = [aTier({ id: 'enterprise', price_monthly: undefined, addons: [{ id: 'managed-instance-small', price: 150, unit: 'org', spec: { ram_gb: 8, vcpu: 2.5, disk_gb: 80 } }] })]; } },
     { name: 'public safety: seeded internal id in a truth row', expect: ['public-safety'], files: seed('src/data/truth/features.json', '  "limits": ["Waits on SEEDED-INTERNAL-42."]\n') },
     { name: 'public safety: seeded id in an extra file of src/data/truth (every file is scanned, not only the named ones)', expect: ['public-safety'], files: seed('src/data/truth/notes.txt', 'SEEDED-INTERNAL-7\n') },
     { name: 'public safety: seeded id in src/lib/truth', expect: ['public-safety'], files: seed('src/lib/truth/helper.ts', '// see SEEDED-INTERNAL-9\n') },
