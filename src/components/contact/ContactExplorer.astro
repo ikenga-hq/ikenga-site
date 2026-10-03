@@ -1,0 +1,69 @@
+---
+// Explorer for the contact page, matching the desktop workspace layout.
+import Icon from '../home/Icon.astro';
+import IkeMark from '../home/IkeMark.astro';
+
+interface Props {
+	version: string;
+}
+const { version } = Astro.props;
+
+const NAV_ITEMS = [
+	{ href: '/', label: 'Overview', icon: 'home' as const },
+	{ href: '/#pricing', label: 'Pricing', icon: 'tag' as const },
+	{ href: '/#trust', label: 'Security', icon: 'shield' as const },
+	{ href: '/contact/', label: 'Contact', icon: 'person' as const, current: true },
+];
+
+const ELSEWHERE = [
+	{ href: '/docs/', label: 'Docs', icon: 'doc' as const },
+	{ href: '/packages/', label: 'Catalogue', icon: 'box' as const },
+	{ href: 'https://github.com/ikenga-hq/ikenga', label: 'GitHub', icon: 'github' as const },
+];
+---
+
+<nav class="explorer" aria-label="Sections">
+	<div class="ex-head">
+		<a class="brand" href="/">
+			<IkeMark />
+			<span class="wordmark">Ikenga</span>
+		</a>
+		<span class="ver num" data-rel-tag>{version}</span>
+	</div>
+	<div class="ex-group">
+		<span class="ex-label">Pages</span>
+		<ul class="ex-list">
+			{
+				NAV_ITEMS.map((item) => (
+					<li>
+						<a class="ex-row" href={item.href} aria-current={item.current ? 'page' : undefined}>
+							<Icon name={item.icon} />
+							{item.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<div class="ex-group">
+		<span class="ex-label">Elsewhere</span>
+		<ul class="ex-list">
+			{
+				ELSEWHERE.map((e) => (
+					<li>
+						<a class="ex-row" href={e.href}>
+							<Icon name={e.icon} />
+							{e.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<div class="ex-foot">
+		<button class="mode-toggle" type="button" data-mode-toggle>
+			<Icon name="moon" />
+			<span data-mode-label>Light mode</span>
+		</button>
+	</div>
+</nav>

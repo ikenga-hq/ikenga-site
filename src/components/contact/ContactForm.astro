@@ -1,0 +1,302 @@
+---
+// Contact Form component: progressive enhancement, client validation, inline JS submission,
+// and server POST fallback redirecting to /contact?sent=1.
+import Icon from '../home/Icon.astro';
+
+interface Props {
+	initialTopic?: string;
+	hasPrivacyRoute?: boolean;
+}
+
+const { initialTopic = 'team', hasPrivacyRoute = false } = Astro.props;
+
+const TOPICS = [
+	{ value: 'personal', label: 'Personal / Individual' },
+	{ value: 'team', label: 'Team (Early access)' },
+	{ value: 'enterprise', label: 'Enterprise' },
+	{ value: 'managed', label: 'Managed instance' },
+	{ value: 'security', label: 'Security inquiry or disclosure' },
+	{ value: 'other', label: 'Other' },
+];
+
+const TEAM_SIZES = [
+	{ value: '1', label: 'Just me (1 person)' },
+	{ value: '2-10', label: '2–10 people' },
+	{ value: '11-50', label: '11–50 people' },
+	{ value: '51-200', label: '51–200 people' },
+	{ value: '201+', label: '201+ people' },
+];
+---
+
+<div class="contact-form-container">
+	<!-- Success banner (shown via CSS :target when redirected to #sent, or via JS) -->
+	<div id="sent" class="sent-banner" data-sent-banner>
+		<h2>Request received</h2>
+		<p>Thank you for reaching out. We have received your request and will get back to you shortly.</p>
+		<a class="btn btn-quiet" href="/contact" data-reset-form>Send another message</a>
+	</div>
+
+	<!-- Form element -->
+	<form id="contact-form" action="/api/contact" method="POST" class="contact-form" novalidate>
+		<div class="form-group">
+			<label for="contact-name">Name <span class="req" aria-hidden="true">*</span></label>
+			<input
+				id="contact-name"
+				class="form-input"
+				type="text"
+				name="name"
+				required
+				maxlength="100"
+				autocomplete="name"
+				placeholder="Your name"
+			/>
+		</div>
+
+		<div class="form-group">
+			<label for="contact-email">Work email <span class="req" aria-hidden="true">*</span></label>
+			<input
+				id="contact-email"
+				class="form-input"
+				type="email"
+				name="email"
+				required
+				maxlength="254"
+				autocomplete="email"
+				placeholder="you@company.com"
+			/>
+		</div>
+
+		<div class="form-group">
+			<label for="contact-company">Company</label>
+			<input
+				id="contact-company"
+				class="form-input"
+				type="text"
+				name="company"
+				maxlength="100"
+				autocomplete="organization"
+				placeholder="Company name"
+			/>
+		</div>
+
+		<div class="form-group">
+			<label for="contact-team-size">Team size <span class="req" aria-hidden="true">*</span></label>
+			<select id="contact-team-size" class="form-select" name="team_size" required>
+				<option value="" disabled selected>Select team size</option>
+				{
+					TEAM_SIZES.map((size) => (
+						<option value={size.value}>{size.label}</option>
+					))
+				}
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label for="contact-topic">Topic <span class="req" aria-hidden="true">*</span></label>
+			<select id="contact-topic" class="form-select" name="topic" required data-topic-select>
+				{
+					TOPICS.map((t) => (
+						<option value={t.value} selected={t.value === initialTopic}>
+							{t.label}
+						</option>
+					))
+				}
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label for="contact-message">Message <span class="req" aria-hidden="true">*</span></label>
+			<textarea
+				id="contact-message"
+				class="form-textarea"
+				name="message"
+				required
+				rows="5"
+				maxlength="5000"
+				placeholder="Tell us what you're working on or what you'd like to discuss..."
+			></textarea>
+		</div>
+
+		<div class="consent-group">
+			<label class="consent-label">
+				<input id="contact-consent" type="checkbox" name="consent" value="true" required />
+				<span>
+					I agree to be contacted about this request
+					{
+						hasPrivacyRoute && (
+							<>
+								{' · '}
+								<a href="/privacy" class="privacy-link">Privacy notice</a>
+							</>
+						)
+					}
+				</span>
+			</label>
+		</div>
+
+		<!-- Honeypot: hidden from real visitors, catches bots -->
+		<div class="hp-wrap" aria-hidden="true">
+			<label for="contact-website">Leave this field empty</label>
+			<input id="contact-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+		</div>
+
+		<div id="contact-msg" class="form-msg" role="status" aria-live="polite"></div>
+
+		<div class="form-actions">
+			<button id="contact-submit" type="submit" class="btn btn-cta">
+				Send request
+			</button>
+		</div>
+	</form>
+</div>
+
+<script>
+	// Progressive enhancement & client submission handler
+	const form = document.getElementById('contact-form') as HTMLFormElement | null;
+	const submitBtn = document.getElementById('contact-submit') as HTMLButtonElement | null;
+	const msgEl = document.getElementById('contact-msg');
+	const sentBanner = document.querySelector('[data-sent-banner]') as HTMLElement | null;
+	const topicSelect = document.querySelector('[data-topic-select]') as HTMLSelectElement | null;
+
+	const VALID_TOPICS = ['personal', 'team', 'enterprise', 'managed', 'security', 'other'];
+
+	// 1. Preselect topic from query parameter if present (?topic=...)
+	const urlParams = new URLSearchParams(window.location.search);
+	const queryTopic = urlParams.get('topic')?.toLowerCase();
+	if (queryTopic && VALID_TOPICS.includes(queryTopic) && topicSelect) {
+		topicSelect.value = queryTopic;
+	}
+
+	// 2. Check if navigated with ?sent=1
+	if (urlParams.get('sent') === '1' && sentBanner && form) {
+		sentBanner.setAttribute('data-visible', 'true');
+		form.style.display = 'none';
+	}
+
+	// 3. Inline JS form submission
+	form?.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		if (!submitBtn || !msgEl) return;
+
+		// Clear previous state
+		msgEl.textContent = '';
+		msgEl.removeAttribute('data-state');
+
+		const nameInput = form.elements.namedItem('name') as HTMLInputElement | null;
+		const emailInput = form.elements.namedItem('email') as HTMLInputElement | null;
+		const companyInput = form.elements.namedItem('company') as HTMLInputElement | null;
+		const teamSizeInput = form.elements.namedItem('team_size') as HTMLSelectElement | null;
+		const topicInput = form.elements.namedItem('topic') as HTMLSelectElement | null;
+		const messageInput = form.elements.namedItem('message') as HTMLTextAreaElement | null;
+		const consentInput = form.elements.namedItem('consent') as HTMLInputElement | null;
+		const websiteInput = form.elements.namedItem('website') as HTMLInputElement | null;
+
+		const name = nameInput?.value.trim() ?? '';
+		const email = emailInput?.value.trim() ?? '';
+		const company = companyInput?.value.trim() ?? '';
+		const team_size = teamSizeInput?.value ?? '';
+		const topic = topicInput?.value ?? '';
+		const message = messageInput?.value.trim() ?? '';
+		const consent = consentInput?.checked ?? false;
+		const website = websiteInput?.value.trim() ?? '';
+
+		// Client validation
+		if (!name) {
+			showError('Please enter your name.');
+			nameInput?.focus();
+			return;
+		}
+
+		if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+			showError('Please enter a valid work email address.');
+			emailInput?.focus();
+			return;
+		}
+
+		if (!team_size) {
+			showError('Please select a team size.');
+			teamSizeInput?.focus();
+			return;
+		}
+
+		if (!topic || !VALID_TOPICS.includes(topic)) {
+			showError('Please select a topic.');
+			topicInput?.focus();
+			return;
+		}
+
+		if (!message) {
+			showError('Please enter your message.');
+			messageInput?.focus();
+			return;
+		}
+
+		if (!consent) {
+			showError('Please agree to be contacted about this request.');
+			consentInput?.focus();
+			return;
+		}
+
+		submitBtn.disabled = true;
+		const originalText = submitBtn.textContent;
+		submitBtn.textContent = 'Sending…';
+
+		try {
+			const res = await fetch('/api/contact', {
+				method: 'POST',
+				headers: {
+					'content-type': 'application/json',
+					accept: 'application/json',
+				},
+				body: JSON.stringify({
+					name,
+					email,
+					company,
+					team_size,
+					topic,
+					message,
+					consent,
+					website,
+				}),
+			});
+
+			if (res.status === 503) {
+				showError('Email hello@royalti.io instead', true);
+				submitBtn.disabled = false;
+				submitBtn.textContent = originalText;
+				return;
+			}
+
+			const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+
+			if (res.ok && data.ok) {
+				form.reset();
+				if (sentBanner) {
+					sentBanner.setAttribute('data-visible', 'true');
+					form.style.display = 'none';
+				} else {
+					msgEl.textContent = 'Thank you! Your request has been sent.';
+					msgEl.setAttribute('data-state', 'ok');
+				}
+			} else {
+				showError(data.error ?? 'Could not submit your request. Please try again.');
+				submitBtn.disabled = false;
+				submitBtn.textContent = originalText;
+			}
+		} catch {
+			showError('Network error. Email hello@royalti.io instead', true);
+			submitBtn.disabled = false;
+			submitBtn.textContent = originalText;
+		}
+	});
+
+	function showError(text: string, isLinkFallback = false) {
+		if (!msgEl) return;
+		msgEl.setAttribute('data-state', 'error');
+		if (isLinkFallback || text.includes('hello@royalti.io')) {
+			msgEl.innerHTML = 'Email <a href="mailto:hello@royalti.io">hello@royalti.io</a> instead';
+		} else {
+			msgEl.textContent = text;
+		}
+	}
+</script>
