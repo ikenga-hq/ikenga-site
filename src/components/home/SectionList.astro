@@ -1,0 +1,19 @@
+---
+// The "On this page" list: the Explorer on desktop, the Sections menu below 1180px.
+import Icon from './Icon.astro';
+import { SECTIONS } from './sections';
+---
+
+<ul class="ex-list">
+	{
+		SECTIONS.map((s) => (
+			<li>
+				<a class="ex-row" data-tint={s.tint ?? 'project'} href={`#${s.id}`} data-target={s.id}>
+					<Icon name={s.icon as never} />
+					{s.label}
+					{s.meta && <span class="meta">{s.meta}</span>}
+				</a>
+			</li>
+		))
+	}
+</ul>

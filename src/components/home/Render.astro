@@ -1,0 +1,74 @@
+---
+// One framed product image, read from src/data/home-renders.json by id.
+// The files are pre-cut by scripts/home-renders.mjs to the crop that proves the
+// claim (and a narrower crop for phones when the entry has one), in AVIF and
+// WebP with a PNG fallback. Swapping a render for a live capture is an edit to
+// the data entry plus a re-run of that script; this component does not change.
+import data from '../../data/home-renders.json';
+
+interface Crop {
+	x: number;
+	y: number;
+	w: number;
+	h: number;
+}
+interface Entry {
+	id: string;
+	title: string;
+	tag: string;
+	caption: string;
+	source: { dark: string; light?: string; width: number; height: number };
+	crop: Crop;
+	cropPhone?: Crop;
+	alt: string;
+	altLight?: string;
+}
+interface Props {
+	id: string;
+	/** Extra classes on the figure: `still` (first fold, small) or `native` (482px cap). */
+	class?: string;
+	/** Load eagerly. Only the first-fold still sets this, and at low priority. */
+	eager?: boolean;
+}
+
+const { id, class: cls = '', eager = false } = Astro.props;
+const entry = (data.renders as Entry[]).find((r) => r.id === id);
+if (!entry) throw new Error(`home-renders.json has no entry "${id}"`);
+
+const BASE = '/assets/home';
+const PHONE = '(max-width: 879px)';
+const variants = [{ mode: 'dark', suffix: '', alt: entry.alt }];
+if (entry.source.light) variants.push({ mode: 'light', suffix: '-light', alt: entry.altLight ?? entry.alt });
+const multi = variants.length > 1;
+---
+
+<figure class={`plate ${cls}`.trim()} id={`slot-${entry.id}`}>
+	<div class="plate-bar"><span class="t">{entry.title}</span><span class="tag">{entry.tag}</span></div>
+	<div class="crop">
+		{
+			variants.map((v) => (
+				<picture class={multi ? `r-${v.mode}` : undefined}>
+					{entry.cropPhone && (
+						<>
+							<source media={PHONE} type="image/avif" srcset={`${BASE}/${entry.id}${v.suffix}-phone.avif`} width={entry.cropPhone.w} height={entry.cropPhone.h} />
+							<source media={PHONE} type="image/webp" srcset={`${BASE}/${entry.id}${v.suffix}-phone.webp`} width={entry.cropPhone.w} height={entry.cropPhone.h} />
+							<source media={PHONE} srcset={`${BASE}/${entry.id}${v.suffix}-phone.png`} width={entry.cropPhone.w} height={entry.cropPhone.h} />
+						</>
+					)}
+					<source type="image/avif" srcset={`${BASE}/${entry.id}${v.suffix}.avif`} width={entry.crop.w} height={entry.crop.h} />
+					<source type="image/webp" srcset={`${BASE}/${entry.id}${v.suffix}.webp`} width={entry.crop.w} height={entry.crop.h} />
+					<img
+						src={`${BASE}/${entry.id}${v.suffix}.png`}
+						width={entry.crop.w}
+						height={entry.crop.h}
+						alt={v.alt}
+						loading={eager && v.mode === 'dark' ? 'eager' : 'lazy'}
+						decoding="async"
+						fetchpriority={eager ? 'low' : undefined}
+					/>
+				</picture>
+			))
+		}
+	</div>
+	<figcaption>{entry.caption}</figcaption>
+</figure>

@@ -1,0 +1,75 @@
+---
+// Illustrative install-consent sheet, as Ngwa renders it. The permission groups
+// are copied from the published manifests named in the note below (signed
+// registry, fetched 2026-10-03). Nothing installs from this page: the Install
+// button is a sample control, enabled once every group is ticked.
+const PKGS = [
+	{
+		key: 'claude',
+		tab: 'Claude Code engine',
+		name: 'Claude Code engine',
+		id: 'com.ikenga.engine-claude-code · 0.2.1',
+		groups: [
+			['shell.execute', 'claude: runs these binaries on your machine.'],
+			['fs.read · fs.write', '$pkg_data/sessions/** only, inside its own folder.'],
+		],
+	},
+	{
+		key: 'git',
+		tab: 'Git',
+		name: 'Git',
+		id: 'com.ikenga.git · 0.2.1',
+		groups: [
+			['shell.execute', 'node · bun · git · gh: runs these binaries on your machine.'],
+			['fs.read · fs.write', '$home/**'],
+		],
+	},
+];
+---
+
+<div class="consent-host" data-consent>
+	<div class="switcher" role="group" aria-label="Example extension">
+		{
+			PKGS.map((p, i) => (
+				<button type="button" data-pkg={p.key} aria-pressed={i === 0 ? 'true' : 'false'}>
+					{p.tab}
+				</button>
+			))
+		}
+	</div>
+	{
+		PKGS.map((p, i) => (
+			<div class="sheet" data-sheet={p.key} hidden={i !== 0}>
+				<div class="sheet-head">
+					<span class="name">{p.name}</span>
+					<span class="id">{p.id}</span>
+				</div>
+				<ul class="consent">
+					{p.groups.map(([perm, what]) => (
+						<li>
+							<label>
+								<input type="checkbox" />
+								<span>
+									<span class="perm">{perm}</span>
+									<span class="what">{what}</span>
+								</span>
+							</label>
+						</li>
+					))}
+				</ul>
+				<div class="sheet-foot">
+					<span class="state" data-state>
+						0 of {p.groups.length} groups ticked
+					</span>
+					<button class="btn btn-demo" type="button" data-install disabled>
+						Install
+					</button>
+				</div>
+			</div>
+		))
+	}
+	<p class="illus">
+		Illustrative sheet, populated from the published manifests of com.ikenga.engine-claude-code 0.2.1 and
+		com.ikenga.git 0.2.1. Nothing installs from this page.
+	</p>
+</div>

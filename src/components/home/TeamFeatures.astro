@@ -1,0 +1,68 @@
+---
+// The six team features released in 0.19.0. Status, version and every limit
+// are read from the truth data; only the one-line description is written here.
+// Each row is beta, and each one needs an Ikenga server that you build and run
+// yourself: the desktop download does not include one.
+import { feature, type FeatureRow } from '../../lib/truth/read';
+
+const ITEMS: { id: string; name: string; what: string }[] = [
+	{
+		id: 'server.multi-user',
+		name: 'Multi-user server',
+		what: 'Run one Ikenga server for your team. Each person signs in to their own account and works in their own space on it.',
+	},
+	{
+		id: 'access.device-pairing',
+		name: 'Device pairing',
+		what: 'Pair a phone or laptop with a short code. Both screens show the same four-word phrase, and you confirm before the device gets in. Give each device its own access level, and revoke it at any time.',
+	},
+	{
+		id: 'access.permission-routing',
+		name: 'Permission routing',
+		what: 'A paired phone or laptop can answer permission requests from the agents in your desktop app. Choose whether those requests are answered on this device only or on any paired device. Each device’s access level caps what it may approve.',
+	},
+	{
+		id: 'access.members',
+		name: 'Members and roles',
+		what: 'Invite people to a project, or to a single artifact, with a role (Owner, Operator, Reviewer or Guest) that limits what they can see and do.',
+	},
+	{
+		id: 'access.audit-log',
+		name: 'Audit log',
+		what: 'Sign-ins, pairings, grants, revokes, role changes, approvals and dispatches go into a hash-chained log. Verify the chain and export it from Settings or the command line.',
+	},
+	{
+		id: 'vault.member-secrets',
+		name: 'Per-person secrets',
+		what: 'Each person on a multi-user server keeps their own secrets, separate from everyone else’s.',
+	},
+];
+
+const rows: (FeatureRow & { name: string; what: string })[] = ITEMS.map((i) => ({
+	...feature(i.id, ['beta']),
+	name: i.name,
+	what: i.what,
+}));
+---
+
+<ul class="team">
+	{
+		rows.map((r) => (
+			<li data-feature={r.id}>
+				<p class="team-h">
+					{r.name}
+					<span class="pill beta">Beta</span>
+				</p>
+				<p>{r.what}</p>
+				<p class="where">On a server you build and run yourself.</p>
+				{r.limits.length > 0 && (
+					<ul class="lim" aria-label={`${r.name}: limits`}>
+						{r.limits.map((l) => (
+							<li>{l}</li>
+						))}
+					</ul>
+				)}
+			</li>
+		))
+	}
+</ul>

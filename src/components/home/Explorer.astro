@@ -1,0 +1,45 @@
+---
+// The Explorer (desktop, 1180px and up): brand, sections, other places, mode toggle.
+import Icon from './Icon.astro';
+import IkeMark from './IkeMark.astro';
+import SectionList from './SectionList.astro';
+import { ELSEWHERE } from './sections';
+
+interface Props {
+	version: string;
+}
+const { version } = Astro.props;
+---
+
+<nav class="explorer" aria-label="Sections">
+	<div class="ex-head">
+		<IkeMark />
+		<span class="wordmark">Ikenga</span>
+		<span class="ver num" data-rel-tag>{version}</span>
+	</div>
+	<div class="ex-group">
+		<span class="ex-label">On this page</span>
+		<SectionList />
+	</div>
+	<div class="ex-group">
+		<span class="ex-label">Elsewhere</span>
+		<ul class="ex-list">
+			{
+				ELSEWHERE.map((e) => (
+					<li>
+						<a class="ex-row" href={e.href}>
+							<Icon name={e.icon as never} />
+							{e.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<div class="ex-foot">
+		<button class="mode-toggle" type="button" data-mode-toggle>
+			<Icon name="moon" />
+			<span data-mode-label>Light mode</span>
+		</button>
+	</div>
+</nav>

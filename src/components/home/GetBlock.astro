@@ -1,0 +1,56 @@
+---
+// The download block: release line, the one ember Download button, then other
+// platforms, the install command and the unsigned-installer note (GetMore).
+//
+// Release data comes from src/lib/release.ts (resolved at build time and
+// re-checked in the browser). The visitor's OS is set on <html data-os> by the
+// inline script in the page head, so the right label shows from first paint;
+// the page script then points the button at the countable /download/<os>
+// redirect. Without scripts the button reads "Get the desktop app" and opens
+// the release page, and every platform link still works.
+import Icon from './Icon.astro';
+import GetMore from './GetMore.astro';
+import { RELEASES_URL, type Release } from '../../lib/release';
+
+interface Props {
+	release: Release;
+	/** `companion`: the Companion's pinned block. `inline`: the phone block in the overview. */
+	variant: 'companion' | 'inline';
+}
+const { release, variant } = Astro.props;
+const LABELS = [
+	{ os: 'mac', label: 'macOS' },
+	{ os: 'windows', label: 'Windows' },
+	{ os: 'linux', label: 'Linux' },
+];
+---
+
+{
+	variant === 'companion' ? (
+		<div class="rel">
+			<span class="free-inline">Free and open source</span>
+			<span class="mono num" title="Latest release" data-rel-line>
+				{release.tag} · {release.date}
+			</span>
+		</div>
+	) : (
+		<p class="free">Free and open source, for macOS, Windows and Linux.</p>
+	)
+}
+<a class="btn btn-cta btn-wide" href={RELEASES_URL} data-os-cta>
+	<span class="os-label" data-for="none">Get the desktop app</span>
+	{LABELS.map((l) => <span class="os-label" data-for={l.os}>Download for {l.label}</span>)}
+</a>
+{
+	variant === 'companion' ? (
+		<details class="more" data-get-more open>
+			<summary>
+				<Icon name="chev" class="i chev" />
+				Or install from a terminal
+			</summary>
+			<GetMore release={release} />
+		</details>
+	) : (
+		<GetMore release={release} />
+	)
+}
