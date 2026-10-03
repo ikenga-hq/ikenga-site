@@ -1,9 +1,9 @@
 ---
 title: Engines
-description: Pluggable AI adapters — your Chi. The default ships as a pkg so it updates independently of the shell.
+description: Pluggable AI adapters — the agent engine. The default ships as a pkg so it updates independently of the shell.
 ---
 
-An **engine** (your **Chi**) is the AI backend that drives the workspace. Ikenga is **engine-optional**: the shell boots and runs the kernel without one, and engines are installed as pkgs alongside everything else. The default engine ships as a pkg precisely so it can update independently of the shell binary.
+An **engine** is the AI backend that drives the workspace. Ikenga is **engine-optional**: the shell boots and runs the kernel without one, and engines are installed as pkgs alongside everything else. The default engine ships as a pkg precisely so it can update independently of the shell binary.
 
 The chat layer is **multi-engine**. Any number of engines can be installed side by side, and the frontend sees **one wire** regardless of which one is running — engine swaps are invisible above the kernel boundary.
 
