@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, redesign]
   workflow_dispatch:
   repository_dispatch:
     types: [release]
