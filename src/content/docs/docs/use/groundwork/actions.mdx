@@ -15,9 +15,9 @@ Each action is a focused step you call when you need it. They're **stateless**: 
 | **subplan** | Scaffolds a focused `NN-*.md` from one of three archetypes — **diff-plan**, **decision-doc**, **bug-doc**. |
 | **review** | The highest-value recurring action. A reviewer agent appends a new dated **Round** to `04`, allocates gap IDs, and re-syncs affected docs by ID. `--panel` runs a verified, adversarial reviewer panel. |
 | **clarify** | Readiness gate — scans for open questions, unspecified IDs, and missing locked designs before orchestrate. |
-| **orchestrate** | Generates `09-orchestration.md` (waves, gates, per-task briefs) from `05`. `--emit-workflow` also writes a runnable Workflow — see [Orchestrate & Workflow](/docs/groundwork/orchestrate). |
+| **orchestrate** | Generates `09-orchestration.md` (waves, gates, per-task briefs) from `05`. `--emit-workflow` also writes a runnable Workflow — see [Orchestrate & Workflow](/docs/use/groundwork/orchestrate/). |
 | **refresh-board** | (Re)generates `artifact/board.html` from the current docs. |
-| **explorer** | (Re)generates `artifact/explorer.html` — a fully-offline file tree + tabbed viewer with search. See [The explorer](/docs/groundwork/explorer). |
+| **explorer** | (Re)generates `artifact/explorer.html` — a fully-offline file tree + tabbed viewer with search. See [The explorer](/docs/use/groundwork/explorer/). |
 | **plans-index** | (Re)generates `<plans-dir>/_index.html` — a cross-plan dashboard, one card per plan with drill-in to each explorer / board. |
 | **status** | Read-only freshness + ID + design-coverage report. Safe to run anytime. |
 
@@ -27,4 +27,4 @@ Each action is a focused step you call when you need it. They're **stateless**: 
 
 A typical plan moves **init → research → review → orchestrate**, with `review` re-run whenever the plan changes. Review is where a plan gets materially better: it catches the tracking file silently drifting from the plan, surfaces risks, and folds them back in by ID — deterministically, not by guessing.
 
-Three actions can opt into a [Workflow](/docs/groundwork/orchestrate) fan-out (`research --sweep`, `review --panel`, `orchestrate --emit-workflow`) — never by default, because it's heavyweight and billed. Drop the flag and behaviour is identical to the single-agent path.
+Three actions can opt into a [Workflow](/docs/use/groundwork/orchestrate/) fan-out (`research --sweep`, `review --panel`, `orchestrate --emit-workflow`) — never by default, because it's heavyweight and billed. Drop the flag and behaviour is identical to the single-agent path.

@@ -2,7 +2,7 @@
 title: Orchestrate & Workflow
 description: Turn a finished plan into per-task briefs and a wave order — or a runnable multi-agent Workflow with --emit-workflow.
 sidebar:
-  order: 6
+  order: 7
 ---
 
 When a plan is ready to build, **orchestrate** turns it into a kickoff. It reads `05-tracking.md` and the ID registry and derives:
@@ -28,7 +28,7 @@ The script *returns* the reports; it writes nothing to the plan folder. The orch
 groundwork orchestrate --emit-workflow
 ```
 
-The dependency graph the [board](/docs/groundwork/board) draws is the same one the Workflow executes — `09-orchestration.md` stays the readable source of truth, and the `.workflow.js` is the runnable form of the same data.
+The dependency graph the [board](/docs/use/groundwork/board/) draws is the same one the Workflow executes — `09-orchestration.md` stays the readable source of truth, and the `.workflow.js` is the runnable form of the same data.
 
 :::note
 A freeze gate is a **human decision**. Scope a "sign-off" as *produce the recommendation*; keep the actual approval a manual step. An agent can recommend — it can't sign off for you.

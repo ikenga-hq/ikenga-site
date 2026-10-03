@@ -1,0 +1,47 @@
+---
+title: Your first launch
+description: What happens the first time you open Ikenga, step by step, and where to go once setup is done.
+---
+
+import FeatureStatus from '../../../../components/docs/FeatureStatus.astro';
+import EngineTiers from '../../../../components/docs/EngineTiers.astro';
+
+Open Ikenga after you [install it](/docs/use/install/). The first time it runs, a setup wizard walks you through seven short steps. You can change every choice later in Settings.
+
+<FeatureStatus id="workspace.onboarding" />
+
+## The setup wizard
+
+1. **Welcome** — an introduction to the workspace.
+2. **Engine** — pick the agent engine Ikenga drives. Ikenga starts and runs without one, but you need an engine to send work to an agent. Each engine needs its own command-line tool on your `$PATH` and its own sign-in (for example, `claude login` for Claude Code). The engines Ikenga lists today:
+
+   <EngineTiers />
+
+   [Choose and set up an engine →](/docs/use/engines/)
+3. **Project** — choose or add a project folder, usually a git repository.
+4. **Store** — a first look at Ngwa, the store for apps and extensions.
+5. **Look** — choose your theme and appearance.
+6. **Shortcuts** — review the essential keyboard shortcuts.
+7. **Done** — finish setup and land in your project home (the app labels it Obi).
+
+## What you are looking at
+
+The workspace is built from three things, and the rail on the left switches between them.
+
+- **Project** — the folder you are working in. Its files, artifacts, sessions and todos belong to it, and the **Explorer** sidebar shows them in one tree.
+- **Chi** — your agent companion, in the Companion panel. You hand work to Claude Code or another engine there, approve what it asks to do, and watch what it costs. The app currently labels it "Chi — your engine session".
+- **Ngwa** — the store. Browse, install and manage apps and extensions from one place: the Store, your Installed list and a Health page. The app currently labels it "Ngwa — your equipment".
+
+<FeatureStatus id="workspace.frame" limits={false} />
+<FeatureStatus id="ngwa.store" limits={false} />
+
+The [glossary](/docs/reference/glossary/) defines every term the app and these docs use.
+
+## Next
+
+- **Install the `ikenga` command-line tool** (optional). Ngwa is the main way to install apps and extensions; the `ikenga` command manages them on disk, and you need it to build your own. It runs on [Bun](https://bun.sh): with Bun on your `$PATH`, run `npm i -g @ikenga/cli`.
+
+  <FeatureStatus id="cli.ikenga" />
+- **Build something** — start with **[Build your first app](/docs/build/first-pkg/)**, or read **[What you can build](/docs/build/archetypes/)**.
+- **Drive a running app from a script or an agent** — see **[mcp-iyke](/docs/reference/catalogue/mcp-iyke/)**.
+- **Plan work with agents** — read about **[Groundwork](/docs/use/groundwork/)**.

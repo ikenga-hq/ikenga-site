@@ -1,0 +1,60 @@
+---
+title: Offline and air-gapped install
+description: Supply the Bun runtime yourself when the machine cannot download it on first launch.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Ikenga's extension system uses [Bun](https://bun.sh) as its JavaScript runtime. On a normal first launch the shell fetches the pinned Bun release in the background — a small status chip in the shell chrome shows download progress — and the rest of the app is fully usable while the transfer completes. Nothing blocks startup.
+
+If you are on a restricted network, or simply prefer to supply your own binary, three escape hatches are available.
+
+## Option 1 — use a system Bun
+
+Install Bun yourself (see [bun.sh/docs/installation](https://bun.sh/docs/installation)) and make the `bun` binary available on your `$PATH`. At startup the shell detects it, checks the version, and uses it if the version meets or exceeds the pinned minimum (currently **1.3.14**). No download occurs.
+
+```sh
+# Verify Bun is on PATH and meets the minimum version
+bun --version   # must be >= 1.3.14
+```
+
+## Option 2 — drop a binary in the data directory
+
+Copy a Bun binary directly into the location the shell checks:
+
+| Platform | Path |
+| --- | --- |
+| macOS | `~/Library/Application Support/app.ikenga/bun/<target>/bun` |
+| Linux | `~/.local/share/app.ikenga/bun/<target>/bun` |
+| Windows | `%APPDATA%\app.ikenga\bun\<target>\bun.exe` |
+
+Where `<target>` matches your platform:
+
+| Platform | `<target>` |
+| --- | --- |
+| macOS Apple Silicon | `darwin-aarch64` |
+| macOS Intel | `darwin-x64` |
+| Linux x64 | `linux-x64` |
+| Linux arm64 | `linux-aarch64` |
+| Windows x64 | `windows-x64` |
+
+The shell validates the file's SHA-256 against its pinned checksum. If the checksum does not match, the binary is rejected and a background fetch is attempted instead.
+
+## Option 3 — `IKENGA_BUN_PATH` environment variable
+
+Set `IKENGA_BUN_PATH` to the absolute path of any `bun` binary before launching the shell:
+
+```sh
+IKENGA_BUN_PATH=/opt/bun/bin/bun ikenga
+```
+
+A binary provided this way is **trusted without checksum verification** — you are asserting that you control the binary. It takes precedence over all other resolution paths. The variable is not read by the install script; set it in your shell profile (`.bashrc`, `.zshrc`, etc.) or via a `.env` file if your deployment platform supports one.
+
+<Aside type="note" title="Which path was chosen?">
+Open the shell's log viewer (**Ctrl+Shift+L** / **⌘⇧L**) and filter for `runtime` to see which Bun resolution path the shell selected at startup.
+</Aside>
+
+## Next
+
+- **[Install →](/docs/use/install/)** — download the app itself.
+- **[Your first launch →](/docs/use/first-launch/)** — the setup wizard, step by step.

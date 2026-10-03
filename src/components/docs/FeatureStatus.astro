@@ -1,0 +1,96 @@
+---
+// One line of status for a feature, read from the truth data: "Shipped in 0.14.0"
+// or "Beta since 0.18.0", plus the row's public limits. The page writes what the
+// feature does; status, version and limits come from src/data/truth/features.json,
+// so they change on the next build after a truth refresh. An unknown id, or a row
+// whose status the page does not allow, fails the build.
+import { feature, type Status } from '../../lib/truth/read';
+
+interface Props {
+	id: string;
+	/** Statuses this page may show. Defaults to released rows only. */
+	allowed?: Status[];
+	/** Show the limits list (default true). */
+	limits?: boolean;
+}
+
+const { id, allowed = ['shipped', 'beta'], limits = true } = Astro.props;
+const row = feature(id, allowed);
+
+const LABEL: Record<Status, string> = {
+	shipped: 'Shipped',
+	beta: 'Beta',
+	'in-progress': 'In progress',
+	next: 'Next',
+	exploring: 'Exploring',
+};
+const when =
+	row.status === 'shipped' && row.since
+		? `in ${row.since}`
+		: row.status === 'beta' && row.since
+			? `since ${row.since}`
+			: '';
+---
+
+<div class="feature-status" data-feature={row.id} data-status={row.status}>
+	<p>
+		<span class={`feature-pill feature-pill--${row.status}`}>{LABEL[row.status]}</span>
+		<span class="feature-name">{row.plain_name}</span>
+		{when && (row.ref_public ? <a href={row.ref_public}>{when}</a> : <span>{when}</span>)}
+	</p>
+	{
+		limits && row.limits.length > 0 && (
+			<ul aria-label={`${row.plain_name}: limits`}>
+				{row.limits.map((l) => (
+					<li>{l}</li>
+				))}
+			</ul>
+		)
+	}
+</div>
+
+<style>
+	.feature-status {
+		border-inline-start: 3px solid var(--sl-color-gray-5);
+		padding: 0.25rem 0 0.25rem 0.75rem;
+		font-size: var(--sl-text-sm);
+	}
+	.feature-status[data-status='beta'],
+	.feature-status[data-status='next'],
+	.feature-status[data-status='in-progress'] {
+		border-inline-start-color: var(--sl-color-orange);
+	}
+	.feature-status p {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.25rem 0.5rem;
+		margin: 0;
+	}
+	.feature-status ul {
+		margin: 0.35rem 0 0;
+		padding-inline-start: 1.1rem;
+		color: var(--sl-color-gray-2);
+	}
+	.feature-name {
+		font-weight: 600;
+	}
+	.feature-pill {
+		border: 1px solid var(--sl-color-gray-4);
+		border-radius: 999px;
+		padding: 0 0.5rem;
+		font-size: var(--sl-text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+	.feature-pill--shipped {
+		border-color: var(--sl-color-green);
+		color: var(--sl-color-green-high);
+	}
+	.feature-pill--beta,
+	.feature-pill--next,
+	.feature-pill--in-progress {
+		border-color: var(--sl-color-orange);
+		color: var(--sl-color-orange-high);
+	}
+</style>
