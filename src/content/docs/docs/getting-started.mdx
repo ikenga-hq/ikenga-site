@@ -33,7 +33,7 @@ If you'd rather not pipe a script straight into your shell, you don't have to.
    sh install.sh          # then run it
    ```
 
-3. GitHub shows each asset's SHA-256 digest on the release page, and the Linux, Windows and updater archives also ship minisign `.sig` files.
+3. Each release (from 0.19.1) includes a `SHA256SUMS.txt` that lists the SHA-256 of every asset: download it next to your installer and run `shasum -a 256 -c SHA256SUMS.txt --ignore-missing` (macOS) or `sha256sum -c SHA256SUMS.txt --ignore-missing` (Linux). GitHub also shows each asset's digest on the release page, and the Linux, Windows and updater archives ship minisign `.sig` files.
 
 ## Windows
 
