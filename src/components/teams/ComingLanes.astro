@@ -1,0 +1,49 @@
+---
+// Next and Exploring, for team and security features. Each line shows only
+// while its truth row still has that status, so a release that ships one of
+// them takes it off this list on the next build.
+import { withStatus } from '../../lib/truth/read';
+
+interface Props {
+	next: { id: string; text: string }[];
+	exploring: { id: string; text: string }[];
+}
+const { next, exploring } = Astro.props;
+
+const pick = (items: { id: string; text: string }[], status: 'next' | 'exploring') =>
+	withStatus(
+		items.map((n) => n.id),
+		status,
+	).map((r) => items.find((n) => n.id === r.id)!.text);
+const nextRows = pick(next, 'next');
+const exploringRows = pick(exploring, 'exploring');
+---
+
+{
+	nextRows.length > 0 && (
+		<>
+			<p class="lane-h">
+				<span class="pill">Next</span>
+			</p>
+			<ul class="lane">
+				{nextRows.map((t) => (
+					<li>{t}</li>
+				))}
+			</ul>
+		</>
+	)
+}
+{
+	exploringRows.length > 0 && (
+		<>
+			<p class="lane-h">
+				<span class="pill exp">Exploring</span>
+			</p>
+			<ul class="lane">
+				{exploringRows.map((t) => (
+					<li>{t}</li>
+				))}
+			</ul>
+		</>
+	)
+}
