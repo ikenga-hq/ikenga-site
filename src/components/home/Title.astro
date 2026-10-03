@@ -19,13 +19,30 @@
 // general apps, and the page must not read as if they were.
 import Icon from './Icon.astro';
 import { feature } from '../../lib/truth/read';
+import featuresData from '../../data/truth/features.json';
 
-// "terminal" rests on released command-line work. feature() fails the build if
-// either row stops being shipped or beta; remove the option then.
-feature('cli.iyke');
+// Each option in the first slot rests on released work. feature() fails the build if a row stops
+// being shipped or beta; remove the option then.
+//   remote       a headless server you reach from another device, and device pairing
+//   self-hosted  the multi-user server you run yourself
+// "cloud" is added only when the truth data carries a shipped or beta row for the personal plan
+// we run for you. Today it carries none, so the slot shows three words.
 feature('server.headless');
+feature('access.device-pairing');
+feature('server.multi-user');
+const cloudShipped = (featuresData as { id: string; status: string }[]).some(
+	(f) => /^(personal|provisioning)\./.test(f.id) && (f.status === 'shipped' || f.status === 'beta'),
+);
 
-const WHERE = { word: 'desktop', icon: 'monitor', alts: [{ w: 'terminal', icon: 'terminal' }] } as const;
+const WHERE = {
+	word: 'desktop',
+	icon: 'monitor',
+	alts: [
+		{ w: 'remote', icon: 'devices' },
+		{ w: 'self-hosted', icon: 'server' },
+		...(cloudShipped ? [{ w: 'cloud', icon: 'cloud' }] : []),
+	],
+} as const;
 const WHO = {
 	word: 'coding agents.',
 	icon: 'code',

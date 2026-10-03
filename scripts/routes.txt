@@ -16,6 +16,10 @@
 /
 /404
 /newsletter
+/pricing
+/teams
+/security
+/contact
 /open-source
 /blog
 /blog/groundwork-explorer

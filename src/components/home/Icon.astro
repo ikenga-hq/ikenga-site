@@ -43,6 +43,8 @@ const PATHS = {
 	users: '<circle cx="6" cy="5.5" r="2.2"/><path d="M2 13c.4-2.2 2-3.5 4-3.5s3.6 1.3 4 3.5"/><path d="M10.5 3.6a2.2 2.2 0 0 1 0 4M12 9.8c1.1.5 1.8 1.6 2 3.2"/>',
 	prompt: '<path d="m3 4.5 3.5 3.5L3 11.5M8.5 11.5H13"/>',
 	factory: '<path d="M1.5 14V7l4 2.5V7l4 2.5V4.5h5V14z"/><path d="M4.5 11.5h1.5M8.5 11.5H10"/>',
+	server: '<rect x="2" y="2.5" width="12" height="4.5" rx="1"/><rect x="2" y="9" width="12" height="4.5" rx="1"/><path d="M4.5 4.75h.01M4.5 11.25h.01M8 4.75h4M8 11.25h4"/>',
+	cloud: '<path d="M4.5 12.5a3 3 0 0 1-.4-5.97A4 4 0 0 1 11.8 6a3.2 3.2 0 0 1-.3 6.5z"/>',
 } as const;
 
 const { name, class: cls = 'i' } = Astro.props;

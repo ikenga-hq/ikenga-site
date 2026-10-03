@@ -6,18 +6,7 @@
 # "stale entry" until the line is deleted. To add a line you would be hiding a new bug, so fix the
 # link instead.
 #
-# Today's entries share one cause. The header's Download button points at #install, an anchor that
-# exists only on the home page, so on every other page it goes nowhere. The moment-lab preview page
-# also reuses the home page hero, whose #skills link has no target there either.
-/404 #install
-/blog/ #install
-/blog/groundwork-explorer/ #install
+# Today's entries are on the moment-lab preview page, which reuses the home page hero. Its #install
+# and #skills links have no target there.
 /moment-lab/ #install
 /moment-lab/ #skills
-/newsletter/ #install
-/open-source/ #install
-/packages/ #install
-/packages/groundwork/ #install
-/packages/mcp-iyke/ #install
-/packages/studio/ #install
-/packages/tasks/ #install

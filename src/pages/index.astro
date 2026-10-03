@@ -22,6 +22,7 @@ import AskCard from '../components/home/AskCard.astro';
 import PlanFolder from '../components/home/PlanFolder.astro';
 import PairCard from '../components/home/PairCard.astro';
 import TeamFeatures from '../components/home/TeamFeatures.astro';
+import HomePricing from '../components/home/HomePricing.astro';
 import HomeFooter from '../components/home/HomeFooter.astro';
 import { SECTIONS, CTX_TITLES } from '../components/home/sections';
 import { latestRelease, RELEASES_URL } from '../lib/release';
@@ -54,7 +55,7 @@ feature('terminal.navigation');
 
 const groundwork = feature('skills.groundwork', ['shipped']);
 const appLock = feature('security.app-lock');
-const teamsRef = feature('server.multi-user').ref_public!;
+feature('server.multi-user');
 
 // Engines: names and tiers from engines.json; hidden engines are never named.
 const ENGINE_NOTES: Record<string, string> = {
@@ -92,18 +93,6 @@ const listSentence = (items: string[]) => {
 	return `${s.charAt(0).toUpperCase()}${s.slice(1)}.`;
 };
 
-// Early-access prices. Team and Enterprise are a waitlist: no checkout anywhere.
-const WAITLIST = 'mailto:hello@royalti.io?subject=Ikenga%20early%20access';
-const PRICES = {
-	team: { annual: 20, monthly: 25 },
-	enterprise: { annual: 40, minMembers: 5 },
-	managed: [
-		{ size: 'Small', price: 150 },
-		{ size: 'Standard', price: 250 },
-		{ size: 'Large', price: 450 },
-	],
-};
-const managedFrom = Math.min(...PRICES.managed.map((m) => m.price));
 const platformLine = 'Windows x64 · macOS universal · Linux x86-64, AppImage and .deb';
 
 // Data for the page script: Companion titles, and the release for the live check.
@@ -405,7 +394,7 @@ const pageData = JSON.stringify({
 						<TeamFeatures />
 						<div class="inline-only"><PairCard /></div>
 						<p class="more-link">
-							<a href={teamsRef}>Learn more in the 0.19.0 release notes<Icon name="arrow" /></a>
+							<a href="/teams/">Learn more about remote and teams<Icon name="arrow" /></a>
 						</p>
 					</section>
 
@@ -440,54 +429,8 @@ const pageData = JSON.stringify({
 					</section>
 
 					<section class="sec" id="pricing" data-ctx={ctxOf('pricing')} aria-labelledby="h-pricing">
-						<div class="h2-row"><h2 id="h-pricing">Free for you. Early access for teams.</h2></div>
-						<div class="tiers" role="list">
-							<div class="tier" role="listitem">
-								<span class="tn">Free</span>
-								<span class="price">Free</span>
-								<ul>
-									<li>The full app, free and open source.</li>
-									<li>Community support on GitHub.</li>
-								</ul>
-								<a class="btn btn-quiet btn-wide" href={RELEASES_URL} data-os-href>Download</a>
-							</div>
-							<div class="tier" role="listitem">
-								<span class="tn">Team <span class="pill beta">Early access</span></span>
-								<span class="price">${PRICES.team.annual}</span>
-								<span class="per"
-									>Per member per month, billed annually. ${PRICES.team.monthly} billed monthly. Early-access price.</span
-								>
-								<ul><li>Priority support in business hours.</li></ul>
-								<a class="btn btn-quiet btn-wide" href={WAITLIST}>Join the waitlist</a>
-							</div>
-							<div class="tier" role="listitem">
-								<span class="tn">Enterprise <span class="pill beta">Early access</span></span>
-								<span class="price">${PRICES.enterprise.annual}</span>
-								<span class="per"
-									>Per member per month, billed annually, minimum {PRICES.enterprise.minMembers} members. Early-access
-									price.</span
-								>
-								<ul><li>Support with an SLA, help running your own server, and custom builds.</li></ul>
-								<a class="btn btn-quiet btn-wide" href={WAITLIST}>Join the waitlist</a>
-							</div>
-						</div>
-						<div class="addon">
-							<span class="an">Managed instance <span class="pill beta">Early access</span></span>
-							<span class="ap">from ${managedFrom}</span>
-							<p>
-								An add-on to Enterprise: a dedicated Ikenga server for your organisation, operated by us. Priced per
-								organisation per month, by size.
-							</p>
-							<ul class="sizes" aria-label="Managed instance sizes">
-								{
-									PRICES.managed.map((m) => (
-										<li>
-											<strong>{m.size}</strong> ${m.price}
-										</li>
-									))
-								}
-							</ul>
-						</div>
+						<div class="h2-row"><h2 id="h-pricing">Free to use. Plans in early access.</h2></div>
+						<HomePricing />
 						<p class="fine">
 							Paid plans are in early access: design partners and a waitlist only. We won't take payment or sign a paid
 							contract until our installers are code-signed. We count members, not seats. A member is a person with the
@@ -577,39 +520,7 @@ const pageData = JSON.stringify({
 						</div>
 						<div class="co-panel" data-panel="tiers" hidden>
 							<h2>Early access</h2>
-							<ul class="price-list">
-								<li><span class="pn">Free</span><span class="pv">Free</span><span class="pd">The full app, free and open source.</span></li>
-								<li>
-									<span class="pn">Team</span><span class="pv">${PRICES.team.annual}</span><span class="pd"
-										>Per member per month, billed annually; ${PRICES.team.monthly} billed monthly.</span
-									>
-								</li>
-								<li>
-									<span class="pn">Enterprise</span><span class="pv">${PRICES.enterprise.annual}</span><span class="pd"
-										>Per member per month, minimum {PRICES.enterprise.minMembers} members.</span
-									>
-								</li>
-								<li>
-									<span class="pn">Managed instance</span><span class="pv">from ${managedFrom}</span><span class="pd"
-										>Per organisation per month, added to Enterprise. {
-											PRICES.managed.map((m) => `${m.size} $${m.price}`).join(' · ')
-										}.</span
-									>
-								</li>
-							</ul>
-							<p>
-								Early-access prices. Paid plans are in early access: design partners and a waitlist only. We won't take
-								payment or sign a paid contract until our installers are code-signed.
-							</p>
-							<ul class="paths">
-								<li>
-									<a href={WAITLIST}
-										><span class="pt">Join the waitlist</span><Icon name="arrow" class="i arrow" /><span class="pd"
-											>Team and Enterprise, and the managed instance.</span
-										></a
-									>
-								</li>
-							</ul>
+							<HomePricing variant="list" />
 						</div>
 					</div>
 
