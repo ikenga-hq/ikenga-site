@@ -1,61 +1,163 @@
 ---
-// Footer — site footer. Component: footer (Navigation).
-//
-// Nav echoes (Packages/Docs/Blog/Newsletter) sit alongside the
-// existing lore line + Apache-2.0 + GitHub — same targets as the header nav,
-// so the footer works as a fallback wayfinding row on any page.
+// Footer: the site footer on every page that uses the shared layout. It follows the home page
+// footer: link columns, a rule, then the legal lines. Privacy and Terms are listed only when
+// those pages exist in this build.
 import BrandIcon from './BrandIcon.astro';
 interface Props {
 	github?: string;
 }
 const { github = 'https://github.com/ikenga-hq/ikenga' } = Astro.props;
 
-const NAV = [
-	{ href: '/packages/', label: 'Packages' },
-	{ href: '/docs/', label: 'Docs' },
+const PAGES = Object.keys(import.meta.glob('/src/pages/**/*.{astro,md,mdx}'));
+const hasPage = (route: string) =>
+	PAGES.some((p) => {
+		const rel = p.replace(/^\/src\/pages\//, '').replace(/\.(astro|mdx?)$/, '');
+		return rel === route || rel === `${route}/index`;
+	});
+
+const company = [
+	{ href: '/open-source/', label: 'Open source' },
 	{ href: '/blog/', label: 'Blog' },
 	{ href: '/newsletter/', label: 'Newsletter' },
+	{ href: '/contact/', label: 'Contact' },
+	...(hasPage('privacy') ? [{ href: '/privacy/', label: 'Privacy' }] : []),
+	...(hasPage('terms') ? [{ href: '/terms/', label: 'Terms' }] : []),
+];
+
+const COLS = [
+	{
+		title: 'Product',
+		links: [
+			{ href: 'https://github.com/ikenga-hq/ikenga/releases/latest', label: 'Download' },
+			{ href: '/pricing/', label: 'Pricing' },
+			{ href: '/teams/', label: 'Teams' },
+			{ href: '/security/', label: 'Security' },
+			{ href: '/packages/', label: 'Packages' },
+		],
+	},
+	{
+		title: 'Build',
+		links: [
+			{ href: '/docs/', label: 'Docs' },
+			{ href: '/docs/build-a-pkg/', label: 'Builder docs' },
+			{ href: github, label: 'GitHub' },
+		],
+	},
+	{ title: 'Company', links: company },
 ];
 ---
 
-<footer class="sk-footer">
-	<div class="sk-wrap">
-		<nav class="sk-footer__nav" aria-label="Footer">
-			{NAV.map((item) => <a href={item.href}>{item.label}</a>)}
+<footer class="fnav">
+	<div class="fnav__wrap">
+		<nav class="fnav__cols" aria-label="Footer">
+			{
+				COLS.map((c) => (
+					<div>
+						<h3>{c.title}</h3>
+						<ul>
+							{c.links.map((l) => (
+								<li>
+									<a href={l.href}>{l.label}</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
 		</nav>
-		<p>
-			Lore drawn from the <em>Ikenga</em> tradition of the Igbo people and from
-			Chinua Achebe's <em>Things Fall Apart</em>.
-		</p>
-		<p class="sk-footer__meta">
-			Apache-2.0 · <a href={github} rel="noopener"
-				><BrandIcon name="github" size="1em" /> github.com/ikenga-hq/ikenga</a
-			>
-		</p>
-		<p class="sk-footer__meta sk-footer__privacy">
-			Privacy: Cloudflare Web Analytics counts page views without cookies. We also count
-			anonymous download clicks and install-command copies (event name, page, platform and
-			release only). Our counters never record IP addresses or user agents.
-		</p>
+		<div class="fnav__legal">
+			<p>
+				Ikenga is open source under the Apache-2.0 licence · <a href={github} rel="noopener"
+					><BrandIcon name="github" size="1em" /> github.com/ikenga-hq/ikenga</a
+				>
+			</p>
+			<p>
+				Lore drawn from the <em>Ikenga</em> tradition of the Igbo people and from Chinua Achebe's
+				<em>Things Fall Apart</em>.
+			</p>
+			<p>
+				Privacy: Cloudflare Web Analytics counts page views without cookies. We also count anonymous download clicks
+				and install-command copies (event name, page, platform and release only). Our counters never record IP
+				addresses or user agents.
+			</p>
+		</div>
 	</div>
 </footer>
 
 <style>
-	.sk-footer__nav {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-5);
-		margin-bottom: var(--space-5);
+	.fnav {
+		border-top: 1px solid var(--rule, var(--border));
+		margin-top: var(--space-12);
+		padding: var(--space-10) 0 var(--space-8);
+		font-family: 'Inter', 'Inter Fallback', system-ui, -apple-system, sans-serif;
+		font-size: 0.875rem;
 	}
-	.sk-footer__nav a {
-		font-weight: 600;
-		color: var(--site-fg);
+	.fnav__wrap {
+		max-width: 64rem;
+		margin-inline: auto;
+		padding-inline: var(--space-6);
 	}
-	.sk-footer__nav a:hover {
-		color: var(--site-accent);
+	.fnav__cols {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-6);
 	}
-	.sk-footer__meta {
-		margin-top: var(--space-2);
-		color: var(--site-faint);
+	.fnav h3 {
+		margin: 0 0 var(--space-3);
+		font: 500 0.6875rem / 1.4 'Inter', 'Inter Fallback', system-ui, sans-serif;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--fg-muted);
+	}
+	.fnav ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: var(--space-1);
+	}
+	.fnav a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		min-height: 44px;
+		min-width: 44px;
+		color: var(--fg-muted);
+		text-decoration: none;
+	}
+	.fnav a:hover {
+		color: var(--fg);
+		text-decoration: underline;
+	}
+	.fnav a:focus-visible {
+		outline: 2px solid var(--ember-soft, var(--ember));
+		outline-offset: 2px;
+		border-radius: var(--radius-sm, 4px);
+	}
+	.fnav__legal {
+		margin-top: var(--space-6);
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--rule-soft, var(--border-soft));
+		display: grid;
+		gap: var(--space-2);
+		color: var(--fg-muted);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+	.fnav__legal p {
+		margin: 0;
+		max-width: 68ch;
+	}
+	.fnav__legal a {
+		min-height: 0;
+		min-width: 0;
+		display: inline;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+	@media (max-width: 600px) {
+		.fnav__cols {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
 </style>

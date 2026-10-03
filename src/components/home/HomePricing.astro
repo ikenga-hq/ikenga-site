@@ -1,0 +1,162 @@
+---
+// The home page's plans, read from src/data/truth/tiers.json (validated at build time by
+// src/components/pricing/tiers.ts). Prices, billing terms, minimums, add-on sizes and calls to
+// action are never typed here. Two forms: `cards` is the pricing section, `list` is the
+// Companion's compact panel. /pricing has the full detail.
+import { TIERS, TIER_NAMES, tier, money, addonFrom, sizedAddons, titleCase } from '../pricing/tiers';
+import { ctaHref } from '../pricing/links';
+import Icon from './Icon.astro';
+import type { Tier } from '../../lib/truth/schema';
+
+interface Props {
+	variant?: 'cards' | 'list';
+}
+const { variant = 'cards' } = Astro.props;
+
+const enterprise = tier('enterprise');
+const managedFrom = addonFrom(enterprise);
+const managed = sizedAddons(enterprise);
+
+const BLURB: Record<Tier['id'], string[]> = {
+	free: ['The full app, free and open source.', 'Community support on GitHub.'],
+	personal: ['A small Ikenga server of your own, run by us or in your own cloud account.'],
+	team: ['Priority support in business hours.'],
+	enterprise: ['Support with an SLA, help running your own server, and custom builds.'],
+};
+
+const priceText = (t: Tier) => (t.price === null ? 'Talk to us' : t.price === 0 ? 'Free' : t.personal ? `from ${money(t.price)}` : money(t.price));
+
+function per(t: Tier): string {
+	if (t.price === 0 || t.price === null) return '';
+	if (t.personal) return 'Per month, before VAT where it applies. Early-access price.';
+	let s = t.unit === 'member' ? 'Per member per month' : 'Per month';
+	if (t.billing_period === 'annual') s += ', billed annually';
+	if (t.min_members) s += `, minimum ${t.min_members} members`;
+	s += '.';
+	if (t.price_monthly !== undefined) s += ` ${money(t.price_monthly)} billed monthly.`;
+	return `${s} Early-access price.`;
+}
+
+const badge = (t: Tier) => (t.availability === 'self-serve' ? null : 'Early access');
+const waitlist = ctaHref(tier('team').cta.href);
+---
+
+{
+	variant === 'cards' ? (
+		<>
+			<div class="tiers h-plans" role="list">
+				{TIERS.map((t) => (
+					<div class="tier" role="listitem" id={`plan-${t.id}`}>
+						<span class="tn">
+							{TIER_NAMES[t.id]}
+							{badge(t) && <span class="pill beta">{badge(t)}</span>}
+						</span>
+						<span class="price">{priceText(t)}</span>
+						{per(t) && <span class="per">{per(t)}</span>}
+						<ul>
+							{BLURB[t.id].map((p) => (
+								<li>{p}</li>
+							))}
+						</ul>
+						{t.cta.kind === 'download' ? (
+							<a class="btn btn-quiet btn-wide" href={t.cta.href} data-os-href>
+								{t.cta.label}
+							</a>
+						) : (
+							<a class="btn btn-quiet btn-wide" href={ctaHref(t.cta.href)}>
+								{t.cta.label}
+							</a>
+						)}
+					</div>
+				))}
+			</div>
+			{managedFrom !== null && (
+				<div class="addon">
+					<span class="an">
+						Managed instance <span class="pill beta">Early access</span>
+					</span>
+					<span class="ap">from {money(managedFrom)}</span>
+					<p>
+						An add-on to Enterprise: a dedicated Ikenga server for your organisation, operated by us. Priced per
+						organisation per month, by size.
+					</p>
+					<ul class="sizes" aria-label="Managed instance sizes">
+						{managed.map((m) => (
+							<li>
+								<strong>{titleCase(m.size as string)}</strong>{' '}
+								{m.price === null ? 'Talk to us' : money(m.price)}
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
+			<p class="more-link">
+				<a href="/pricing/">
+					See every plan in detail
+					<Icon name="arrow" class="i" />
+				</a>
+			</p>
+		</>
+	) : (
+		<>
+			<ul class="price-list">
+				{TIERS.map((t) => (
+					<li>
+						<span class="pn">{TIER_NAMES[t.id]}</span>
+						<span class="pv">{priceText(t)}</span>
+						<span class="pd">{per(t) || BLURB[t.id][0]}</span>
+					</li>
+				))}
+				{managedFrom !== null && (
+					<li>
+						<span class="pn">Managed instance</span>
+						<span class="pv">from {money(managedFrom)}</span>
+						<span class="pd">
+							Per organisation per month, added to Enterprise. {managed.map((m) => `${titleCase(m.size as string)} ${m.price === null ? 'on request' : money(m.price)}`).join(' · ')}.
+						</span>
+					</li>
+				)}
+			</ul>
+			<p>
+				Paid plans are in early access: design partners and a waitlist only. We won't take payment or sign a paid
+				contract until our installers are code-signed.
+			</p>
+			<ul class="paths">
+				<li>
+					<a href={waitlist}>
+						<span class="pt">Join the waitlist</span>
+						<Icon name="arrow" class="i arrow" />
+						<span class="pd">Personal, Team and Enterprise, and the managed instance.</span>
+					</a>
+				</li>
+			</ul>
+		</>
+	)
+}
+
+<style>
+	/* Four plans in a two-by-two grid: the pane is too narrow for four columns. */
+	.h-plans {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.h-plans .tier + .tier {
+		border-left: 0;
+	}
+	.h-plans .tier:nth-child(even) {
+		border-left: 1px solid var(--border);
+	}
+	.h-plans .tier:nth-child(n + 3) {
+		border-top: 1px solid var(--border);
+	}
+	@media (max-width: 880px) {
+		.h-plans {
+			grid-template-columns: 1fr;
+		}
+		.h-plans .tier:nth-child(even) {
+			border-left: 0;
+		}
+		.h-plans .tier + .tier {
+			border-top: 1px solid var(--border);
+		}
+	}
+</style>
