@@ -35,6 +35,10 @@ If you'd rather not pipe a script straight into your shell, you don't have to.
 
 3. Each release (from 0.19.1) includes a `SHA256SUMS.txt` that lists the SHA-256 of every asset: download it next to your installer and run `shasum -a 256 -c SHA256SUMS.txt --ignore-missing` (macOS) or `sha256sum -c SHA256SUMS.txt --ignore-missing` (Linux). GitHub also shows each asset's digest on the release page, and the Linux, Windows and updater archives ship minisign `.sig` files.
 
+## Server (Linux, beta)
+
+From 0.19.4, each release also attaches the headless server for Linux: `ikenga-server_<version>_linux_amd64.tar.gz` and `_arm64.tar.gz`, each with a `.sigstore.json` bundle and listed in `SHA256SUMS.txt`. Check a download with `sha256sum -c SHA256SUMS.txt --ignore-missing` and `gh attestation verify <file> --repo ikenga-hq/ikenga`. The tarball holds `bin/ikenga-server`, the web app in `dist/` and the systemd units; setup steps are in the server README in the [ikenga repository](https://github.com/ikenga-hq/ikenga/tree/main/scripts/server). The server is beta: you install and run it yourself, and pairing a phone needs HTTPS in front.
+
 ## Windows
 
 Download the `.exe` installer (**~17 MB**) directly from the [latest release](https://github.com/ikenga-hq/ikenga/releases/latest). The installer is not yet code-signed, so Windows shows a first-run warning.
