@@ -1,0 +1,46 @@
+---
+// Other platforms, the install command and the unsigned-installer note.
+// Shared by the Companion's download block and the phone block.
+import Icon from './Icon.astro';
+import { CHECKSUM_FILE, RELEASES_URL, type Release } from '../../lib/release';
+
+interface Props {
+	release: Release;
+}
+const { release } = Astro.props;
+
+const INSTALL_CMD = 'curl -fsSL https://ikenga.dev/install.sh | sh';
+const by = (id: string) => release.platforms.find((p) => p.id === id);
+const links = [
+	{ os: 'mac', label: 'macOS', href: by('mac')?.href ?? RELEASES_URL },
+	{ os: 'windows', label: 'Windows', href: by('windows')?.href ?? RELEASES_URL },
+	{ os: 'linux', label: 'Linux', href: by('linux-deb')?.href ?? RELEASES_URL },
+];
+---
+
+<div class="other">
+	<span class="os-pre" data-pre="all">For</span>
+	<span class="os-pre" data-pre="also">Also for</span>
+	{links.map((l) => <a href={l.href} data-os-link={l.os}>{l.label}</a>)}
+</div>
+<div class="cmd">
+	<code>{INSTALL_CMD}</code>
+	<button type="button" data-copy={INSTALL_CMD} aria-label="Copy install command">
+		<Icon name="copy" />
+	</button>
+</div>
+<p class="unsigned">
+	Installers aren't code-signed yet, so a browser download shows a one-time warning on macOS and Windows. The
+	install script fetches the same files from the GitHub release and does not turn off any security check on your
+	computer.
+	{
+		release.checksums ? (
+			<Fragment>
+				Each release includes <code>{CHECKSUM_FILE}</code>, with the SHA-256 digest of every file.
+			</Fragment>
+		) : (
+			<Fragment>Each file on the release page shows its SHA-256 digest; there is no separate checksum file.</Fragment>
+		)
+	}
+	<a href="/docs/getting-started/">How to open Ikenga the first time</a>
+</p>

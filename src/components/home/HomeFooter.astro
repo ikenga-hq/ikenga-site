@@ -1,0 +1,72 @@
+---
+// The home page footer. Every link goes to a page or file that exists today.
+const COLS = [
+	{
+		title: 'Product',
+		links: [
+			{ href: 'https://github.com/ikenga-hq/ikenga/releases/latest', label: 'Download' },
+			{ href: 'https://github.com/ikenga-hq/ikenga/releases', label: 'Changelog' },
+			{ href: '#coming', label: 'Roadmap' },
+			{ href: '/pricing/', label: 'Pricing' },
+			{ href: '/teams/', label: 'Teams' },
+			{ href: '/security/', label: 'Security' },
+		],
+	},
+	{
+		title: 'Build',
+		links: [
+			{ href: '/docs/', label: 'Docs' },
+			{ href: '/docs/build-a-pkg/', label: 'Builder docs' },
+			{ href: '/packages/', label: 'Signed catalogue' },
+			{ href: 'https://github.com/ikenga-hq', label: 'GitHub' },
+		],
+	},
+	{
+		title: 'Company',
+		links: [
+			{ href: '/open-source/', label: 'Open source' },
+			{ href: '/blog/', label: 'Blog' },
+			{ href: '/contact/', label: 'Contact' },
+		],
+	},
+	{
+		title: 'Community',
+		links: [
+			{ href: 'https://github.com/ikenga-hq/ikenga/discussions', label: 'Discussions' },
+			{ href: '/newsletter/', label: 'Newsletter' },
+		],
+	},
+];
+---
+
+<footer class="foot" aria-label="Footer">
+	{
+		COLS.map((c) => (
+			<div>
+				<h3>{c.title}</h3>
+				<ul>
+					{c.links.map((l) => (
+						<li>
+							<a href={l.href}>{l.label}</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		))
+	}
+	<div class="legal">
+		<p>
+			Ikenga is open source under the Apache-2.0 licence. It is not affiliated with or endorsed by Anthropic. Claude
+			and Claude Code are trademarks of Anthropic, PBC. Other product names belong to their owners.
+		</p>
+		<p>
+			Product images on this page are design renders of released features. Version-stamped captures of the released
+			app replace them before launch.
+		</p>
+		<p>
+			Privacy: Cloudflare Web Analytics counts page views without cookies. We also count anonymous download clicks and
+			install-command copies (event name, page, platform and release only). Our counters never record IP addresses or
+			user agents.
+		</p>
+	</div>
+</footer>

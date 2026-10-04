@@ -1,0 +1,81 @@
+---
+// The page H1: "The desktop workspace for your coding agents."
+//
+// That text is real and static. It is what search engines and screen readers
+// read, and it is the page's largest text, so it stays the LCP element.
+//
+// The rotation is a decorative layer on top. Each slot holds the real word
+// plus alternatives that are aria-hidden and drawn from data-w with generated
+// content, so they are never part of the heading's text and nothing is
+// announced. When motion is allowed and scripts run, the head script sets
+// <html data-rot="on"> before first paint: every option of a slot then shares
+// one grid cell, so the slot reserves the width of its widest option and
+// nothing reflows while the page script rotates them. The real word is only
+// faded, never hidden, so the heading's accessible name never changes. Under
+// prefers-reduced-motion, or without scripts, only the static text shows.
+//
+// The options describe what people build or run with Ikenga. None of them names
+// an app: the operator apps (sales, finance and the rest) are not released as
+// general apps, and the page must not read as if they were.
+import Icon from './Icon.astro';
+import { feature } from '../../lib/truth/read';
+import featuresData from '../../data/truth/features.json';
+
+// Each option in the first slot rests on released work. feature() fails the build if a row stops
+// being shipped or beta; remove the option then.
+//   remote       a headless server you reach from another device, and device pairing
+//   self-hosted  the multi-user server you run yourself
+// "cloud" is added only when the truth data carries a shipped or beta row for the personal plan
+// we run for you. Today it carries none, so the slot shows three words.
+feature('server.headless');
+feature('access.device-pairing');
+feature('server.multi-user');
+const cloudShipped = (featuresData as { id: string; status: string }[]).some(
+	(f) => /^(personal|provisioning)\./.test(f.id) && (f.status === 'shipped' || f.status === 'beta'),
+);
+
+const WHERE = {
+	word: 'desktop',
+	icon: 'monitor',
+	alts: [
+		{ w: 'remote', icon: 'devices' },
+		{ w: 'self-hosted', icon: 'server' },
+		...(cloudShipped ? [{ w: 'cloud', icon: 'cloud' }] : []),
+	],
+} as const;
+const WHO = {
+	word: 'coding agents.',
+	icon: 'code',
+	alts: [
+		{ w: 'sales agents.', icon: 'chart' },
+		{ w: 'c-suite.', icon: 'briefcase' },
+		{ w: 'marketing agents.', icon: 'megaphone' },
+		{ w: 'AI workforce.', icon: 'grid' },
+		{ w: 'AI workflows.', icon: 'flow' },
+		{ w: 'AI-native team.', icon: 'users' },
+		{ w: 'Claude Code setup.', icon: 'prompt' },
+		{ w: 'software factory.', icon: 'factory' },
+	],
+} as const;
+---
+
+<h1 id="h-overview" class="title">
+	The <span class="slot" data-slot="where"
+		><span class="w" data-on=""><Icon name={WHERE.icon} class="wi" />{WHERE.word}</span>{
+			WHERE.alts.map((a) => (
+				<span class="w alt" aria-hidden="true" data-w={a.w}>
+					<Icon name={a.icon} class="wi" />
+				</span>
+			))
+		}</span
+	>
+	workspace for your <span class="slot" data-slot="who"
+		><span class="w" data-on=""><Icon name={WHO.icon} class="wi" />{WHO.word}</span>{
+			WHO.alts.map((a) => (
+				<span class="w alt" aria-hidden="true" data-w={a.w}>
+					<Icon name={a.icon} class="wi" />
+				</span>
+			))
+		}</span
+	>
+</h1>

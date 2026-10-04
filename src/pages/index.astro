@@ -1,357 +1,553 @@
 ---
-import '../styles/global.css';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import MomentHero from '../components/moments/MomentHero.astro';
-import MomentTasks from '../components/moments/MomentTasks.astro';
-import MomentInstall from '../components/moments/MomentInstall.astro';
-import MomentGraph from '../components/moments/MomentGraph.astro';
-import InstallSection from '../components/sections/InstallSection.astro';
-import ObiSection from '../components/sections/ObiSection.astro';
-import castData from '../components/moments/cast.json';
-
-// Home shell & narrative assembly. Inverted
-// narrative (theatre hero, hard tonal seam): moment →
-// watch-it-work → everything-connects → packages-teaser (light) → install
-// (light) → Obi (dark) → subscribe (light).
+// Home page: the workspace itself. An Explorer navigates, the main pane tells,
+// the Companion acts. The Companion follows the scroll: each section names the
+// panel it brings up (data-ctx). Below 1180px the Explorer folds into a top bar
+// with a Sections menu; below 880px the page is one column, the Companion's
+// panels flow inline under their sections and Download docks at the bottom.
 //
-// Copy accounting vs the prior index.astro (full text in git history):
-// every claim that doesn't survive verbatim below is either re-flowed (new
-// location noted inline) or moved into one of the section components above.
-const GITHUB = 'https://github.com/ikenga-hq/ikenga';
-const storeRows = castData.store_rows;
+// Claims come from the truth data (src/data/truth/*.json) through
+// src/lib/truth/read.ts: statuses, versions and limits are read, not typed.
+// The release line and the download buttons come from src/lib/release.ts.
+import '../styles/home.css';
+import IkeSymbol from '../components/home/IkeSymbol.astro';
+import IkeMark from '../components/home/IkeMark.astro';
+import Icon from '../components/home/Icon.astro';
+import Explorer from '../components/home/Explorer.astro';
+import SectionList from '../components/home/SectionList.astro';
+import Title from '../components/home/Title.astro';
+import Render from '../components/home/Render.astro';
+import GetBlock from '../components/home/GetBlock.astro';
+import ConsentSheet from '../components/home/ConsentSheet.astro';
+import AskCard from '../components/home/AskCard.astro';
+import PlanFolder from '../components/home/PlanFolder.astro';
+import PairCard from '../components/home/PairCard.astro';
+import TeamFeatures from '../components/home/TeamFeatures.astro';
+import HomePricing from '../components/home/HomePricing.astro';
+import HomeFooter from '../components/home/HomeFooter.astro';
+import { SECTIONS, CTX_TITLES } from '../components/home/sections';
+import { latestRelease, RELEASES_URL } from '../lib/release';
+import { feature, sinceLabel, withStatus, enginesByTier } from '../lib/truth/read';
+
+const release = await latestRelease();
+
+const TITLE = 'Ikenga: the desktop workspace for your coding agents';
+const DESCRIPTION =
+	'Open-source desktop workspace for Claude Code and other coding agents: projects, agent sessions, and apps and extensions you review before installing.';
+const OG_IMAGE = 'https://ikenga.dev/assets/shell/og-card.png';
+
+const ctxOf = (id: string) => SECTIONS.find((s) => s.id === id)?.ctx ?? 'get';
+const v = (id: string) => feature(id).since;
+
+// Section stamps, from the truth rows.
+const stamps = {
+	projects: sinceLabel('workspace.explorer'),
+	chi: `${sinceLabel('chi.companion')} · seats beta since ${v('chi.seats')}`,
+	ngwa: `${sinceLabel('ngwa.store')} · held updates since ${v('updates.permission-review')}`,
+	vault: `Vault since ${v('vault.passphrase')} · app lock beta since ${v('security.app-lock')}`,
+	keys: sinceLabel('actions.custom'),
+	terminal: sinceLabel('terminal.continuity'),
+	teams: sinceLabel('server.multi-user'),
+};
+// The terminal claim covers continuity, search and the live working directory.
+feature('terminal.navigation');
+// Trust list rows.
+['registry.signed-catalog', 'ngwa.install-consent', 'updates.permission-review', 'vault.passphrase', 'security.app-lock'].forEach((id) => feature(id));
+
+const groundwork = feature('skills.groundwork', ['shipped']);
+const appLock = feature('security.app-lock');
+feature('server.multi-user');
+
+// Engines: names and tiers from engines.json; hidden engines are never named.
+const ENGINE_NOTES: Record<string, string> = {
+	supported: 'The default engine.',
+	beta: feature('chi.engines').limits[0] ?? '',
+	experimental: 'Experimental: behaviour may change between releases.',
+};
+const ENGINE_LEVEL: Record<string, string> = { supported: 'Supported', beta: 'Beta', experimental: 'Experimental' };
+const engines = enginesByTier();
+
+// Next and Exploring: each line shows only while its row still has that status.
+const NEXT = [
+	{ id: 'access.oidc-sign-in', text: 'Sign in with your identity provider (OpenID Connect).' },
+	{ id: 'install.signed-installers', text: 'Signed installers for macOS and Windows.' },
+	{ id: 'server.browser-apps', text: 'Apps in the browser when you connect to a server.' },
+];
+const nextRows = withStatus(
+	NEXT.map((n) => n.id),
+	'next',
+).map((r) => NEXT.find((n) => n.id === r.id)!.text);
+const EXPLORING = [
+	{ id: 'access.scim', text: 'SCIM provisioning' },
+	{ id: 'access.saml', text: 'SAML sign-in' },
+	{ id: 'access.siem-export', text: 'sending the audit log to your SIEM' },
+	{ id: 'registry.private', text: 'a private catalogue for your team' },
+	{ id: 'policy.org-apps', text: 'admin policy for the apps and tools people can install' },
+];
+const exploringRows = withStatus(
+	EXPLORING.map((n) => n.id),
+	'exploring',
+).map((r) => EXPLORING.find((n) => n.id === r.id)!.text);
+const listSentence = (items: string[]) => {
+	if (items.length === 0) return '';
+	const s = items.length === 1 ? items[0] : `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+	return `${s.charAt(0).toUpperCase()}${s.slice(1)}.`;
+};
+
+const platformLine = 'Windows x64 · macOS universal · Linux x86-64, AppImage and .deb';
+
+// Data for the page script: Companion titles, and the release for the live check.
+const pageData = JSON.stringify({
+	titles: CTX_TITLES,
+	release: { tag: release.tag, repo: 'ikenga-hq/ikenga' },
+});
 ---
 
 <!doctype html>
 <html lang="en" data-theme="A" data-mode="dark">
 	<head>
-		<meta charset="UTF-8" />
+		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Ikenga — give Claude Code a home</title>
-		<meta
-			name="description"
-			content="The open-source, local-first desktop home for Claude Code and Codex. Skills like groundwork and artifact-builder are portable primitives that run anywhere and move across engines, alongside the packages you install and manage."
-		/>
+		<title>{TITLE}</title>
+		<meta name="description" content={DESCRIPTION} />
 		<link rel="canonical" href="https://ikenga.dev/" />
-		<!-- Open Graph / Twitter (mirrors the site's canonical social card set) -->
+		<link rel="icon" type="image/svg+xml" href="/ike-app-tile.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#0c0a08" />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="https://ikenga.dev/" />
-		<meta property="og:title" content="Ikenga — give Claude Code a home" />
-		<meta
-			property="og:description"
-			content="Skills, agents, and commands that run anywhere and move across engines — Claude Code and Codex — plus the packages you install and manage — all with a visual home. Open-source, local-first."
-		/>
-		<meta property="og:image" content="https://ikenga.dev/assets/shell/og-card.png" />
+		<meta property="og:title" content={TITLE} />
+		<meta property="og:description" content={DESCRIPTION} />
+		<meta property="og:image" content={OG_IMAGE} />
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:image" content="https://ikenga.dev/assets/shell/og-card.png" />
-	</head>
-	<body class="sk-page">
-		<Header github={GITHUB} />
-
-		<main id="main-content">
-			<!-- ═══════════════ 1. HERO (dark) — theatre ═══════════════
-			     MomentHero renders its own <section>: eyebrow-less rotating-
-			     agent H1, sub line, ghost links (#install / #skills), the
-			     shell-recreation stage, and the honest "staged demo" caption —
-			     exactly as the island provides. Nothing added
-			     here; the outer copy consumes --site-* so it reads dark by
-			     default at the page level. -->
-			<MomentHero autoplay="viewport" />
-
-			<!-- ═══════════════ 2. WATCH IT WORK (dark) ═══════════════
-			     MomentTasks + MomentInstall — the tasks/agenda beat
-			     and the Ọba install beat, both on the shared timeline engine
-			     (moments/timeline.ts). Each island renders its own <h2>, so
-			     the section-level intro stays an eyebrow (no second h2) to
-			     keep one heading per beat. -->
-			<section class="wiw" id="watch">
-				<p class="sk-eyebrow wiw-eyebrow">Watch it work</p>
-				<MomentTasks tone="dark" autoplay="viewport" />
-				<MomentInstall tone="dark" autoplay="viewport" />
-			</section>
-
-			<!-- ═══════════════ 3. EVERYTHING CONNECTS (dark) ═══════════════
-			     MomentGraph renders its own heading ("Everything connects."),
-			     lede, and the capability-graph stage as a self-contained
-			     section. -->
-			<MomentGraph tone="dark" />
-
-			<!-- ═══════════════ 4. PACKAGES TEASER (light — hard tonal seam) ═══════════════
-			     Typographic cards straight off the cast's store_rows fixture
-			     (name / version / one-liner) — re-flows the old page's
-			     "Everything is a package" beat as a teaser strip; no art yet
-			     (storefront art comes later). -->
-			<section class="sk-section" data-tone="light">
-				<div class="sk-wrap">
-					<h2 class="sk-h2">Everything is a <em>package.</em></h2>
-					<p class="sk-lede">
-						Mini-apps, tool servers, engine adapters — every capability docks
-						into your workspace as an independently installable package.
-						Claude Code is the default engine; Codex installs the
-						same way. Add what you need, retire what you don't.
-					</p>
-					<div class="sk-grid pkg-grid">
-						{storeRows.map((pkg) => (
-							<div class="pkg-card">
-								<p class="pkg-card__name">
-									{pkg.name}
-									<span class="pkg-card__version">v{pkg.version}</span>
-								</p>
-								<p class="pkg-card__desc">{pkg.description}</p>
-							</div>
-						))}
-					</div>
-					<p class="pkg-teaser__more">
-						<a href="/packages/">Browse all packages →</a>
-					</p>
-				</div>
-			</section>
-
-			<!-- ═══════════════ 5. INSTALL (light) ═══════════════ -->
-			<InstallSection />
-
-			<!-- ═══════════════ 6. OBI (dark) ═══════════════ -->
-			<ObiSection />
-
-			<!-- ═══════════════ 7. SUBSCRIBE (light) — lifted verbatim ═══════════════
-			     Live production code: the form markup, the honeypot,
-			     and the /api/subscribe wiring below are unchanged from the
-			     prior index.astro — do not rewrite the logic. -->
-			<section class="sk-section" data-tone="light">
-				<form class="sk-wrap subscribe" id="subscribe-form" novalidate>
-					<label class="subscribe-label" for="subscribe-email">
-						Get the <em>ozi</em> — dispatches when Ikenga ships: releases, new
-						packages, and notes from the build.
-					</label>
-					<div class="subscribe-row">
-						<input
-							id="subscribe-email"
-							name="email"
-							type="email"
-							inputmode="email"
-							autocomplete="email"
-							placeholder="you@example.com"
-							aria-describedby="subscribe-msg"
-							required
-						/>
-						<button type="submit" id="subscribe-btn">Subscribe</button>
-					</div>
-					<!-- honeypot: hidden from humans, catches bots -->
-					<input
-						class="subscribe-hp"
-						type="text"
-						name="company"
-						tabindex="-1"
-						autocomplete="off"
-						aria-hidden="true"
-					/>
-					<p class="subscribe-consent">
-						No spam — just Ikenga updates. Unsubscribe anytime in one click.
-					</p>
-					<p class="subscribe-msg" id="subscribe-msg" role="status" aria-live="polite"></p>
-				</form>
-			</section>
-		</main>
-
-		<Footer github={GITHUB} />
-
-		<script>
-			// Subscribe form — posts to the Listmonk Pages Function.
-			const form = document.getElementById('subscribe-form') as HTMLFormElement | null;
-			const emailEl = document.getElementById('subscribe-email') as HTMLInputElement | null;
-			const btn = document.getElementById('subscribe-btn') as HTMLButtonElement | null;
-			const msg = document.getElementById('subscribe-msg');
-
-			form?.addEventListener('submit', async (e) => {
-				e.preventDefault();
-				if (!emailEl || !btn || !msg) return;
-				const email = emailEl.value.trim();
-				const company = (form.elements.namedItem('company') as HTMLInputElement)?.value ?? '';
-				if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-					msg.textContent = 'Enter a valid email address.';
-					msg.dataset.state = 'error';
-					emailEl.setAttribute('aria-invalid', 'true');
-					emailEl.focus();
-					return;
-				}
-				emailEl.removeAttribute('aria-invalid');
-				btn.disabled = true;
-				const original = btn.textContent;
-				btn.textContent = 'Subscribing…';
-				msg.textContent = '';
-				delete msg.dataset.state;
+		<meta name="twitter:image" content={OG_IMAGE} />
+		<script is:inline>
+			// Before first paint, so nothing flashes:
+			// 1. colour mode: a saved choice, else the system setting, else dark;
+			// 2. the visitor's desktop OS, for the download labels (none on phones and tablets);
+			// 3. whether the headline may rotate (only when motion is allowed).
+			(function () {
+				var r = document.documentElement;
+				r.setAttribute('data-js', '');
+				var m = null;
 				try {
-					const res = await fetch('/api/subscribe', {
-						method: 'POST',
-						headers: { 'content-type': 'application/json' },
-						body: JSON.stringify({ email, company }),
-					});
-					const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
-					if (res.ok && data.ok) {
-						form.reset();
-						msg.textContent = "You're on the list. Welcome.";
-						msg.dataset.state = 'ok';
-					} else {
-						msg.textContent = data.error ?? 'Could not subscribe right now. Please try again.';
-						msg.dataset.state = 'error';
-					}
-				} catch {
-					msg.textContent = 'Network error. Please try again.';
-					msg.dataset.state = 'error';
-				} finally {
-					btn.disabled = false;
-					btn.textContent = original;
+					m = localStorage.getItem('ik-mode');
+				} catch (e) {}
+				if (m !== 'dark' && m !== 'light') {
+					m = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 				}
-			});
+				r.setAttribute('data-mode', m);
+				var n = navigator,
+					ua = n.userAgent || '',
+					plat = (n.userAgentData && n.userAgentData.platform) || n.platform || '';
+				var mobile =
+					/android|iphone|ipad|ipod|cros/i.test(ua) ||
+					(n.userAgentData && n.userAgentData.mobile) ||
+					(/mac/i.test(plat) && n.maxTouchPoints > 1);
+				var os = mobile ? '' : /win/i.test(plat) ? 'windows' : /mac/i.test(plat) ? 'mac' : /linux/i.test(plat) ? 'linux' : '';
+				if (os) r.setAttribute('data-os', os);
+				if (window.matchMedia && matchMedia('(prefers-reduced-motion: no-preference)').matches) r.setAttribute('data-rot', 'on');
+			})();
 		</script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+		/>
+	</head>
+	<body>
+		<IkeSymbol />
+		<a class="skip" href="#main">Skip to content</a>
 
-		<style>
-			/* Page-specific layout — the kit (.sk-*) carries the visual language;
-			   this only positions the watch-it-work seam, the packages teaser,
-			   and the subscribe form for this landing instance. */
-			html,
-			body {
-				margin: 0;
-			}
+		<header class="topbar" aria-label="Ikenga">
+			<IkeMark />
+			<span class="wordmark">Ikenga</span>
+			<button class="menu-btn" type="button" aria-expanded="false" aria-controls="sheet-menu" data-menu-btn>
+				<Icon name="menu" />Sections
+			</button>
+			<button class="mode-btn" type="button" data-mode-toggle aria-label="Switch to light mode">
+				<Icon name="moon" />
+			</button>
+		</header>
+		<nav class="sheet-menu" id="sheet-menu" aria-label="Sections menu">
+			<div class="ex-group">
+				<span class="ex-label">On this page</span>
+				<SectionList />
+			</div>
+		</nav>
 
-			/* watch-it-work — thin wrapper around the two moment islands, each
-			   of which owns its own padding/background (.mt / .mi); this only
-			   carries the section eyebrow above the pair. */
-			.wiw {
-				display: block;
-				background: var(--site-bg);
-			}
-			.wiw-eyebrow {
-				max-width: 64rem;
-				margin: 0 auto;
-				padding: var(--space-8, 32px) var(--space-6, 24px) 0;
-			}
+		<div class="frame">
+			<Explorer version={release.tag} />
 
-			/* packages teaser cards — typographic, no art yet */
-			.pkg-grid {
-				margin-top: var(--space-6, 24px);
-			}
-			.pkg-card {
-				border: 1px solid var(--site-border);
-				border-radius: var(--radius-lg, 10px);
-				padding: var(--space-5, 20px);
-				background: var(--site-surface);
-			}
-			.pkg-card__name {
-				font-family: var(--site-font-mono);
-				font-weight: 600;
-				font-size: 0.9375rem;
-				color: var(--site-fg);
-				margin: 0 0 var(--space-2, 8px);
-			}
-			.pkg-card__version {
-				font-weight: 500;
-				color: var(--site-accent);
-				margin-left: var(--space-2, 8px);
-			}
-			.pkg-card__desc {
-				font-size: 0.9375rem;
-				color: var(--site-muted);
-				margin: 0;
-			}
-			.pkg-teaser__more {
-				margin-top: var(--space-6, 24px);
-			}
-			.pkg-teaser__more a {
-				color: var(--site-accent);
-				font-weight: 600;
-				text-decoration: none;
-			}
-			.pkg-teaser__more a:hover {
-				text-decoration: underline;
-			}
+			<main id="main">
+				<div class="pane">
+					<section class="overview" id="overview" data-ctx={ctxOf('overview')} aria-labelledby="h-overview">
+						<p class="eyebrow">
+							<span>Open source</span><span aria-hidden="true">·</span><span>Apache-2.0</span><span aria-hidden="true"
+								>·</span
+							><span data-rel-tag>{release.tag}</span>
+							<button class="rot-pause" type="button" data-rot-pause aria-label="Pause the headline animation">
+								<span data-icon="pause"><Icon name="pause" /></span><span data-icon="play" hidden><Icon name="play" /></span>
+							</button>
+						</p>
+						<Title />
+						<p class="lede">
+							Ikenga is an open-source desktop app for people who run coding agents every day. Organise your work by
+							project. Send work to Claude Code or another engine, and answer what it asks, from one companion.
+							Install skills, tools and apps from a signed catalogue after you review what each one can access.
+						</p>
 
-			/* subscribe form */
-			.subscribe {
-				display: block;
-			}
-			.subscribe-label {
-				display: block;
-				font-size: 1.0625rem;
-				color: var(--site-fg);
-				max-width: var(--site-measure-body);
-				margin-bottom: var(--space-4);
-			}
-			.subscribe-label em {
-				color: var(--site-accent);
-				font-style: italic;
-			}
-			.subscribe-row {
-				display: flex;
-				gap: var(--space-3);
-				flex-wrap: wrap;
-				max-width: 34rem;
-			}
-			.subscribe-row input {
-				flex: 1;
-				min-width: 14rem;
-				padding: 11px 14px;
-				border-radius: var(--radius-md, 6px);
-				border: 1px solid var(--site-border);
-				background: var(--site-surface);
-				color: var(--site-fg);
-				font: inherit;
-				font-size: 0.9375rem;
-			}
-			.subscribe-row input:focus-visible {
-				outline: 2px solid var(--site-accent);
-				outline-offset: 1px;
-			}
-			.subscribe-row button {
-				padding: 11px 20px;
-				border-radius: var(--radius-md, 6px);
-				border: 1px solid transparent;
-				background: var(--site-accent);
-				/* light-on-amber (was dark hsl(28,30%,8%)): 2.83:1 on the parchment-pole
-				   accent — flipped to pass 4.5:1 (accessibility fix). */
-				color: hsl(36, 40%, 96%);
-				font: inherit;
-				font-weight: 600;
-				font-size: 0.9375rem;
-				cursor: pointer;
-				transition: filter 0.15s ease;
-			}
-			.subscribe-row button:hover {
-				filter: brightness(1.08);
-			}
-			.subscribe-row button:focus-visible {
-				outline: 2px solid var(--site-accent);
-				outline-offset: 2px;
-			}
-			.subscribe-row button:disabled {
-				opacity: 0.6;
-				cursor: default;
-			}
-			.subscribe-hp {
-				position: absolute;
-				left: -9999px;
-				width: 1px;
-				height: 1px;
-				opacity: 0;
-			}
-			.subscribe-consent {
-				font-size: 0.8125rem;
-				color: var(--site-faint);
-				margin: var(--space-3) 0 0;
-			}
-			.subscribe-msg {
-				font-size: 0.875rem;
-				margin: var(--space-2) 0 0;
-				min-height: 1.2em;
-			}
-			.subscribe-msg[data-state='ok'] {
-				color: var(--site-success);
-			}
-			.subscribe-msg[data-state='error'] {
-				color: var(--site-danger);
-			}
-		</style>
+						<Render id="overview" class="still" eager />
+
+						<div class="mobile-get" aria-label="Get Ikenga">
+							<GetBlock release={release} variant="inline" />
+							<ul class="paths">
+								<li>
+									<a href={RELEASES_URL}
+										><span class="pt">Use it</span><Icon name="arrow" class="i arrow" /><span class="pd"
+											>Keep every project, agent and tool in one window.</span
+										></a
+									>
+								</li>
+								<li>
+									<a href="/docs/build-a-pkg/"
+										><span class="pt">Extend it</span><Icon name="arrow" class="i arrow" /><span class="pd"
+											>Build apps and extensions for Ikenga, and try them in the running app.</span
+										></a
+									>
+								</li>
+								<li>
+									<a href="#teams"
+										><span class="pt">Run it together</span><Icon name="arrow" class="i arrow" /><span class="pd"
+											>See and approve what your agents do, with a record you can check.</span
+										></a
+									>
+								</li>
+							</ul>
+						</div>
+					</section>
+
+					<section class="sec" id="trust" data-ctx={ctxOf('trust')} aria-labelledby="h-trust">
+						<div class="h2-row"><h2 id="h-trust">Trust and security</h2></div>
+						<ul class="trust-list">
+							<li><Icon name="check" />Open source under the Apache-2.0 licence.</li>
+							<li><Icon name="check" />The catalogue is signed and the app verifies it.</li>
+							<li>
+								<Icon name="check" />You review what each app or extension can access before it installs, and again
+								when an update asks for more.
+							</li>
+							<li><Icon name="check" />Keys stay in a passphrase vault; lock the app when you step away.</li>
+							<li><Icon name="check" />Ikenga itself sends no usage analytics; engines follow their own settings.</li>
+						</ul>
+						<Render id="trust" />
+						<p class="more-link">
+							<a href="https://github.com/ikenga-hq/.github/blob/main/SECURITY.md">Security policy</a>
+						</p>
+					</section>
+
+					<section class="sec" id="projects" data-ctx={ctxOf('projects')} aria-labelledby="h-projects">
+						<div class="h2-row">
+							<h2 id="h-projects">Projects in one sidebar.</h2><span class="since">{stamps.projects}</span>
+						</div>
+						<div class="split">
+							<div>
+								<p>Each project's files, artifacts, agent sessions and tools sit together in the Explorer.</p>
+							</div>
+							<Render id="explorer" />
+						</div>
+					</section>
+
+					<section class="sec" id="chi" data-ctx={ctxOf('chi')} aria-labelledby="h-chi">
+						<div class="h2-row">
+							<h2 id="h-chi">Chi, the agent companion.</h2><span class="since">{stamps.chi}</span>
+						</div>
+						<div class="split">
+							<div>
+								<p>
+									Send work to Claude Code or another engine. Answer its permission requests, and watch its cost and
+									tool calls as they happen. Named seats let you pick a session up again by name.
+								</p>
+								<p class="limits">
+									Only terminals that Ikenga starts are tracked. Permission cards work with Claude Code; other engines
+									apply their own rules. Figures an engine does not report show as a dash.
+								</p>
+							</div>
+							<Render id="seats" />
+						</div>
+						<div class="inline-only"><AskCard /></div>
+					</section>
+
+					<section class="sec" id="ngwa" data-ctx={ctxOf('ngwa')} aria-labelledby="h-ngwa">
+						<div class="h2-row">
+							<h2 id="h-ngwa">Ngwa, the store.</h2><span class="since">{stamps.ngwa}</span>
+						</div>
+						<p>
+							Install skills, tools and apps from the signed Ikenga catalogue. You see what each one can access before
+							it installs. An update that asks for more access is held until you review it.
+						</p>
+						<div class="inline-only"><ConsentSheet /></div>
+						<Render id="ngwa" class="native" />
+					</section>
+
+					<section class="sec" id="vault" data-ctx={ctxOf('vault')} aria-labelledby="h-vault">
+						<div class="h2-row">
+							<h2 id="h-vault">Vault and app lock.</h2><span class="since">{stamps.vault}</span>
+						</div>
+						<p>
+							Your keys stay in a passphrase vault that locks itself when idle. Lock Ikenga with a PIN or your
+							passphrase when you step away.
+						</p>
+						<p class="limits">{appLock.limits[0]}</p>
+						<Render id="vault" />
+					</section>
+
+					<section class="sec" id="keys" data-ctx={ctxOf('keys')} aria-labelledby="h-keys">
+						<div class="h2-row">
+							<h2 id="h-keys">Actions, menus and keys.</h2><span class="since">{stamps.keys}</span>
+						</div>
+						<p>
+							Rebind any key, and add your own actions and menus, for yourself or for one project. Import the core of
+							your VS Code keybindings.
+						</p>
+						<p class="limits">
+							In an untrusted project, actions that run commands are refused, and keybindings are held, until you trust
+							the project.
+						</p>
+						<Render id="actions" />
+					</section>
+
+					<section class="sec" id="terminal" data-ctx={ctxOf('terminal')} aria-labelledby="h-terminal">
+						<div class="h2-row">
+							<h2 id="h-terminal">A terminal that remembers.</h2><span class="since">{stamps.terminal}</span>
+						</div>
+						<p>
+							Terminals pick up where you left them after a restart. Search what a session printed, and follow its live
+							working directory.
+						</p>
+						<div class="empty-slot" role="note">
+							<strong>Terminal</strong><span
+								>No render for this one yet. A version-stamped capture of the released app will fill this slot.</span
+							>
+						</div>
+					</section>
+
+					<section class="sec" id="groundwork" data-ctx={ctxOf('groundwork')} aria-labelledby="h-groundwork">
+						<div class="h2-row">
+							<h2 id="h-groundwork">Groundwork: research, plan, orchestrate.</h2><span class="since"
+								>Skill {groundwork.since}</span
+							>
+						</div>
+						<p>
+							Groundwork is a planning skill for Claude Code. It keeps a living plan folder for each piece of work:
+							research, the plan, a decision log, tracking, and a plan board you open in a browser.
+						</p>
+						<p>
+							Re-run any action and it adds to the folder; it never overwrites what you wrote. When the plan is ready,
+							orchestrate turns it into a brief for each task and a wave order, or a Claude Code Workflow that fans the
+							work out to one agent per task.
+						</p>
+						<p class="limits">{groundwork.limits.join(' ')}</p>
+						<div class="inline-only"><PlanFolder /></div>
+						<p class="more-link">
+							<a href="/docs/groundwork/">Learn more about Groundwork<Icon name="arrow" /></a>
+						</p>
+					</section>
+
+					<section class="sec" id="engines" data-ctx={ctxOf('engines')} aria-labelledby="h-engines">
+						<div class="h2-row"><h2 id="h-engines">Engines, and how ready each one is.</h2></div>
+						<p>
+							Ikenga drives the coding agent you already use. Each engine uses your own install, sign-in or key; Ikenga
+							includes no model access. Permission cards work with Claude Code; other engines apply their own rules.
+						</p>
+						<table class="table engines">
+							<thead>
+								<tr><th scope="col">Engine</th><th scope="col">Maturity</th><th scope="col">Notes</th></tr>
+							</thead>
+							<tbody>
+								{
+									engines.map((g) => (
+										<tr>
+											<td>
+												{g.names.join(' · ')}
+												<span class="m-note">{ENGINE_NOTES[g.tier]}</span>
+											</td>
+											<td>
+												<span class={`level ${g.tier}`}>{ENGINE_LEVEL[g.tier]}</span>
+											</td>
+											<td>{ENGINE_NOTES[g.tier]}</td>
+										</tr>
+									))
+								}
+							</tbody>
+						</table>
+					</section>
+
+					<section class="sec" id="teams" data-ctx={ctxOf('teams')} aria-labelledby="h-teams">
+						<div class="h2-row">
+							<h2 id="h-teams">Remote and teams, on a server you run.</h2><span class="since">{stamps.teams}</span>
+						</div>
+						<p>
+							Ikenga 0.19.0 adds people, devices and an audit log on an Ikenga server. Each feature below is in beta.
+							The desktop download does not include a server: device pairing, permission routing and the multi-user
+							server need one that you build and run yourself.
+						</p>
+						<TeamFeatures />
+						<div class="inline-only"><PairCard /></div>
+						<p class="more-link">
+							<a href="/teams/">Learn more about remote and teams<Icon name="arrow" /></a>
+						</p>
+					</section>
+
+					<section class="sec" id="coming" data-ctx={ctxOf('coming')} aria-labelledby="h-coming">
+						<div class="h2-row"><h2 id="h-coming">What comes next.</h2></div>
+						{
+							nextRows.length > 0 && (
+								<>
+									<p class="lane-h">
+										<span class="pill">Next</span>
+									</p>
+									<ul class="lane">
+										{nextRows.map((t) => (
+											<li>{t}</li>
+										))}
+									</ul>
+								</>
+							)
+						}
+						{
+							exploringRows.length > 0 && (
+								<>
+									<p class="lane-h">
+										<span class="pill exp">Exploring</span>
+									</p>
+									<ul class="lane">
+										<li>{listSentence(exploringRows)}</li>
+									</ul>
+								</>
+							)
+						}
+					</section>
+
+					<section class="sec" id="pricing" data-ctx={ctxOf('pricing')} aria-labelledby="h-pricing">
+						<div class="h2-row"><h2 id="h-pricing">Free to use. Plans in early access.</h2></div>
+						<HomePricing />
+						<p class="fine">
+							Paid plans are in early access: design partners and a waitlist only. We won't take payment or sign a paid
+							contract until our installers are code-signed. We count members, not seats. A member is a person with the
+							Owner or Operator role. Seats, the named slots for agent sessions, are always free and unlimited.
+						</p>
+					</section>
+
+					<section class="close" data-ctx="get" aria-labelledby="h-close">
+						<h2 id="h-close">Open your first project in Ikenga.</h2>
+						<div class="row">
+							<a class="btn btn-cta" href={RELEASES_URL} data-os-cta>
+								<span class="os-label" data-for="none">Get the desktop app</span>
+								<span class="os-label" data-for="mac">Download for macOS</span>
+								<span class="os-label" data-for="windows">Download for Windows</span>
+								<span class="os-label" data-for="linux">Download for Linux</span>
+							</a>
+							<a class="btn btn-quiet" href="/docs/">Read the docs</a>
+						</div>
+					</section>
+
+					<HomeFooter />
+				</div>
+			</main>
+
+			<aside class="companion" aria-label="Companion" data-ctx="get">
+				<div class="co-head"><span class="dot" aria-hidden="true"></span><span data-co-title>Get Ikenga</span></div>
+				<div class="co-body">
+					<div class="co-ctx" aria-live="polite">
+						<div class="co-panel" data-panel="get">
+							<h2>Pick your path</h2>
+							<ul class="paths">
+								<li>
+									<a href={RELEASES_URL}
+										><span class="pt">Use it</span><Icon name="arrow" class="i arrow" /><span class="pd"
+											>Keep every project, agent and tool in one window.</span
+										></a
+									>
+								</li>
+								<li>
+									<a href="/docs/build-a-pkg/"
+										><span class="pt">Extend it</span><Icon name="arrow" class="i arrow" /><span class="pd"
+											>Build apps and extensions for Ikenga, and try them in the running app.</span
+										></a
+									>
+								</li>
+								<li>
+									<a href="#teams"
+										><span class="pt">Run it together</span><Icon name="arrow" class="i arrow" /><span class="pd"
+											>See and approve what your agents do, with a record you can check.</span
+										></a
+									>
+								</li>
+							</ul>
+						</div>
+						<div class="co-panel" data-panel="consent" hidden>
+							<h2>Before anything installs</h2>
+							<p>This is what Ngwa shows for two published extensions. Tick every group to enable Install.</p>
+							<ConsentSheet />
+						</div>
+						<div class="co-panel" data-panel="ask" hidden>
+							<h2>When an agent asks</h2>
+							<p>
+								When an agent asks to run a tool, the request appears as a card in the Companion, and you allow or deny
+								it.
+							</p>
+							<AskCard />
+						</div>
+						<div class="co-panel" data-panel="local" hidden>
+							<h2>What stays yours</h2>
+							<ul class="trust-list">
+								<li><Icon name="check" />Keys stay in a passphrase vault; lock the app when you step away.</li>
+								<li><Icon name="check" />Ikenga itself sends no usage analytics; engines follow their own settings.</li>
+								<li>
+									<Icon name="check" />Each engine uses your own install, sign-in or key; Ikenga includes no model access.
+								</li>
+							</ul>
+						</div>
+						<div class="co-panel" data-panel="plan" hidden>
+							<h2>One folder per plan</h2>
+							<p>Research, the plan and its decisions live in one folder that agents read and add to.</p>
+							<PlanFolder />
+						</div>
+						<div class="co-panel" data-panel="pair" hidden>
+							<h2>Pair a device</h2>
+							<p>On a server you run, a phone or laptop pairs with a short code, and you confirm it on both screens.</p>
+							<PairCard />
+						</div>
+						<div class="co-panel" data-panel="tiers" hidden>
+							<h2>Early access</h2>
+							<HomePricing variant="list" />
+						</div>
+					</div>
+
+					<div class="co-get" id="download">
+						<GetBlock release={release} variant="companion" />
+					</div>
+				</div>
+			</aside>
+		</div>
+
+		<div class="dock" aria-label="Download">
+			<a class="btn btn-cta" href={RELEASES_URL} data-os-cta>
+				<span class="os-label" data-for="none">Get the desktop app</span>
+				<span class="os-label" data-for="mac">Download for macOS</span>
+				<span class="os-label" data-for="windows">Download for Windows</span>
+				<span class="os-label" data-for="linux">Download for Linux</span>
+			</a>
+		</div>
+
+		<div class="status" role="contentinfo" aria-label="Release status">
+			<span class="ok" data-rel-tag>{release.tag}</span><span>Apache-2.0</span><span class="right">{platformLine}</span>
+		</div>
+
+		<script type="application/json" id="home-data" set:html={pageData} />
+		<script>
+			import { start } from '../scripts/home';
+			start();
+		</script>
 	</body>
 </html>

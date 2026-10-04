@@ -1,0 +1,321 @@
+---
+// /teams: what a team gets from Ikenga today, what needs a server, and what is
+// coming. Status, versions and limits are read from the truth data
+// (src/data/truth/*.json) through src/lib/truth/read.ts. No prices appear here:
+// the plans block links to the pricing page.
+import PageShell from '../components/teams/PageShell.astro';
+import FeatureRows from '../components/teams/FeatureRows.astro';
+import ComingLanes from '../components/teams/ComingLanes.astro';
+import ClaudeCodeControls from '../components/teams/ClaudeCodeControls.astro';
+import TeamPlans from '../components/teams/TeamPlans.astro';
+import CaseStudySlot from '../components/teams/CaseStudySlot.astro';
+import { contactHref, PRICING_HREF, ROADMAP_HREF } from '../components/teams/links';
+import AskCard from '../components/home/AskCard.astro';
+import PairCard from '../components/home/PairCard.astro';
+import PlanFolder from '../components/home/PlanFolder.astro';
+import Icon from '../components/home/Icon.astro';
+import { feature, sinceLabel } from '../lib/truth/read';
+
+const server = feature('server.multi-user', ['beta']);
+const groundwork = feature('skills.groundwork', ['shipped']);
+
+const sections = [
+	{ id: 'overview', label: 'Overview', icon: 'users', ctx: 'get' },
+	{ id: 'supervise', label: 'Approvals & costs', icon: 'person', ctx: 'ask' },
+	{ id: 'git', label: 'Git', icon: 'flow', ctx: 'get' },
+	{ id: 'server', label: 'On a server you run', icon: 'devices', ctx: 'pair', meta: server.since },
+	{ id: 'groundwork', label: 'Team workflows', icon: 'layers', ctx: 'plan' },
+	{ id: 'claude-code', label: 'Beside Claude Code', icon: 'shield', ctx: 'get' },
+	{ id: 'coming', label: 'Coming', icon: 'clock', ctx: 'get' },
+	{ id: 'plans', label: 'Team & Enterprise', icon: 'tag', ctx: 'get' },
+];
+const titles = {
+	get: 'Teams',
+	ask: 'Chi · permission inbox',
+	pair: 'Remote · device pairing',
+	plan: 'Groundwork · plan folder',
+};
+
+const SUPERVISE = [
+	{
+		id: 'terminal.permission-inbox',
+		name: 'Permission cards',
+		what: 'When an agent asks to run a tool, the request appears as a card in the Companion, and you allow or deny it.',
+	},
+	{
+		id: 'chi.seats',
+		name: 'Seats',
+		what: 'Give each agent session a named seat in your project, then resume it, hold it or take it over.',
+	},
+	{ id: 'terminal.cost-hud', name: 'Cost meter', what: 'See what each session costs, live.' },
+	{ id: 'terminal.tool-feed', name: 'Tool feed', what: 'See which tools each session calls, as it calls them.' },
+	{
+		id: 'updates.permission-review',
+		name: 'Held updates',
+		what: 'An app update that asks for new permissions waits for your review.',
+	},
+	{ id: 'security.app-lock', name: 'App lock', what: 'Lock Ikenga when you step away, with a PIN or your passphrase.' },
+];
+const GIT = [
+	{
+		id: 'terminal.git-ledger',
+		name: 'Change ledger',
+		what: 'See the files each agent changes as it changes them.',
+	},
+	{
+		id: 'apps.git',
+		name: 'Git app',
+		what: 'Review changes, read history and work in branches and worktrees without leaving Ikenga.',
+	},
+];
+// The six team features released in 0.19.0, each in beta. Descriptions match the home page's.
+const SERVER_FEATURES = [
+	{
+		id: 'server.multi-user',
+		name: 'Multi-user server',
+		what: 'Run one Ikenga server for your team. Each person signs in to their own account and works in their own space on it.',
+	},
+	{
+		id: 'access.device-pairing',
+		name: 'Device pairing',
+		what: 'Pair a phone or laptop with a short code. Both screens show the same four-word phrase, and you confirm before the device gets in. Give each device its own access level, and revoke it at any time.',
+	},
+	{
+		id: 'access.permission-routing',
+		name: 'Permission routing',
+		what: 'A paired phone or laptop can answer permission requests from the agents in your desktop app. Choose whether those requests are answered on this device only or on any paired device. Each device’s access level caps what it may approve.',
+	},
+	{
+		id: 'access.members',
+		name: 'Members and roles',
+		what: 'Invite people to a project, or to a single artifact, with a role (Owner, Operator, Reviewer or Guest) that limits what they can see and do.',
+	},
+	{
+		id: 'access.audit-log',
+		name: 'Audit log',
+		what: 'Sign-ins, pairings, grants, revokes, role changes, approvals and dispatches go into a hash-chained log. Verify the chain and export it from Settings or the command line.',
+	},
+	{
+		id: 'vault.member-secrets',
+		name: 'Per-person secrets',
+		what: 'Each person on a multi-user server keeps their own secrets, separate from everyone else’s.',
+	},
+];
+SERVER_FEATURES.forEach((f) => feature(f.id, ['beta']));
+// "On a server you build and run yourself" shows while the server's truth row
+// says it is not part of the desktop download, and drops once it ships as one.
+const selfBuilt = server.limits.some((l) => /not part of the desktop download/i.test(l));
+const SERVER_WHERE = selfBuilt ? 'On a server you build and run yourself.' : undefined;
+
+const NEXT = [
+	{ id: 'access.oidc-sign-in', text: 'Sign in with your identity provider (OpenID Connect).' },
+	{ id: 'install.signed-installers', text: 'Signed installers for macOS and Windows.' },
+	{ id: 'server.browser-apps', text: 'Apps in the browser when you connect to a server.' },
+];
+const EXPLORING = [
+	{ id: 'access.scim', text: 'SCIM provisioning.' },
+	{ id: 'access.saml', text: 'SAML sign-in.' },
+	{ id: 'access.siem-export', text: 'Sending the audit log to your SIEM.' },
+	{ id: 'registry.private', text: 'A private catalogue for your team.' },
+	{ id: 'policy.org-apps', text: 'Admin policy for the apps and tools people can install.' },
+	{ id: 'apps.tasks', text: 'A Tasks app for shared work.' },
+];
+---
+
+<PageShell
+	title="Ikenga for teams: see and approve what your agents do"
+	description="What a team gets from Ikenga today, what needs a multi-user server you run, and what is coming. Every feature shows its status and its limits."
+	path="/teams/"
+	sections={sections}
+	titles={titles}
+>
+	<section class="overview" id="overview" data-ctx="get" aria-labelledby="h-overview">
+		<p class="eyebrow">
+			<span>Teams</span><span aria-hidden="true">·</span><span>Open source</span><span aria-hidden="true">·</span><span
+				>Apache-2.0</span
+			>
+		</p>
+		<h1 id="h-overview" class="page-h1">See and approve what your agents do, with a record you can check.</h1>
+		<p class="lede">
+			Open source and run by you. Paid support is in early access. Today Ikenga shows each agent session's permission
+			requests, cost and tool calls in one place. People, devices and an audit log come with a multi-user server that
+			you build and run yourself, and each of those is in beta.
+		</p>
+		<div class="cta-row">
+			<a class="btn btn-quiet" href={contactHref('team')}>Talk to us</a>
+			<a class="btn btn-quiet" href={ROADMAP_HREF}>See the roadmap</a>
+		</div>
+		<p class="more-link">
+			<a href={PRICING_HREF}>See plans and prices<Icon name="arrow" class="i" /></a>
+		</p>
+	</section>
+
+	<section class="sec" id="supervise" data-ctx="ask" aria-labelledby="h-supervise">
+		<div class="h2-row"><h2 id="h-supervise">Approvals and costs in one place.</h2></div>
+		<p>
+			Each agent session that Ikenga starts shows its permission requests, its live cost and its tool calls. Named seats
+			let you pick a session up again by name, hold it or take it over.
+		</p>
+		<p class="limits">
+			Permission cards work with Claude Code; other engines apply their own rules. Figures an engine does not report
+			show as a dash.
+		</p>
+		<FeatureRows items={SUPERVISE} label="Supervising agents" />
+		<div class="inline-only"><AskCard /></div>
+	</section>
+
+	<section class="sec" id="git" data-ctx="get" aria-labelledby="h-git">
+		<div class="h2-row"><h2 id="h-git">See what each agent changed.</h2></div>
+		<p>Follow the files an agent touches while it works, then review the change in git without leaving the app.</p>
+		<FeatureRows items={GIT} label="Git" />
+	</section>
+
+	<section class="sec" id="server" data-ctx="pair" aria-labelledby="h-server">
+		<div class="h2-row">
+			<h2 id="h-server">People, devices and an audit log, on a server you run.</h2><span class="since"
+				>{sinceLabel('server.multi-user')}</span
+			>
+		</div>
+		<p>
+			A multi-user server is one Ikenga server that the members of one organisation share. Each person signs in to their
+			own account and works in their own space on it, with their own secrets. Members are trusted with each other, so it
+			is not built to keep untrusted customers apart.
+		</p>
+		{
+			selfBuilt && (
+				<p>
+					<strong>Today you build and run it yourself.</strong> It needs a Linux host, where it runs as root under systemd
+					and gives each person their own Unix user. It is not part of the desktop download, and device pairing needs it
+					too. Each feature below is in beta.
+				</p>
+			)
+		}
+		<FeatureRows items={SERVER_FEATURES} where={SERVER_WHERE} label="On a server you run" />
+		<div class="inline-only"><PairCard /></div>
+		<p class="more-link">
+			<a href="/security/#custody">Who can read your data on a server you run<Icon name="arrow" class="i" /></a>
+		</p>
+		<p class="more-link">
+			<a href={server.ref_public}>Read the {server.since} release notes<Icon name="arrow" class="i" /></a>
+		</p>
+	</section>
+
+	<section class="sec" id="groundwork" data-ctx="plan" aria-labelledby="h-groundwork">
+		<div class="h2-row">
+			<h2 id="h-groundwork">Plan the work as files your team reviews.</h2><span class="since"
+				>Skill {groundwork.since}</span
+			>
+		</div>
+		<p>
+			Groundwork is a planning skill for Claude Code. It keeps a living plan folder for each piece of work: research,
+			the plan, a decision log, tracking, and a plan board you open in a browser. The folder is plain files in your
+			repository, so your team can review a plan the way it reviews code, and agents read the same decisions you do.
+		</p>
+		<p>
+			Re-run any action and it adds to the folder; it never overwrites what you wrote. When the plan is ready,
+			orchestrate turns it into a brief for each task and a wave order, or a Claude Code Workflow that fans the work out
+			to one agent per task.
+		</p>
+		<p class="limits">{groundwork.limits.join(' ')}</p>
+		<div class="inline-only"><PlanFolder /></div>
+		<p class="more-link">
+			<a href="/docs/groundwork/">Learn more about Groundwork<Icon name="arrow" class="i" /></a>
+		</p>
+	</section>
+
+	<section class="sec" id="claude-code" data-ctx="get" aria-labelledby="h-claude-code">
+		<div class="h2-row"><h2 id="h-claude-code">Already using Claude Code's organisation controls? Keep them.</h2></div>
+		<ClaudeCodeControls />
+	</section>
+
+	<section class="sec" id="coming" data-ctx="get" aria-labelledby="h-coming">
+		<div class="h2-row"><h2 id="h-coming">What is coming for teams.</h2></div>
+		<p>Nothing on this list is available yet. Each line leaves it when it ships.</p>
+		<ComingLanes next={NEXT} exploring={EXPLORING} />
+	</section>
+
+	<section class="sec" id="plans" data-ctx="get" aria-labelledby="h-plans">
+		<div class="h2-row"><h2 id="h-plans">Team and Enterprise.</h2></div>
+		<p>
+			The whole app is free and open source. Paid plans pay for support and for help running Ikenga, not for features.
+		</p>
+		<TeamPlans />
+		<CaseStudySlot />
+	</section>
+
+	<section class="close" data-ctx="get" aria-labelledby="h-close">
+		<h2 id="h-close">Tell us how your team runs its agents.</h2>
+		<div class="row">
+			<a class="btn btn-quiet" href={contactHref('team')}>Talk to us</a>
+			<a class="btn btn-quiet" href={ROADMAP_HREF}>See the roadmap</a>
+		</div>
+	</section>
+
+	<Fragment slot="companion">
+		<div class="co-panel" data-panel="get">
+			<h2>Run it together</h2>
+			<p>See and approve what your agents do, with a record you can check.</p>
+			<ul class="paths">
+				<li>
+					<a href={contactHref('team')}
+						><span class="pt">Talk to us</span><Icon name="arrow" class="i arrow" /><span class="pd"
+							>Team and Enterprise early access, and design partners.</span
+						></a
+					>
+				</li>
+				<li>
+					<a href={PRICING_HREF}
+						><span class="pt">See plans and prices</span><Icon name="arrow" class="i arrow" /><span class="pd"
+							>What each plan includes.</span
+						></a
+					>
+				</li>
+				<li>
+					<a href="/security/"
+						><span class="pt">Security</span><Icon name="arrow" class="i arrow" /><span class="pd"
+							>Shipped controls, and who can read your data.</span
+						></a
+					>
+				</li>
+			</ul>
+		</div>
+		<div class="co-panel" data-panel="ask" hidden>
+			<h2>When an agent asks</h2>
+			<p>When an agent asks to run a tool, the request appears as a card in the Companion, and you allow or deny it.</p>
+			<AskCard />
+		</div>
+		<div class="co-panel" data-panel="pair" hidden>
+			<h2>Pair a device</h2>
+			<p>On a server you run, a phone or laptop pairs with a short code, and you confirm it on both screens.</p>
+			<PairCard />
+		</div>
+		<div class="co-panel" data-panel="plan" hidden>
+			<h2>One folder per plan</h2>
+			<p>Research, the plan and its decisions live in one folder that agents read and add to.</p>
+			<PlanFolder />
+		</div>
+	</Fragment>
+</PageShell>
+
+<style>
+	.page-h1 {
+		max-width: 20ch;
+		font-size: clamp(36px, 4.4vw, 48px);
+	}
+	.cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		margin-top: var(--space-8);
+	}
+	.overview .more-link {
+		margin: var(--space-4) 0 0;
+	}
+	.overview .more-link a {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		min-height: 44px;
+		color: var(--fg);
+	}
+</style>

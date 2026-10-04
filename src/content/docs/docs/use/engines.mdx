@@ -1,0 +1,73 @@
+---
+title: Engines
+description: Pluggable AI adapters — the agent engine. The default ships as a pkg so it updates independently of the shell.
+---
+
+An **engine** is the AI backend that drives the workspace. Ikenga is **engine-optional**: the shell boots and runs the kernel without one, and engines are installed as pkgs alongside everything else. The default engine ships as a pkg precisely so it can update independently of the shell binary.
+
+The chat layer is **multi-engine**. Any number of engines can be installed side by side, and the frontend sees **one wire** regardless of which one is running — engine swaps are invisible above the kernel boundary.
+
+## The model
+
+Each engine adapter wraps a CLI-based AI backend — a binary that speaks a streaming protocol over stdio. Two pieces make up an engine:
+
+1. **The pkg** (in [`ikenga-pkgs/packages/engine/<id>/`](https://github.com/ikenga-hq/ikenga-pkgs)) declares the contract: a stable `agentId`, a display name, a **capability matrix**, an **onboarding** block (which vault keys and auth command the engine needs), and a settings schema.
+2. **The runtime adapter** (Rust, in the shell) translates between that CLI's native protocol and the shell's internal session wire.
+
+The frontend talks to whatever engine is active through one normalized envelope shape on a single channel. Whether the underlying CLI speaks that protocol natively or the Rust adapter translates is something the UI never has to know.
+
+<aside>
+Adding a brand-new engine today is a paired change — the pkg manifest and artifacts in <code>ikenga-pkgs</code>, plus a Rust adapter in the shell. It is not yet a pure drop-in pkg. The <code>Engine</code> interface published in <code>@ikenga/contract</code> is forward-looking; treat it as the direction of travel, not a load-bearing API the kernel enforces today.
+</aside>
+
+## The engine block
+
+An engine pkg declares an `engine` block in its manifest:
+
+```json
+{
+  "engine": {
+    "agentId": "myai",
+    "display": "MyAI",
+    "capabilities": {
+      "streaming": true,
+      "toolUse": true,
+      "thinking": false,
+      "modelSwitching": true,
+      "sessionResume": true,
+      "mcp": false
+    },
+    "onboarding": {
+      "requiredVaultKeys": ["MYAI_API_KEY"],
+      "authCommand": "myai login",
+      "docsUrl": "https://docs.myai.example"
+    }
+  }
+}
+```
+
+- **`capabilities`** is a superset matrix every adapter must answer — `streaming`, `toolUse`, `thinking`, `artifacts`, `fileAttachments`, `imageInput`, `slashCommands`, `modelSwitching`, `promptCaching`, `agenticTools`, `mcp`, `sessionResume`. Set the ones you implement to `true`, the rest to `false`. The chat UI reads these to enable or disable features per engine, so a flag you claim but don't implement will silently break that feature.
+- **`onboarding`** is surfaced by the first-run wizard. `requiredVaultKeys` are looked up in the encrypted vault; `authCommand` is a copy-to-clipboard hint — the shell does not run it for you.
+
+## Available engines
+
+| Engine | Status | Auth | Resume |
+| --- | --- | --- | --- |
+| **Claude Code** | **Default — fully wired.** The shell spawns your local `claude` CLI and translates its streaming output. | `claude login` or `ANTHROPIC_API_KEY` | `claude --resume <id>` |
+| **Codex** | Pluggable adapter. Stream-parses `codex exec --json` into the shell's normalized envelopes. | `codex login` or `OPENAI_API_KEY` | `codex resume` |
+| **noop** | Reference adapter. Returns canned responses — useful for tests and demos and as the minimum viable engine manifest. | — | — |
+
+Every engine requires its CLI on your `$PATH`.
+
+## Per-turn engine and model
+
+A chat thread is created with one engine, and that stays pinned to the thread. But the composer lets you swap the engine and model **per turn** — a single send can be routed to a different engine without changing the thread. The picker is a two-level Engine → Model popover.
+
+For not-yet-installed engines, onboarding metadata is mirrored on the frontend, so the auth surface can guide you through setting up an engine before you've added its pkg.
+
+## Where to go next
+
+- **[What you can build →](/docs/build/archetypes/)** — the manifest, capabilities, and lifecycle the engine block plugs into.
+- **[Build your first app →](/docs/build/first-pkg/)** — the engine-adapter archetype is one of the tracks.
+
+{/* VERIFY: shell/CLAUDE.md also lists a 'cursor-agent' engine as scaffold-only with a stubbed runtime (throws RUNTIME_NOT_IMPLEMENTED). Decide at launch whether to mention it publicly; omitted here to avoid documenting a non-functional engine. */}

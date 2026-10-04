@@ -1,0 +1,103 @@
+---
+title: From logline to cut
+description: The end-to-end AI-filmmaking loop — scaffold a film plan with Groundwork, write the pre-production bible, lock the look, then hand off to Studio to generate, track, and stitch the cut.
+sidebar:
+  label: Film — idea to cut
+  order: 8
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Groundwork's [`film`](/docs/use/groundwork/profiles/) profile plans the film. [Studio](/packages/studio/) shoots it. This is the whole loop — the commands, what each one produces, and where the handoff happens. It follows the wordless demo short **“The Forge”**: Adaora forges an iron mask through the night.
+
+<Aside type="note">
+`film` owns creative development and production management. Studio (`com.ikenga.studio`) owns the shot board — cells, render engine, per-shot approval. When the two disagree, Studio wins.
+</Aside>
+
+<Steps>
+
+1. **Scaffold the plan folder.** One command drops the full research → design → plan → orchestrate → act spine, shaped for film.
+
+   ```bash
+   groundwork init --profile film "the-forge"
+   ```
+
+   ```text
+   plans/the-forge/
+   ├── .groundwork.json        ← identity + state anchor
+   ├── 00-README.md
+   ├── 01-plan.md              ← the pre-production bible
+   ├── 02-research-external.md
+   ├── 03-research-internal.md
+   ├── 04-discussion.md
+   ├── 05-tracking.md          ← mirrors the Studio board
+   ├── 09-orchestration.md
+   ├── designs/                ← lookbook boards land here
+   └── artifact/board.html
+   ```
+
+   In Claude Code you can just say *“set up groundwork for my short film, film profile.”*
+
+2. **Write the bible, top to bottom.** Fill `01-plan.md` in order — each section answers to the logline above it: logline → treatment (present-tense, beat by beat) → cast & character bible → locations → shotlist. Every principal is destined for a Studio *anchor*. Run `groundwork research` and `groundwork clarify` as you go; they augment the doc in place without touching your prose.
+
+3. **Lock the look.** The film profile *produces designs*. Build an HTML lookbook — palette, grain, lens feel, aspect ratio, reference frames — and lock it at the **picture lock** gate. Each locked board becomes a `D-NN` design id that feeds Studio's archetype, so every generated shot reads as one film.
+
+   ```bash
+   groundwork design "ember-noir lookbook"   # → designs/look-ember-noir.html
+   groundwork review                          # lock at picture lock → D-01
+   ```
+
+4. **Open the Studio project.** The bible hands off to execution. One Studio project backs the film; record its id in `01-plan.md` under *Handoff to the shot board*. From here, Studio owns render and approval state.
+
+   ```text
+   › mcp__studio__project_create    name="the-forge"
+   › mcp__studio__breakdown_import  script="act1.fountain"
+     → 14 shots across 4 scenes on the board
+   ```
+
+   Or open it by hand: `/iyke/studio` in the Ikenga shell opens the Studio pane — Launcher → Breakdown → Storyboard.
+
+5. **Anchor the cast and world.** Turn each cast-bible entry into a seed-locked anchor the generator reuses on every shot. This is what keeps Adaora's face and the Workshop's walls consistent from shot one to shot forty.
+
+   ```text
+   › mcp__studio__anchor_create  kind="character" name="Adaora"      → anchor_adaora · seed 44821
+   › mcp__studio__anchor_create  kind="location"  name="The Workshop" → anchor_workshop · seed 90310
+   ```
+
+6. **Generate — two tracks.** Automate what's automatic; hand off what's directorial. Both land on the same shot.
+
+   ```text
+   # Track A — Studio generates via fal
+   › mcp__studio__render_shot  shot="sc1_sh1" engine="fal:flux" anchors=[adaora,workshop]
+     → rendered · $0.02 · seed 44821
+
+   # Track B — you direct in Higgsfield / Flow
+   › mcp__studio__export.prompt_package    shot="sc2_sh1"   → prompt + ref image
+   › mcp__studio__render.ingest_external   shot="sc2_sh1" file="clip.mp4"  → clip back on the board
+   ```
+
+   ![Studio storyboard canvas — shots generating on two tracks, with running spend in the dock](/assets/studio/canvas-gen-b.png)
+
+7. **Track cost, approve shots.** Studio's shot ledger records model, seed, cost, and variants per shot; `05-tracking.md` mirrors it for production management. Approve shots as they land.
+
+   ```text
+   › mcp__studio__storyboard_set_approved  shot="sc1_sh1"
+     → approved · rolls into the 05-tracking.md mirror
+   ```
+
+   ![Studio shot ledger — engine, model, seed, cost per shot with a running budget meter](/assets/studio/ledger-a.png)
+
+8. **Compose the cut.** Approved shots stitch to a delivery master — correct framing per platform, music bed and VO in place. One export per deliverable row in the bible.
+
+   ```text
+   › mcp__studio__export_compose  bed="A" ratio="16:9" music="score.mp3"  → master.mp4 · 90s · ProRes
+   › mcp__studio__export_compose  bed="B" ratio="9:16"                     → social-cutdown.mp4 · 30s · H.264
+   ```
+
+</Steps>
+
+That's the loop. Change a character or a beat and Studio knows exactly which shots to re-render — the bible and the board stay in lockstep.
+
+<Aside type="tip">
+New to the pieces? Read the [Studio overview](/docs/use/studio/) for what the app does, and [Profiles](/docs/use/groundwork/profiles/) for how `film` differs from the other four.
+</Aside>

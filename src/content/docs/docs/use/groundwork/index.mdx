@@ -1,0 +1,33 @@
+---
+title: Groundwork
+description: A Claude Code skill that scaffolds and maintains a living plan folder — research, plan, orchestrate, act — where re-runs augment your work instead of overwriting it.
+sidebar:
+  order: 0
+---
+
+**Groundwork** turns "plan this" into a folder of living documents — a plan, research, a discussion log, a tracking file, and a standalone HTML board — and gives you a small set of actions you can re-run any time. The defining property: **re-runs augment your work, they never overwrite it.** A checksum decides what changes on disk, not the model.
+
+It's an open Claude Code skill (Apache-2.0). It runs in plain Claude Code with nothing else installed, and because it ships in the open `npx skills` format it also works with Codex, Cursor and other agents. The Ikenga shell is optional — it adds a live in-shell board, but the skill, the folder, and the multi-agent kickoff all work without it.
+
+## Install
+
+```bash
+npx skills add ikenga-hq/groundwork
+```
+
+Project install — committed with the repo. Add `-g` for a global install across all projects. Needs a Claude Code environment and Node ≥ 18.
+
+## Where to go next
+
+- **[Concepts](/docs/use/groundwork/concepts/)** — what a groundwork folder is and how it stays alive.
+- **[Profiles](/docs/use/groundwork/profiles/)** — software · general · content · design-system.
+- **[Actions](/docs/use/groundwork/actions/)** — init, research, review, orchestrate, and the rest.
+- **[State model](/docs/use/groundwork/state-model/)** — fences, hash-diff, and the stable IDs that make "augment, never overwrite" a guarantee.
+- **[The plan board](/docs/use/groundwork/board/)** — Mission Control, Kanban, and dependency-graph views from one file.
+- **[The explorer](/docs/use/groundwork/explorer/)** — a fully-offline file tree + tabbed viewer with search, plus a cross-plan index.
+- **[Orchestrate & Workflow](/docs/use/groundwork/orchestrate/)** — turn a finished plan into a runnable multi-agent kickoff.
+
+## See also
+
+- [Source on GitHub](https://github.com/ikenga-hq/groundwork)
+- [Why I built it (blog)](https://royalti.io/blog/groundwork-planning-that-doesnt-rot)

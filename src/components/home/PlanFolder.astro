@@ -1,0 +1,42 @@
+---
+// Illustrative Groundwork plan folder, laid out as the Groundwork docs describe
+// it (software profile), and the fan-out that orchestrate produces from it.
+const FILES = [
+	['00-README.md', 'read order'],
+	['01-plan.md', 'the plan'],
+	['02-research-external.md', ''],
+	['03-research-internal.md', ''],
+	['04-discussion.md', 'decision log'],
+	['05-tracking.md', 'tasks and status'],
+	['09-orchestration.md', 'kickoff'],
+];
+---
+
+<ul class="tree" aria-label="Example plan folder">
+	<li>
+		<span class="dir">plans/add-billing-export/</span>
+		<ul>
+			{
+				FILES.map(([f, note]) => (
+					<li>
+						{f}
+						{note && <span class="note">{note}</span>}
+					</li>
+				))
+			}
+			<li>
+				<span class="dir">artifact/</span>
+				<ul>
+					<li>board.html<span class="note">plan board</span></li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</ul>
+<p class="fan-h">orchestrate</p>
+<ul class="fan" aria-label="Example fan-out">
+	<li><span class="seat">agent 1</span>research brief</li>
+	<li><span class="seat">agent 2</span>build brief</li>
+	<li><span class="seat">agent 3</span>review brief</li>
+</ul>
+<p class="illus">Illustrative folder, laid out as the Groundwork docs describe it. Nothing runs from this page.</p>

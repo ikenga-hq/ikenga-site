@@ -1,0 +1,232 @@
+---
+// The three-pane frame for a page outside the home page: an Explorer that
+// lists this page's sections, the main pane, and the Companion with its pinned
+// Download block. It reuses the home page's stylesheet, components and page
+// script, so the page looks and behaves like the home page: the Companion
+// follows the scroll (each section names its panel in data-ctx), the Explorer
+// folds into a Sections menu below 1180px, and below 880px the page is one
+// column with Download docked at the bottom.
+//
+// Slots: the default slot is the main pane; the `companion` slot holds the
+// Companion's panels (`<div class="co-panel" data-panel="...">`), and the panel
+// named `get` is the one shown first.
+import '../../styles/home.css';
+import IkeSymbol from '../home/IkeSymbol.astro';
+import IkeMark from '../home/IkeMark.astro';
+import Icon from '../home/Icon.astro';
+import GetBlock from '../home/GetBlock.astro';
+import { ELSEWHERE } from '../home/sections';
+import PageFooter from './PageFooter.astro';
+import { latestRelease, RELEASES_URL } from '../../lib/release';
+
+export interface PageSection {
+	id: string;
+	label: string;
+	icon: string;
+	/** The Companion panel this section brings up. */
+	ctx: string;
+	meta?: string;
+}
+
+interface Props {
+	title: string;
+	description: string;
+	/** Path of this page, such as `/teams/`. */
+	path: string;
+	sections: PageSection[];
+	/** Companion head title for each panel name. */
+	titles: Record<string, string>;
+}
+const { title, description, path, sections, titles } = Astro.props;
+
+const release = await latestRelease();
+const url = `https://ikenga.dev${path}`;
+const OG_IMAGE = 'https://ikenga.dev/assets/shell/og-card.png';
+const platformLine = 'Windows x64 · macOS universal · Linux x86-64, AppImage and .deb';
+const elsewhere = [{ href: '/', label: 'Home', icon: 'home' }, ...ELSEWHERE];
+const pageData = JSON.stringify({ titles, release: { tag: release.tag, repo: 'ikenga-hq/ikenga' } });
+---
+
+<!doctype html>
+<html lang="en" data-theme="A" data-mode="dark">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={url} />
+		<link rel="icon" type="image/svg+xml" href="/ike-app-tile.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#0c0a08" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={url} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={OG_IMAGE} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={OG_IMAGE} />
+		<script is:inline>
+			// Before first paint: colour mode (saved choice, else the system setting, else dark)
+			// and the visitor's desktop OS for the download labels (none on phones and tablets).
+			(function () {
+				var r = document.documentElement;
+				r.setAttribute('data-js', '');
+				var m = null;
+				try {
+					m = localStorage.getItem('ik-mode');
+				} catch (e) {}
+				if (m !== 'dark' && m !== 'light') {
+					m = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+				}
+				r.setAttribute('data-mode', m);
+				var n = navigator,
+					ua = n.userAgent || '',
+					plat = (n.userAgentData && n.userAgentData.platform) || n.platform || '';
+				var mobile =
+					/android|iphone|ipad|ipod|cros/i.test(ua) ||
+					(n.userAgentData && n.userAgentData.mobile) ||
+					(/mac/i.test(plat) && n.maxTouchPoints > 1);
+				var os = mobile ? '' : /win/i.test(plat) ? 'windows' : /mac/i.test(plat) ? 'mac' : /linux/i.test(plat) ? 'linux' : '';
+				if (os) r.setAttribute('data-os', os);
+			})();
+		</script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+		/>
+	</head>
+	<body>
+		<IkeSymbol />
+		<a class="skip" href="#main">Skip to content</a>
+
+		<header class="topbar" aria-label="Ikenga">
+			<a class="brand" href="/"><IkeMark /><span class="wordmark">Ikenga</span></a>
+			<button class="menu-btn" type="button" aria-expanded="false" aria-controls="sheet-menu" data-menu-btn>
+				<Icon name="menu" />Sections
+			</button>
+			<button class="mode-btn" type="button" data-mode-toggle aria-label="Switch to light mode">
+				<Icon name="moon" />
+			</button>
+		</header>
+		<nav class="sheet-menu" id="sheet-menu" aria-label="Sections menu">
+			<div class="ex-group">
+				<span class="ex-label">On this page</span>
+				<ul class="ex-list">
+					{
+						sections.map((s) => (
+							<li>
+								<a class="ex-row" data-tint="project" href={`#${s.id}`}>
+									<Icon name={s.icon as never} />
+									{s.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div class="ex-group">
+				<span class="ex-label">Elsewhere</span>
+				<ul class="ex-list">
+					{
+						elsewhere.map((e) => (
+							<li>
+								<a class="ex-row" href={e.href}>
+									<Icon name={e.icon as never} />
+									{e.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</nav>
+
+		<div class="frame">
+			<nav class="explorer" aria-label="Sections">
+				<div class="ex-head">
+					<a class="brand" href="/"><IkeMark /><span class="wordmark">Ikenga</span></a>
+					<span class="ver num" data-rel-tag>{release.tag}</span>
+				</div>
+				<div class="ex-group">
+					<span class="ex-label">On this page</span>
+					<ul class="ex-list">
+						{
+							sections.map((s) => (
+								<li>
+									<a class="ex-row" data-tint="project" href={`#${s.id}`} data-target={s.id}>
+										<Icon name={s.icon as never} />
+										{s.label}
+										{s.meta && <span class="meta">{s.meta}</span>}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+				<div class="ex-group">
+					<span class="ex-label">Elsewhere</span>
+					<ul class="ex-list">
+						{
+							elsewhere.map((e) => (
+								<li>
+									<a class="ex-row" href={e.href}>
+										<Icon name={e.icon as never} />
+										{e.label}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+				<div class="ex-foot">
+					<button class="mode-toggle" type="button" data-mode-toggle>
+						<Icon name="moon" />
+						<span data-mode-label>Light mode</span>
+					</button>
+				</div>
+			</nav>
+
+			<main id="main">
+				<div class="pane">
+					<slot />
+					<PageFooter />
+				</div>
+			</main>
+
+			<aside class="companion" aria-label="Companion" data-ctx="get">
+				<div class="co-head">
+					<span class="dot" aria-hidden="true"></span><span data-co-title>{titles.get}</span>
+				</div>
+				<div class="co-body">
+					<div class="co-ctx" aria-live="polite">
+						<slot name="companion" />
+					</div>
+					<div class="co-get" id="download">
+						<GetBlock release={release} variant="companion" />
+					</div>
+				</div>
+			</aside>
+		</div>
+
+		<div class="dock" aria-label="Download">
+			<a class="btn btn-cta" href={RELEASES_URL} data-os-cta>
+				<span class="os-label" data-for="none">Get the desktop app</span>
+				<span class="os-label" data-for="mac">Download for macOS</span>
+				<span class="os-label" data-for="windows">Download for Windows</span>
+				<span class="os-label" data-for="linux">Download for Linux</span>
+			</a>
+		</div>
+
+		<div class="status" role="contentinfo" aria-label="Release status">
+			<span class="ok" data-rel-tag>{release.tag}</span><span>Apache-2.0</span><span class="right">{platformLine}</span>
+		</div>
+
+		<script type="application/json" id="home-data" set:html={pageData} />
+		<script>
+			import { start } from '../../scripts/home';
+			start();
+		</script>
+	</body>
+</html>

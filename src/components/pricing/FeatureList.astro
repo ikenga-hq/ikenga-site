@@ -1,0 +1,40 @@
+---
+// A list of features from the truth data: name, status, version and every
+// public limit, side by side. Names, statuses, versions and limits are read
+// from src/data/truth/features.json; nothing here is typed by hand.
+import type { FeatureRow } from '../../lib/truth/read';
+
+interface Props {
+	rows: FeatureRow[];
+	label: string;
+}
+const { rows, label } = Astro.props;
+
+const pill = (r: FeatureRow) =>
+	r.status === 'beta' ? { text: 'Beta', cls: 'pill beta' } : r.status === 'shipped' ? null : r.status === 'next' ? { text: 'Next', cls: 'pill' } : { text: 'Exploring', cls: 'pill exp' };
+const stamp = (r: FeatureRow) => (r.since ? `Since ${r.since}` : '');
+---
+
+<ul class="team p-features" aria-label={label}>
+	{
+		rows.map((r) => {
+			const p = pill(r);
+			return (
+				<li>
+					<div class="team-h">
+						<span>{r.plain_name}</span>
+						{p && <span class={p.cls}>{p.text}</span>}
+						{stamp(r) && <span class="since">{stamp(r)}</span>}
+					</div>
+					{r.limits.length > 0 && (
+						<ul class="lim">
+							{r.limits.map((l) => (
+								<li>{l}</li>
+							))}
+						</ul>
+					)}
+				</li>
+			);
+		})
+	}
+</ul>

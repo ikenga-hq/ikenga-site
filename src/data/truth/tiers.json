@@ -1,0 +1,416 @@
+[
+  {
+    "id": "free",
+    "price": 0,
+    "addons": [],
+    "includes": [
+      "workspace.frame",
+      "chi.companion",
+      "chi.engines",
+      "chi.seats",
+      "terminal.permission-inbox",
+      "terminal.cost-hud",
+      "terminal.tool-feed",
+      "terminal.git-ledger",
+      "ngwa.store",
+      "ngwa.install-consent",
+      "ngwa.git-install",
+      "registry.signed-catalog",
+      "vault.passphrase",
+      "security.app-lock",
+      "artifacts.grid",
+      "server.headless",
+      "server.multi-user",
+      "access.members",
+      "access.device-pairing",
+      "access.permission-routing",
+      "access.audit-log",
+      "vault.member-secrets",
+      "updates.permission-review",
+      "ngwa.trusted-tier",
+      "ngwa.scopes",
+      "workspace.settings",
+      "workspace.restore",
+      "engines.claude-code"
+    ],
+    "coming": [
+      "install.signed-installers",
+      "access.oidc-sign-in",
+      "server.browser-apps"
+    ],
+    "prerequisites": [],
+    "availability": "self-serve",
+    "cta": {
+      "kind": "download",
+      "label": "Download",
+      "href": "https://github.com/ikenga-hq/ikenga/releases/latest"
+    }
+  },
+  {
+    "id": "personal",
+    "price": 12,
+    "billing_period": "monthly",
+    "addons": [],
+    "includes": [
+      "workspace.frame",
+      "chi.companion",
+      "chi.engines",
+      "chi.seats",
+      "terminal.permission-inbox",
+      "terminal.cost-hud",
+      "terminal.tool-feed",
+      "terminal.git-ledger",
+      "ngwa.store",
+      "ngwa.install-consent",
+      "ngwa.git-install",
+      "registry.signed-catalog",
+      "vault.passphrase",
+      "security.app-lock",
+      "artifacts.grid",
+      "server.headless",
+      "server.multi-user",
+      "access.members",
+      "access.device-pairing",
+      "access.permission-routing",
+      "access.audit-log",
+      "vault.member-secrets",
+      "updates.permission-review",
+      "ngwa.trusted-tier",
+      "ngwa.scopes",
+      "workspace.settings",
+      "workspace.restore",
+      "engines.claude-code"
+    ],
+    "coming": [
+      "install.signed-installers",
+      "access.oidc-sign-in",
+      "server.browser-apps"
+    ],
+    "prerequisites": [
+      "provisioning"
+    ],
+    "availability": "early-access",
+    "cta": {
+      "kind": "waitlist",
+      "label": "Join the waitlist",
+      "href": "/contact/?topic=personal"
+    },
+    "personal": {
+      "delivery": [
+        "hosted",
+        "own-cloud"
+      ],
+      "regions": [
+        {
+          "id": "eu",
+          "label": "EU (Germany or Finland)",
+          "pricing": "list"
+        },
+        {
+          "id": "us",
+          "label": "US",
+          "pricing": "list"
+        },
+        {
+          "id": "asia-africa",
+          "label": "Asia and Africa",
+          "pricing": "quote"
+        }
+      ],
+      "sizes": [
+        {
+          "id": "lite",
+          "spec": {
+            "ram_gb": 2
+          },
+          "sleeps_when_idle": true,
+          "prices": [
+            {
+              "region": "eu",
+              "price": 12
+            },
+            {
+              "region": "us",
+              "price": 12
+            }
+          ]
+        },
+        {
+          "id": "small",
+          "spec": {
+            "ram_gb": 4,
+            "vcpu": 2,
+            "disk_gb": 40
+          },
+          "prices": [
+            {
+              "region": "eu",
+              "price": 14
+            },
+            {
+              "region": "us",
+              "price": 28,
+              "price_max": 32
+            }
+          ]
+        },
+        {
+          "id": "medium",
+          "spec": {
+            "ram_gb": 8,
+            "vcpu": 4,
+            "disk_gb": 80
+          },
+          "prices": [
+            {
+              "region": "eu",
+              "price": 18
+            },
+            {
+              "region": "us",
+              "price": 49
+            }
+          ]
+        },
+        {
+          "id": "large",
+          "spec": {
+            "ram_gb": 16,
+            "vcpu": 8,
+            "disk_gb": 160
+          },
+          "prices": [
+            {
+              "region": "eu",
+              "price": 28
+            },
+            {
+              "region": "us",
+              "price": 91
+            }
+          ]
+        }
+      ],
+      "decision_tokens": {
+        "allowance": "included",
+        "overage": "metered"
+      },
+      "prices_exclude_vat": true,
+      "indicative": true
+    }
+  },
+  {
+    "id": "team",
+    "price": 20,
+    "price_monthly": 25,
+    "billing_period": "annual",
+    "unit": "member",
+    "addons": [],
+    "includes": [
+      "workspace.frame",
+      "chi.companion",
+      "chi.engines",
+      "chi.seats",
+      "terminal.permission-inbox",
+      "terminal.cost-hud",
+      "terminal.tool-feed",
+      "terminal.git-ledger",
+      "ngwa.store",
+      "ngwa.install-consent",
+      "ngwa.git-install",
+      "registry.signed-catalog",
+      "vault.passphrase",
+      "security.app-lock",
+      "artifacts.grid",
+      "server.headless",
+      "server.multi-user",
+      "access.members",
+      "access.device-pairing",
+      "access.permission-routing",
+      "access.audit-log",
+      "vault.member-secrets",
+      "updates.permission-review",
+      "ngwa.trusted-tier",
+      "ngwa.scopes",
+      "workspace.settings",
+      "workspace.restore",
+      "engines.claude-code"
+    ],
+    "coming": [
+      "install.signed-installers",
+      "access.oidc-sign-in",
+      "server.browser-apps"
+    ],
+    "prerequisites": [
+      "signing",
+      "legal-and-intake"
+    ],
+    "availability": "early-access",
+    "cta": {
+      "kind": "waitlist",
+      "label": "Join the waitlist",
+      "href": "/contact/?topic=team"
+    }
+  },
+  {
+    "id": "enterprise",
+    "price": 40,
+    "billing_period": "annual",
+    "unit": "member",
+    "min_members": 5,
+    "addons": [
+      {
+        "id": "managed-instance-small",
+        "size": "small",
+        "price": 150,
+        "unit": "org",
+        "spec": {
+          "ram_gb": 8,
+          "vcpu": 2,
+          "disk_gb": 80
+        },
+        "members": {
+          "up_to": 10,
+          "estimate": true
+        },
+        "regions": [
+          {
+            "id": "eu",
+            "label": "EU (Germany or Finland)",
+            "pricing": "list"
+          },
+          {
+            "id": "us",
+            "label": "US (Virginia or Oregon)",
+            "pricing": "list"
+          },
+          {
+            "id": "africa",
+            "label": "Africa (Johannesburg, Cape Town, Lagos)",
+            "pricing": "quote"
+          }
+        ],
+        "prerequisites": [
+          "managed-ops"
+        ]
+      },
+      {
+        "id": "managed-instance-standard",
+        "size": "standard",
+        "price": 250,
+        "unit": "org",
+        "spec": {
+          "ram_gb": 16,
+          "vcpu": 4,
+          "disk_gb": 160,
+          "vcpu_is_minimum": true
+        },
+        "members": {
+          "up_to": 25,
+          "estimate": true
+        },
+        "regions": [
+          {
+            "id": "eu",
+            "label": "EU (Germany or Finland)",
+            "pricing": "list"
+          },
+          {
+            "id": "us",
+            "label": "US (Virginia or Oregon)",
+            "pricing": "list"
+          },
+          {
+            "id": "africa",
+            "label": "Africa (Johannesburg, Cape Town, Lagos)",
+            "pricing": "quote"
+          }
+        ],
+        "prerequisites": [
+          "managed-ops"
+        ]
+      },
+      {
+        "id": "managed-instance-large",
+        "size": "large",
+        "price": 450,
+        "unit": "org",
+        "spec": {
+          "ram_gb": 32,
+          "vcpu": 8,
+          "disk_gb": 240
+        },
+        "members": {
+          "up_to": 50,
+          "estimate": true
+        },
+        "regions": [
+          {
+            "id": "eu",
+            "label": "EU (Germany or Finland)",
+            "pricing": "list"
+          },
+          {
+            "id": "us",
+            "label": "US (Virginia or Oregon)",
+            "pricing": "list"
+          },
+          {
+            "id": "africa",
+            "label": "Africa (Johannesburg, Cape Town, Lagos)",
+            "pricing": "quote"
+          }
+        ],
+        "prerequisites": [
+          "managed-ops"
+        ]
+      }
+    ],
+    "includes": [
+      "workspace.frame",
+      "chi.companion",
+      "chi.engines",
+      "chi.seats",
+      "terminal.permission-inbox",
+      "terminal.cost-hud",
+      "terminal.tool-feed",
+      "terminal.git-ledger",
+      "ngwa.store",
+      "ngwa.install-consent",
+      "ngwa.git-install",
+      "registry.signed-catalog",
+      "vault.passphrase",
+      "security.app-lock",
+      "artifacts.grid",
+      "server.headless",
+      "server.multi-user",
+      "access.members",
+      "access.device-pairing",
+      "access.permission-routing",
+      "access.audit-log",
+      "vault.member-secrets",
+      "updates.permission-review",
+      "ngwa.trusted-tier",
+      "ngwa.scopes",
+      "workspace.settings",
+      "workspace.restore",
+      "engines.claude-code"
+    ],
+    "coming": [
+      "install.signed-installers",
+      "access.oidc-sign-in",
+      "server.browser-apps"
+    ],
+    "prerequisites": [
+      "signing",
+      "multi-user-server",
+      "legal-and-intake"
+    ],
+    "availability": "early-access",
+    "cta": {
+      "kind": "contact",
+      "label": "Talk to us",
+      "href": "/contact/?topic=enterprise"
+    }
+  }
+]

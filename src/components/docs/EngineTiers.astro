@@ -1,0 +1,23 @@
+---
+// The engines Ikenga lists publicly, grouped by support level, read from
+// src/data/truth/engines.json. Hidden engines are never listed.
+import { enginesByTier } from '../../lib/truth/read';
+
+const LABEL = {
+	supported: 'Supported',
+	beta: 'Beta',
+	experimental: 'Experimental',
+} as const;
+
+const groups = enginesByTier();
+---
+
+<ul class="engine-tiers">
+	{
+		groups.map((g) => (
+			<li>
+				<strong>{LABEL[g.tier]}:</strong> {g.names.join(', ')}
+			</li>
+		))
+	}
+</ul>

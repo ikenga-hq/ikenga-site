@@ -1,47 +1,42 @@
 ---
 title: What is Ikenga?
-description: An open-source, local-first desktop AI workspace for people who live in a coding agent every day.
+description: Ikenga is an open-source, local-first desktop workspace for coding agents. Start here to install it, use it, build for it, run it as a server, or contribute.
 ---
 
-Ikenga is an **open-source, local-first desktop AI workspace** for people who run their day through a coding agent. It is one window where you talk to an agent, browse and read files, and run and watch workflows — split panes, side by side, all of it aware of itself.
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-The point isn't a single chat box. It's a **composable workforce that lives inside the workspace**: agents, skills, slash commands, scheduled jobs, and a persistent memory layer — named, inspectable parts you can read as files.
+Ikenga is an **open-source, local-first desktop workspace for coding agents**. It gives Claude Code and other agent engines a home on your own machine: your projects, your agent companion, and the apps and extensions you install, in one window.
 
-Underneath the chrome, everything is a **package** (a "pkg"): mini-apps, tool servers, engine adapters — each one independently installable and updatable. The engine that drives the workspace is swappable too. Claude Code is fully wired today; Codex is a pluggable adapter.
+The workspace has three parts. A **Project** is the folder you work in. **Chi** is your agent companion, where you hand work to an engine and approve what it asks to do. **Ngwa** is the store for apps and extensions. The [glossary](/docs/reference/glossary/) defines every term.
 
-Ikenga is built on **Tauri 2** and licensed **Apache-2.0**. The source lives at [github.com/ikenga-hq/ikenga](https://github.com/ikenga-hq/ikenga).
+Ikenga is built on Tauri 2 and licensed Apache-2.0. The source is at [github.com/ikenga-hq/ikenga](https://github.com/ikenga-hq/ikenga).
 
-## A short glossary
+## Pick your path
 
-Ikenga borrows its vocabulary from the Igbo tradition. You don't need to learn it to use the product — the plain-English value comes first, and the lore is a light layer underneath. But you'll meet these terms across the docs:
-
-| Term | What it means |
-| --- | --- |
-| **Ikenga** | The workspace itself — "a personal seat of strength." |
-| **Obi** | The home view and shell chrome — the window that holds your panes. |
-| **Chi** | Your agent companion in the Companion panel, where you dispatch work and review actions. |
-| **Iyke** | The runtime-controller CLI that drives a *running* shell from the terminal or an MCP client. |
-| **pkg** | A package — the manifest-driven unit of everything beyond the window chrome. |
-| **Commission** | Create a project. |
-| **Retire** | Uninstall or archive. |
-| **Share kola** | Grant permissions consent. |
-
-There are **two CLIs**, and they do different jobs:
-
-- **`ikenga`** — the disk-side **package manager** (`add`, `update`, `list`, `dev`).
-- **`iyke`** — the runtime **controller** that drives a shell that's already running.
-
-They share no code. You can install either one on its own.
-
-## Where to go next
-
-- **[Install →](/docs/getting-started)** — download and run the shell.
-- **[Pkgs →](/docs/pkgs)** — the manifest-driven extension system: archetypes, capabilities, the AppBridge handshake, lifecycle.
-- **[Engines →](/docs/engines)** — the `Engine` interface and the engine model; Claude Code, noop, and pluggable Codex.
-- **[mcp-iyke →](/docs/mcp-iyke)** — the MCP server that exposes a running shell as tools so any model can drive it.
-
----
-
-<small>
-The Ikenga tradition is drawn from the Igbo people of southeastern Nigeria. Full credits live on the About / Lore page.
-</small>
+<CardGrid>
+	<LinkCard
+		title="Use"
+		description="Install the app, get through the first launch, pick an engine, and plan work with Groundwork."
+		href="/docs/use/install/"
+	/>
+	<LinkCard
+		title="Build"
+		description="Build an app or extension: what you can build, your first one, and the manifest."
+		href="/docs/build/archetypes/"
+	/>
+	<LinkCard
+		title="Reference"
+		description="Look things up: the glossary and the catalogue of published apps and extensions."
+		href="/docs/reference/"
+	/>
+	<LinkCard
+		title="Operate (Beta)"
+		description="Run Ikenga as a server, for yourself or for a team."
+		href="/docs/operate/"
+	/>
+	<LinkCard
+		title="Contribute"
+		description="Work on Ikenga itself: build a package, file a good issue, or open a pull request."
+		href="/docs/contribute/"
+	/>
+</CardGrid>

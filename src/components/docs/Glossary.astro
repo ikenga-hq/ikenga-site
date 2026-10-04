@@ -1,0 +1,101 @@
+---
+// The docs glossary, rendered from src/data/truth/glossary.json so it can never
+// drift from the terms the rest of the site uses. Each entry shows the term, its
+// plain-English meaning, the lore meaning where there is one, and the definition.
+// When the app still shows an older label for a term, that label is shown too.
+//
+// The avoid[] lists in the data are lint input, not copy: they are never rendered.
+import glossaryData from '../../data/truth/glossary.json';
+
+interface Term {
+	term: string;
+	plain: string;
+	lore?: string;
+	definition: string;
+	shell_ui_status: string;
+	shell_label?: string;
+}
+
+const terms = (glossaryData as Term[])
+	.slice()
+	.sort((a, b) => a.term.localeCompare(b.term, 'en', { sensitivity: 'base' }));
+
+const anchor = (t: string) =>
+	t
+		.normalize('NFD')
+		.replace(/[̀-ͯ]/g, '')
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-|-$/g, '');
+---
+
+<p class="glossary-count">{terms.length} terms, A to Z.</p>
+<dl class="glossary">
+	{
+		terms.map((t) => (
+			<div class="glossary-entry" id={anchor(t.term)}>
+				<dt>
+					<a href={`#${anchor(t.term)}`}>{t.term}</a>
+					<span class="glossary-plain">{t.plain}</span>
+				</dt>
+				<dd>
+					<p>{t.definition}</p>
+					{t.lore && <p class="glossary-meta">Lore meaning: {t.lore}.</p>}
+					{t.shell_ui_status === 'pr-needed' && t.shell_label && (
+						<p class="glossary-meta">
+							The app currently labels this <q>{t.shell_label}</q>.
+						</p>
+					)}
+				</dd>
+			</div>
+		))
+	}
+</dl>
+
+<style>
+	.glossary-count {
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-sm);
+	}
+	.glossary {
+		margin-top: 1.5rem;
+	}
+	.glossary-entry {
+		border-top: 1px solid var(--sl-color-hairline);
+		padding-block: 1rem;
+		scroll-margin-top: calc(var(--sl-nav-height, 4rem) + 1rem);
+	}
+	.glossary-entry dt {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.25rem 0.75rem;
+		font-weight: 600;
+		font-size: var(--sl-text-lg);
+	}
+	.glossary-entry dt a {
+		color: var(--sl-color-white);
+		text-decoration: none;
+	}
+	.glossary-entry dt a:hover {
+		text-decoration: underline;
+	}
+	.glossary-plain {
+		font-weight: 400;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+	.glossary-entry dd {
+		margin: 0.35rem 0 0;
+	}
+	.glossary-entry dd p {
+		margin: 0;
+	}
+	.glossary-entry dd p + p {
+		margin-top: 0.35rem;
+	}
+	.glossary-meta {
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+</style>

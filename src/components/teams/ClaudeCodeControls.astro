@@ -1,0 +1,80 @@
+---
+// How Ikenga sits beside Claude Code's own organisation controls. Claude Code
+// is named only to say what Ikenga works with. Engine names and maturity come
+// from the engines data; an engine whose tier is hidden is never named.
+import { enginesByTier, feature } from '../../lib/truth/read';
+
+interface Props {
+	/** The short form for /security: what still applies, and the MCP policy note. */
+	short?: boolean;
+}
+const { short = false } = Astro.props;
+
+// Each claim below has a released row behind it; a missing or unreleased row fails the build.
+['engines.claude-code', 'chi.engines', 'workspace.frame', 'terminal.continuity', 'ngwa.store', 'ngwa.git-install', 'registry.signed-catalog', 'vault.passphrase', 'chi.seats'].forEach(
+	(id) => feature(id),
+);
+// What Claude Code does further: Ikenga's matching items are not released yet.
+const orgPolicy = feature('policy.org-apps', ['exploring', 'next', 'in-progress']);
+const oidc = feature('access.oidc-sign-in', ['exploring', 'next', 'in-progress']);
+const LANE: Record<string, string> = { exploring: 'we are exploring it', next: 'it is next on our roadmap', 'in-progress': 'it is in progress' };
+const OIDC: Record<string, string> = {
+	exploring: 'We are exploring sign-in with your identity provider.',
+	next: 'Sign-in with your identity provider is next.',
+	'in-progress': 'Sign-in with your identity provider is in progress.',
+};
+
+const WORD: Record<string, string> = { supported: 'supported', beta: 'in beta', experimental: 'experimental' };
+const join = (names: string[]) =>
+	names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+const engineParts = enginesByTier().map((g) => `${join(g.names)} ${g.names.length > 1 ? 'are' : 'is'} ${WORD[g.tier]}`);
+const engineSentence =
+	engineParts.length < 2
+		? `${engineParts.join('')}.`
+		: `${engineParts.slice(0, -1).join('. ')}, and ${engineParts[engineParts.length - 1]}.`;
+---
+
+<p>
+	Claude Code has its own controls for organisations. Your admins can deploy managed settings that local settings
+	cannot override. They can decide which MCP servers may run, require single sign-on, and route usage through Amazon
+	Bedrock, Google Cloud or Microsoft Foundry. Ikenga does not replace any of that, and it does not route around it.
+	Ikenga runs your own Claude Code installation with your own sign-in, so the settings your organisation deploys still
+	apply.
+</p>
+{
+	!short && (
+		<>
+			<p>What Ikenga adds is the workspace around your agents:</p>
+			<ul class="lane">
+				<li>
+					<strong>More than one engine.</strong> {engineSentence} Each uses your own install, sign-in or key.
+				</li>
+				<li>
+					<strong>A local-first workspace.</strong> Projects, the files your agents make, terminals and agent sessions
+					are kept on your computer. Your engine still sends your prompts to its own model provider. Ikenga itself
+					sends no usage analytics; the engines you run follow their own settings.
+				</li>
+				<li>
+					<strong>A store with consent.</strong> Claude Code has no built-in catalogue of MCP servers. Ngwa, the store,
+					installs skills, tools, hooks and apps from a signed catalogue, where you see what each one can access before
+					it installs. Skills, agents, commands, hooks and tools can also install from a public git source, pinned to
+					the commit you reviewed.
+				</li>
+				<li>
+					<strong>A vault and seats.</strong> Keys stay in a passphrase vault. Named seats keep track of each
+					project's agent sessions, with their cost and permission requests.
+				</li>
+			</ul>
+			<p>
+				<strong>Where Claude Code's controls go further today.</strong> They enforce policy on every machine in your
+				organisation. Claude's business plans also add single sign-on, plus SCIM and audit logs on Enterprise. Ikenga
+				has no organisation-wide policy for apps and tools yet; {LANE[orgPolicy.status]}. {OIDC[oidc.status]}
+			</p>
+		</>
+	)
+}
+<p>
+	Your MCP policy also covers Ikenga's tools. Ikenga adds the tools it installs to Claude Code's own configuration
+	files, so your allowlists and denylists apply to them. If your admins deploy a fixed set of servers
+	(<code>managed-mcp.json</code>), Claude Code does not load tools installed through Ikenga.
+</p>

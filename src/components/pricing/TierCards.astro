@@ -1,0 +1,91 @@
+---
+// The four plans side by side. Prices, billing terms, minimums and calls to
+// action are read from src/data/truth/tiers.json; only the one-line
+// descriptions under each price are written here. There is no checkout button:
+// every paid plan is a waitlist or a conversation.
+import { TIERS, TIER_NAMES, money, addonFrom } from './tiers';
+import { ctaHref } from './links';
+import type { Tier, TierId } from '../../lib/truth/schema';
+
+const POINTS: Record<TierId, (t: Tier) => string[]> = {
+	free: () => ['The full desktop app, free and open source.', 'Community support on GitHub.'],
+	personal: () => [
+		'A small Ikenga server of your own, run by us in the region you pick.',
+		'Or deploy it into your own cloud account in one click, with no server charge.',
+		'An allowance of decision tokens is included. Use beyond it is metered.',
+	],
+	team: () => [
+		'Billed per member: people with the Owner or Operator role. Reviewers and Guests are free.',
+		'Priority support in business hours.',
+		'We set your team up with you. There is no self-serve checkout.',
+	],
+	enterprise: (t) => {
+		const from = addonFrom(t);
+		return [
+			'Support with an SLA, help running your own server, and custom builds.',
+			...(from !== null ? [`Add a managed instance: a dedicated server we operate, from ${money(from)} per organisation per month.`] : []),
+		];
+	},
+};
+
+function per(t: Tier): string {
+	if (t.price === 0) return 'No sign-up and no payment.';
+	if (t.personal) {
+		const vat = t.personal.prices_exclude_vat ? ', before VAT' : '';
+		const basis = t.personal.indicative ? 'Indicative, confirmed at launch.' : 'Early-access price.';
+		return `Per month${vat}. ${basis}`;
+	}
+	const parts: string[] = [];
+	parts.push(t.unit === 'member' ? 'Per member per month' : 'Per month');
+	if (t.billing_period === 'annual') parts[0] += ', billed annually';
+	if (t.min_members) parts[0] += `, minimum ${t.min_members} members`;
+	let s = `${parts[0]}.`;
+	if (t.price_monthly !== undefined) s += ` ${money(t.price_monthly)} billed monthly.`;
+	return `${s} Early-access price.`;
+}
+
+function priceText(t: Tier): string {
+	if (t.price === null) return 'Talk to us';
+	if (t.price === 0) return 'Free';
+	return t.personal ? `from ${money(t.price)}` : money(t.price);
+}
+
+const AVAILABILITY: Record<Tier['availability'], string | null> = {
+	'early-access': 'Early access',
+	'self-serve': null,
+	unavailable: 'Not available',
+};
+---
+
+<div class="tiers p-plans" role="list">
+	{
+		TIERS.map((t) => {
+			const badge = t.personal ? 'Coming' : AVAILABILITY[t.availability];
+			const isDownload = t.cta.kind === 'download';
+			return (
+				<div class="tier" role="listitem" id={`plan-${t.id}`}>
+					<span class="tn">
+						{TIER_NAMES[t.id]}
+						{badge && <span class={t.personal ? 'pill exp' : 'pill beta'}>{badge}</span>}
+					</span>
+					<span class="price">{priceText(t)}</span>
+					<span class="per">{per(t)}</span>
+					<ul>
+						{POINTS[t.id](t).map((p) => (
+							<li>{p}</li>
+						))}
+					</ul>
+					{isDownload ? (
+						<a class="btn btn-quiet btn-wide" href={t.cta.href} data-os-href>
+							{t.cta.label}
+						</a>
+					) : (
+						<a class="btn btn-quiet btn-wide" href={ctaHref(t.cta.href)}>
+							{t.cta.label}
+						</a>
+					)}
+				</div>
+			);
+		})
+	}
+</div>

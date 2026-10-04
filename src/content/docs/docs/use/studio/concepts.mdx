@@ -1,0 +1,55 @@
+---
+title: Concepts & surfaces
+description: The six Studio surfaces — breakdown, storyboard canvas, cast & world anchors, cell generation, shot ledger, and Track B handoff — and the ideas behind them.
+sidebar:
+  label: Concepts & surfaces
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Studio is one project seen through six surfaces. The screens below are the locked interface **concepts**, shown on the wordless demo short *“The Forge.”*
+
+## Breakdown — script → board
+
+Paste a script or Fountain file. Breakdown splits it into beats and shots and pulls every character, location, and prop into a reference checklist — with the fal-vs-handoff plan decided per shot before you spend a cent.
+
+![Studio breakdown — a script split into beats and shots with extracted characters, locations, and props](/assets/studio/breakdown-b.png)
+
+## Storyboard canvas — generation
+
+Shots land as cells on a canvas — framing, camera, duration, and the anchors each one uses. Each cell generates in place: fal on Track A (seed-locked, cost shown), a Higgsfield handoff on Track B, with running spend in the dock. Studio owns the authoritative render and approval state for every cell.
+
+![Studio storyboard canvas — shots as cells generating live on two tracks](/assets/studio/canvas-gen-b.png)
+
+## Cast & World — anchors
+
+Each principal — a character, location, style, or prop — becomes a seed-locked **anchor** the generator reuses on every shot. A continuity thread shows every shot each anchor appears in. This is the anti-drift heart: the face doesn't change from shot one to shot forty.
+
+![Studio Cast & World — seed-locked anchors with a continuity thread showing every shot each appears in](/assets/studio/cast-world-c.png)
+
+<Aside type="note">
+Anchors are the contract between a groundwork [`film`](/docs/use/groundwork/profiles/) plan and Studio: each cast-bible entry maps to an `anchor_*` id created once in the Studio project and reused everywhere.
+</Aside>
+
+## Cell — generate & compare
+
+Open a shot into a generation console — editable prompt, anchor-ref chips, engine picker, and locked seed on the left; a living preview and an A/B variants tray on the right. Pick the keeper; it lands on the board with its full provenance.
+
+![Studio cell — a generation console with prompt, anchor chips, engine picker, locked seed, living preview and an A/B variants tray](/assets/studio/cell-gen-a.png)
+
+## Shot ledger — provenance
+
+Per shot: the engine, model, seed, cost, and variant, with a running budget meter. fal rows are cost-tracked; Higgsfield handoff rows are marked manual. It's the thing that lives in a spreadsheet today, native to the board — so change one input and Studio knows exactly what to re-render.
+
+![Studio shot ledger — per-shot engine, model, seed, cost and variant with a running budget meter](/assets/studio/ledger-a.png)
+
+## Handoff — Track B
+
+For web-only tools with no API, Studio shapes a per-shot prompt package — ref image, aspect, duration, camera move — you generate in Higgsfield or Flow, and drop the returned clip straight back onto the shot. Keep the tools you love; stop them being islands.
+
+![Studio Track B handoff — a shaped per-shot prompt package with a clip ingest-back dropzone](/assets/studio/handoff-a.png)
+
+## Composition & export
+
+Approved shots stitch to a delivery master — correct framing for every platform (16:9, 9:16, 1:1), music bed and voiceover in place. FFmpeg export ships today; the groundwork [film workflow](/docs/use/groundwork/film-workflow/) shows how deliverables map back to the plan.

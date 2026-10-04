@@ -1,0 +1,112 @@
+---
+// "Who can read your data": the custody statement for /security, on your
+// computer, on a multi-user server you run, and on a managed instance. The
+// statement is published as written; change its wording here and nowhere else.
+// The beta features it describes are read from the truth data, so a status
+// change shows up in the headings on the next build.
+import { feature } from '../../lib/truth/read';
+
+const server = feature('server.multi-user');
+feature('vault.member-secrets', ['beta']);
+feature('access.audit-log', ['beta']);
+feature('vault.passphrase', ['shipped']);
+
+const MANAGED = { exportBusinessDays: 5, deleteDays: 30 };
+---
+
+<h3 id="on-your-computer">On your computer</h3>
+<p>
+	Ikenga keeps your projects, artifacts, terminal history and agent sessions on your computer. Keys are kept in a
+	passphrase vault. Your coding engine still sends your prompts to its own model provider, under that provider's terms.
+</p>
+
+<h3 id="on-your-server">On a multi-user server you run{server.status === 'beta' && ' (beta)'}</h3>
+<ul class="lim-list">
+	<li>
+		Members of one organisation share the server and are trusted with each other. It is not built to keep untrusted
+		tenants apart.
+	</li>
+	<li>
+		Each person's secrets are kept apart from everyone else's in the app. They are sealed under a key that the server
+		holds, so agents can keep working when the person is not signed in.
+	</li>
+	<li>
+		That means whoever controls the server can read what is on it. The server runs as root on its Linux host, so anyone
+		with root access to that host can read every member's files, secrets and agent sessions. Give that access only to
+		people you would trust with all of it.
+	</li>
+	<li>
+		Back up the server's key separately from the server. A lost key cannot be recreated, and there is no command to
+		rotate it yet.
+	</li>
+	<li>
+		The audit log records sign-ins, pairings, role changes, approvals and dispatches in a hash chain you can verify and
+		export. It helps you spot changes. Removing only the newest entries may not be detected, and it does not stop
+		someone with root access to the host from rewriting it.
+	</li>
+</ul>
+
+<h3 id="managed">On a managed instance (not available yet)</h3>
+<p>
+	When we run a dedicated server for your organisation, Ikenga staff are its operator. The server holds the key to your
+	secrets, so <strong>we can technically read your code, files and secrets on it.</strong> We will not offer a managed
+	instance until these controls are in place, and a managed contract will include them:
+</p>
+<ul class="lim-list">
+	<li>
+		Only named Ikenga operators can reach the host, and only to fix a problem you reported, respond to an incident on
+		your instance, or apply an upgrade.
+	</li>
+	<li>Every operator sign-in to the host is recorded, and you can see those records on request.</li>
+	<li>
+		Your data can be exported on request within {MANAGED.exportBusinessDays} business days. The instance and its
+		backups are deleted within {MANAGED.deleteDays} days of the contract ending.
+	</li>
+	<li>
+		A data processing agreement, and a list of the subprocessors, such as the server provider, that handle your data.
+	</li>
+</ul>
+
+<h3 id="model-access">Model access</h3>
+<p>
+	On a server we run, your engines use credentials you supply: an API key, or your own Amazon Bedrock or Google Cloud
+	route. We never copy a personal subscription sign-in onto a server we run. Ikenga includes no model usage.
+</p>
+
+<h3 id="certifications">Certifications</h3>
+<p><strong>No SOC 2 yet; security questionnaire on request.</strong></p>
+<p>
+	Ikenga has no SOC 2 report or other certification yet. We answer a standard security questionnaire, CAIQ Lite, on
+	request.
+</p>
+
+<style>
+	h3 {
+		margin: var(--space-10) 0 0;
+		font: 600 var(--text-h3) / var(--lead-h3) var(--font-body);
+		color: var(--fg);
+	}
+	.lim-list {
+		list-style: none;
+		margin: var(--space-4) 0 0;
+		padding: 0;
+		display: grid;
+		gap: var(--space-3);
+		max-width: 62ch;
+		color: var(--fg-muted);
+	}
+	.lim-list li {
+		display: flex;
+		gap: var(--space-3);
+		align-items: baseline;
+	}
+	.lim-list li::before {
+		content: '';
+		width: 6px;
+		height: 6px;
+		border-radius: 1px;
+		background: var(--chip-carve);
+		flex: none;
+		transform: translateY(-2px);
+	}
+</style>

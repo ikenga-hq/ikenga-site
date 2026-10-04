@@ -1,0 +1,35 @@
+---
+title: mcp-browser
+description: An MCP server that lets agents drive native child webviews in the shell — open, snapshot, click, and fill pages that block iframes.
+---
+
+**Browser MCP** (`@ikenga/mcp-browser`) is an MCP server that lets the agent drive **native child webviews** inside the Ikenga shell. Open a pane on a site that refuses to be iframed — a partner portal, a dashboard with strict `frame-ancestors` — then snapshot it, click, fill, and wait, all as MCP tools the model can call.
+
+It uses the system webview rather than an iframe, which is how it bypasses the CSP `frame-ancestors` / `X-Frame-Options` restrictions that block embedded frames.
+
+## Install
+
+```bash
+ikenga add @ikenga/mcp-browser
+```
+
+Requires the Ikenga shell. [Install the shell →](/docs/use/install/)
+
+## What it is
+
+| | |
+| --- | --- |
+| **Package** | `@ikenga/mcp-browser` (`com.ikenga.mcp-browser`) |
+| **Archetype** | MCP server (`kind: skill`) — a long-lived tool server |
+| **Capability** | `webview` child windows (all partitions) |
+| **Network** | loopback only (`http://127.0.0.1:*`) |
+
+## Permissions
+
+It declares the **webview** capability (to open native child windows) and loopback network only. Because the webview capability is sensitive, installing it passes through the trust gate — you consent once on install (the "share kola" step).
+
+## See also
+
+- [What you can build](/docs/build/archetypes/)
+- [mcp-iyke — drive the running shell from any MCP client](/docs/reference/catalogue/mcp-iyke/)
+- [Browse all packages →](/packages/)

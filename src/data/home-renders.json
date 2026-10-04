@@ -1,0 +1,75 @@
+{
+  "about": "Product images on the home page. Each entry is one framed image: the source file, the crop that proves the claim (in source pixels), an optional narrower crop for phones, and its words. To swap a design render for a live capture, replace the source file, update this entry (dimensions, crop, tag, alt) and run `node scripts/home-renders.mjs --src <folder with the source files>`. The page reads this file; nothing else needs to change.",
+  "renders": [
+    {
+      "id": "overview",
+      "title": "Chi · permission inbox",
+      "tag": "Design render",
+      "caption": "A permission request, with the session's cost and tool calls",
+      "source": { "dark": "frame-workbench-v4.png", "light": "frame-workbench-v4-light.png", "width": 3000, "height": 1920 },
+      "crop": { "x": 2190, "y": 515, "w": 752, "h": 470 },
+      "alt": "Design render of the permission inbox: an agent wants to read a .env file, with Allow once, Always for this project and Deny, above the session cost and a feed of recent tool calls.",
+      "altLight": "Design render of the same window in light mode."
+    },
+    {
+      "id": "trust",
+      "title": "Ngwa · store",
+      "tag": "Design render",
+      "caption": "Ngwa's health view: which installed items came from unsigned manifests, and revoked keys",
+      "source": { "dark": "ngwa-health.png", "width": 1600, "height": 1000 },
+      "crop": { "x": 185, "y": 596, "w": 636, "h": 184 },
+      "cropPhone": { "x": 186, "y": 622, "w": 470, "h": 110 },
+      "alt": "Design render of the Trust panel in Ngwa's health view: 18 of 22 installed items came from unsigned manifests, the registry index is signed, and no publisher key has been revoked."
+    },
+    {
+      "id": "explorer",
+      "title": "Projects",
+      "tag": "Design render",
+      "caption": "The Explorer for one project",
+      "source": { "dark": "frame-workbench-v4.png", "light": "frame-workbench-v4-light.png", "width": 3000, "height": 1920 },
+      "crop": { "x": 60, "y": 120, "w": 620, "h": 1515 },
+      "cropPhone": { "x": 60, "y": 195, "w": 620, "h": 900 },
+      "alt": "Design render of a project Explorer: files, artifacts, agent sessions with their engines, automations, and the project's apps, todos and views.",
+      "altLight": "Design render of the same window in light mode."
+    },
+    {
+      "id": "seats",
+      "title": "Chi · companion",
+      "tag": "Design render",
+      "caption": "Chi's seat picker",
+      "source": { "dark": "seats-companion-dispatch.png", "width": 1440, "height": 900 },
+      "crop": { "x": 1076, "y": 140, "w": 247, "h": 222 },
+      "alt": "Design render of Chi's seat picker: @lead on a claude session, @review on codex in a second window, @nightly running, @docs vacant, and an unseated claude session."
+    },
+    {
+      "id": "ngwa",
+      "title": "Ngwa · install sheet",
+      "tag": "Design render",
+      "caption": "What an app can access, before you install it",
+      "source": { "dark": "ngwa-store-install.png", "width": 1600, "height": 1000 },
+      "crop": { "x": 1004, "y": 618, "w": 480, "h": 232 },
+      "cropPhone": { "x": 1010, "y": 688, "w": 470, "h": 130 },
+      "alt": "Design render of an install sheet's permissions: each permission is listed with what it reaches, and each must be ticked before Install is enabled."
+    },
+    {
+      "id": "vault",
+      "title": "Vault & lock",
+      "tag": "Design render",
+      "caption": "The vault, values masked",
+      "source": { "dark": "settings-secrets.png", "width": 1560, "height": 1010 },
+      "crop": { "x": 318, "y": 130, "w": 720, "h": 450 },
+      "cropPhone": { "x": 338, "y": 305, "w": 300, "h": 192 },
+      "alt": "Design render of the vault: secret keys listed with masked values, the engine or tool that uses each, and a Lock now button."
+    },
+    {
+      "id": "actions",
+      "title": "Actions & keys",
+      "tag": "Design render",
+      "caption": "Editing an action: where it appears and its key",
+      "source": { "dark": "actions-editor.png", "width": 1520, "height": 1000 },
+      "crop": { "x": 515, "y": 200, "w": 920, "h": 640 },
+      "cropPhone": { "x": 520, "y": 555, "w": 360, "h": 245 },
+      "alt": "Design render of the actions editor: an action's placements in a context menu, its key binding with no conflicts, its scope, and a preview of the menu it adds to."
+    }
+  ]
+}

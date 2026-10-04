@@ -1,0 +1,42 @@
+---
+title: mcp-iyke
+description: An MCP server that exposes a running Ikenga shell as tools, so any model can drive it.
+---
+
+Every running Ikenga shell exposes an **Iyke control bridge** — a localhost RPC surface that lets external tools drive the live desktop UI: query the DOM, take screenshots, capture network activity, read the query cache, navigate panes, and switch modes. `mcp-iyke` is the **MCP server** that wraps that bridge, so any MCP-capable model — Claude, Cursor, a custom client — can control the shell as a set of tools.
+
+It pairs with the **`iyke`** CLI, which speaks the same bridge for terminal-based control. Same surface, two front doors: the CLI for humans and scripts, the MCP server for models.
+
+## What it lets a model do
+
+With `mcp-iyke` connected, a model can:
+
+- **Inspect runtime state** — read the rendered DOM and accessibility tree, the console logs, captured network requests, and the query cache of the running app.
+- **Drive the UI** — navigate to a pane or route, switch modes, and take screenshots of the window or an individual pane.
+- **Read inside mini-app iframes** — pull state out of a pkg's iframe (for example, a storyboard cursor position) without that pkg exposing it explicitly.
+
+{/* VERIFY: confirm the exact published tool names and arguments at launch from ikenga-pkgs/packages/mcp/iyke/ — the list above is grounded in shell/CLAUDE.md's description of the bridge surface (DOM queries, screenshots, network capture, query-cache reads, navigate, mode switch, iframe state) but the public tool catalogue should be enumerated verbatim here. */}
+
+## How it drives a running shell
+
+The shell starts its Iyke bridge on a localhost port and writes the port plus an auth token to a local control file when it launches. `mcp-iyke` reads that file, authenticates, and forwards each tool call to the bridge as an authenticated request against the live app.
+
+Because the bridge runs *inside* the running shell, the model acts on the real, current UI state — the same DOM, IPC layer, and OS integration the user sees — not a headless copy.
+
+{/* VERIFY: confirm the control-file path/shape and auth mechanism for the public docs. shell-internal patterns reference ~/.local/share/app.ikenga/control.json with a bearer token + port; confirm this is the right thing to document publicly at launch. */}
+
+## How it ships
+
+`mcp-iyke` is a long-lived MCP server pkg. The shell bundles a builtin copy, and a published version lives in [`ikenga-pkgs`](https://github.com/ikenga-hq/ikenga-pkgs). Like every pkg, it's Apache-2.0.
+
+## Two ways in
+
+| Front door | Use it for |
+| --- | --- |
+| **`iyke` CLI** | Terminal and shell-script control of a running shell. Driving dev loops, smoke tests, one-off automation. |
+| **`mcp-iyke`** | Letting an MCP-capable model control the shell as tools — the agent inspects and drives its own workspace. |
+
+## Where to go next
+
+- **[What you can build →](/docs/build/archetypes/)** — how MCP-server pkgs are declared and supervised.
+- **[Engines →](/docs/use/engines/)** — the engine that consumes the tools `mcp-iyke` exposes.

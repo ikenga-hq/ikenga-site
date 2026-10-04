@@ -1,0 +1,96 @@
+---
+title: What you can build
+description: Manifest-driven packages — the unit of everything beyond the window chrome.
+---
+
+A **pkg** (package) is a self-contained directory with a `manifest.json` plus whatever it contributes — a UI panel, a tool server, an engine adapter, a background worker, or Claude Code skills and commands. Everything in Ikenga beyond the bare window chrome is a pkg.
+
+At boot, the shell's **kernel** discovers installed pkgs, validates each manifest against the schema, and registers every block it declares with the matching registry (UI routes, MCP servers, sidecars, cron, settings, and more). The manifest is the contract. The source, build output, and README are yours.
+
+All published pkgs ship **Apache-2.0** and live in one canonical monorepo, [`ikenga-pkgs`](https://github.com/ikenga-hq/ikenga-pkgs), under `packages/<type>/<slug>/`.
+
+## Archetypes
+
+Pick the smallest archetype that fits what your pkg contributes. A single pkg can combine several — the kernel walks whatever blocks are present and registers each.
+
+| Archetype | What it contributes | Pick it when |
+| --- | --- | --- |
+| **UI iframe** | A panel that renders your own HTML/React in the shell, served by the kernel's in-process content server. | You're shipping a mini-app, dashboard, form, or panel you control end to end and it's happy inside an iframe. |
+| **UI webview** | A native child webview (not an iframe). | You need to drive a third-party site that refuses iframe embedding (via CSP `frame-ancestors` or `X-Frame-Options`), or you want per-pkg cookie isolation that survives reinstall. |
+| **MCP server** | Tools the AI engine can call, over the Model Context Protocol. | You're surfacing capabilities for the agent to invoke — read data, hit an API, kick off a workflow. |
+| **Engine adapter** | A new AI backend the shell can use as the chat engine. | You're integrating a CLI-based AI engine (see **[Engines](/docs/use/engines/)**). |
+| **Sidecar** | A supervised, long-running bundled binary. | You have a worker that doesn't fit the MCP shape — a preview server, a render worker, a websocket client — and want explicit lifecycle control. |
+| **Skill-only** | Claude Code skills, slash commands, and/or agents — no UI, no process. | The functionality is pure prompt and workflow. The simplest possible pkg. |
+
+## The manifest
+
+Every pkg has a `manifest.json` at its root ([the manifest guide](/docs/build/manifest/) covers every block). A minimal UI-iframe manifest:
+
+```json
+{
+  "id": "com.example.dashboard",
+  "name": "Dashboard",
+  "version": "0.1.0",
+  "ikenga_api": "5",
+  "kind": "embedded",
+  "author": { "name": "Example", "key": "example" },
+
+  "ui": {
+    "routes": [
+      { "path": "/", "kind": "iframe", "source": "dist/index.html" }
+    ]
+  }
+}
+```
+
+Beyond `ui`, a manifest may declare blocks from `manifest.ts`: `mcp`, `sidecars`, `engine`, `iyke`, `cron`, `window`, `queries`, `workflows`, `settings`, `capabilities`, `permissions`, `migrations`, `screenshots`, and `requires` (the legacy `skills`, `commands`, and `agents` manifest fields are retired; dependencies on standalone primitives are declared via `requires`). The `ikenga_api` field targets a supported API version in the window 1–5 (currently `"5"`).
+
+UI routes accept three `kind`s: `"iframe"`, `"webview"`, and `"component"` (the last is reserved for host-builtin React components — third-party `component` routes won't mount).
+
+## Capabilities and permissions
+
+A pkg only gets what its manifest asks for.
+
+- **`capabilities`** are opt-in, host-resolved features. There are seven capabilities: `supabase` (vault credentials for database access), `sqlite` (local SQLite access), `webview` (child webviews and cookie partitions), `agentOps`, and the elevated capabilities `http` (host-proxied fetch), `secrets` (named-secret injection), and `invoke` (host invoke passthrough). Elevated capabilities are inert unless the package is trusted.
+
+- **`permissions`** has ten keys checked by the kernel: `shell.execute`, `fs.read`, `fs.write`, `net`, `sqlite.tables`, `supabase.tables` (compat alias), `vault.keys`, `engine`, `notify`, and `events`. Asking for sensitive permissions (such as `fs.write` outside your own `$pkg_data`) triggers the trust gate — the package won't auto-trust on install, and consent happens on the store's install sheet (the "Share kola" step). A pkg with an empty permissions block and no sensitive capabilities auto-trusts.
+
+## The AppBridge handshake
+
+A UI-iframe pkg is an MCP App client. When the shell mounts your iframe, it performs an **AppBridge handshake** and delivers a `hostContext` — the current theme, host style variables, and (if you declared the capability and the vault is populated) Supabase credentials.
+
+The rules that matter:
+
+- Register your handlers **before** you connect — the host may emit notifications synchronously right after the initialize response.
+- Handle `onhostcontextchanged` idempotently: the shell re-emits `hostContext` whenever the theme changes.
+- Because the handshake is async, you can't construct a Supabase client at module-eval time — use a lazy getter that runs after `hostContext` arrives.
+- Run standalone (outside the shell) and the handshake is skipped, so build a sensible fallback for local dev.
+
+The handshake uses [`@modelcontextprotocol/ext-apps`](https://www.npmjs.com/package/@modelcontextprotocol/ext-apps). The **[Build your first app](/docs/build/first-pkg/)** tutorial walks the whole flow.
+
+## Lifecycle
+
+| Phase | What happens |
+| --- | --- |
+| **Install** | `ikenga add <pkg>` writes to disk, and the shell registers the pkg on next boot. Consent for sensitive permissions happens on the store's install sheet. |
+| **Boot** | The kernel re-discovers installed pkgs and replays their registrations. Long-lived MCP servers and sidecars spawn here. |
+| **Update** | `ikenga update` pulls a newer version through the same validate-then-register path. If a pkg gained sensitive permissions since last install, the user is re-prompted to consent. |
+| **Remove (Retire)** | The kernel unregisters every block the pkg contributed. Skill-only pkgs also remove the content they copied into `~/.claude/`. |
+
+Long-lived MCP servers and sidecars run under a supervisor with a full state machine — `Spawning → Running`, auto-restart on crash, a 3-strikes-in-60s circuit breaker that parks a flapping process, and port-in-use detection. The shell can stream lifecycle events to the UI.
+
+## The two CLIs
+
+| CLI | Job | Commands |
+| --- | --- | --- |
+| **`ikenga`** | Disk-side **package manager** — mutates what's installed. | `list`, `add`, `update`, `remove`, `dev <path>`, `doctor` |
+| **`iyke`** | Runtime **controller** — drives a shell that's already running over its localhost bridge. | navigate panes, switch modes, inspect state |
+
+`ikenga dev <path>` is the developer loop: it symlinks a pkg into the running shell, auto-trusts the source, and hot-reloads on manifest changes — no shell restart. Iframe code changes flow through your dev server's HMR; sidecar and MCP source changes restart through the supervisor's file watcher; `Ctrl-C` unregisters cleanly. See the **[Build your first app](/docs/build/first-pkg/)** tutorial.
+
+## Where to go next
+
+- **[Build your first app →](/docs/build/first-pkg/)** — scaffold, run hot-mounted, publish.
+- **[The manifest →](/docs/build/manifest/)** — every block, capability and permission, and how trust works.
+- **[Engines →](/docs/use/engines/)** — the engine-adapter archetype in depth.
+- **[mcp-iyke →](/docs/reference/catalogue/mcp-iyke/)** — driving a running shell as MCP tools.
